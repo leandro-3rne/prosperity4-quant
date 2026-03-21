@@ -1,6 +1,6 @@
 # Nash Equilibrium
 
-> **Core formula:** $$s^* = (s_1^*,\ldots,s_n^*) \text{ is a Nash equilibrium if } \forall\, i,\; \forall\, s_i \in S_i:\quad u_i(s_i^*,\, s_{-i}^*) \;\ge\; u_i(s_i,\, s_{-i}^*)$$
+> **Core formula:** $$s^{ * } = (s_1^{ * },\ldots,s_n^{ * }) \text{ is a Nash equilibrium if } \forall\, i,\; \forall\, s_i \in S_i:\quad u_i(s_i^{ * },\, s_{-i}^{ * }) \;\ge\; u_i(s_i,\, s_{-i}^{ * })$$
 
 ## Intuition
 
@@ -33,31 +33,31 @@ where:
 | $\sigma_i \in \Delta(S_i)$ | A mixed strategy for player $i$ |
 | $\sigma_i(s_i)$ | Probability that player $i$ plays pure strategy $s_i$ under $\sigma_i$ |
 
-**Notation convention:** We write $(s_i, s_{-i})$ to emphasise player $i$'s choice while holding others fixed. When player $i$ deviates from a profile $s^*$ by switching from $s_i^*$ to some alternative $s_i'$, the resulting profile is $(s_i', s_{-i}^*)$.
+**Notation convention:** We write $(s_i, s_{-i})$ to emphasise player $i$'s choice while holding others fixed. When player $i$ deviates from a profile $s^{ * }$ by switching from $s_i^{ * }$ to some alternative $s_i'$, the resulting profile is $(s_i', s_{-i}^{ * })$.
 
 ## Derivation
 
 ### 1. Nash Equilibrium — Definition
 
-A strategy profile $s^* = (s_1^*, \ldots, s_n^*)$ is a **Nash equilibrium** (NE) if no player can strictly improve their payoff by a unilateral deviation:
+A strategy profile $s^{ * } = (s_1^{ * }, \ldots, s_n^{ * })$ is a **Nash equilibrium** (NE) if no player can strictly improve their payoff by a unilateral deviation:
 
 $$
-\forall\, i \in N, \quad \forall\, s_i \in S_i: \qquad u_i(s_i^*,\, s_{-i}^*) \;\ge\; u_i(s_i,\, s_{-i}^*).
+\forall\, i \in N, \quad \forall\, s_i \in S_i: \qquad u_i(s_i^{ * },\, s_{-i}^{ * }) \;\ge\; u_i(s_i,\, s_{-i}^{ * }).
 $$
 
 Equivalently, each player's strategy is a best response to the others:
 
 $$
-s_i^* \;\in\; \arg\max_{s_i \in S_i}\; u_i(s_i,\, s_{-i}^*) \qquad \forall\, i \in N.
+s_i^{ * } \;\in\; \arg\max_{s_i \in S_i}\; u_i(s_i,\, s_{-i}^{ * }) \qquad \forall\, i \in N.
 $$
 
 Define the **best-response correspondence** for player $i$:
 
 $$
-BR_i(s_{-i}) \;=\; \bigl\{s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \;\;\forall\, s_i' \in S_i\bigr\}.
+BR_i(s_{-i}) \;=\; \bigl\{ s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \;;\; \forall\, s_i' \in S_i \bigr\}.
 $$
 
-Then $s^*$ is a NE if and only if $s_i^* \in BR_i(s_{-i}^*)$ for every $i$.
+Then $s^*$ is a NE if and only if $s_i^{ * } \in BR_i(s_{-i}^{ * })$ for every $i$.
 
 ### 2. Dominant Strategies and Iterated Elimination
 
@@ -135,7 +135,7 @@ $$
 A mixed strategy NE is a profile $\sigma^*$ satisfying
 
 $$
-U_i(\sigma_i^*,\, \sigma_{-i}^*) \;\ge\; U_i(\sigma_i,\, \sigma_{-i}^*) \qquad \forall\, i,\;\; \forall\, \sigma_i \in \Delta(S_i).
+U_i(\sigma_i^{ * },\, \sigma_{-i}^{ * }) \;\ge\; U_i(\sigma_i,\, \sigma_{-i}^{ * }) \qquad \forall\, i,\;\; \forall\, \sigma_i \in \Delta(S_i).
 $$
 
 **Proof sketch.** Define the combined mixed-strategy space $\Sigma = \Delta(S_1) \times \cdots \times \Delta(S_n)$. This is a non-empty, compact, convex subset of Euclidean space. Define the best-response correspondence $BR: \Sigma \rightrightarrows \Sigma$ by
