@@ -184,7 +184,22 @@ $$
 
 This is immediate: each $|\Delta W_i| \sim \sqrt{\Delta t} \cdot |Z|$ and the sum of $n$ such terms grows as $\sqrt{n}$. Unbounded first-order variation combined with finite quadratic variation is the hallmark of a semimartingale and the reason we need Itô (not Riemann–Stieltjes) integration.
 
-### 5. Simulation via Euler–Maruyama
+### 5. Ergodicity
+
+Brownian motion is **not ergodic** in the strict sense — a single infinite path does not reproduce all statistical properties of the ensemble.
+
+The key distinction:
+
+- **Ensemble average:** Fix time $t$, average over many independent paths:
+  $\mathbb{E}[W_t] = 0$, $\operatorname{Var}(W_t) = t$.
+- **Time average:** Follow one path and average over time:
+  $\frac{1}{T}\int_0^T W_t\,dt \;\xrightarrow{T\to\infty}\; 0$, but the *variance* keeps growing — the path drifts without bound.
+
+The variance $\operatorname{Var}(W_t) = t \to \infty$ means BM has **no stationary distribution**. A process needs a stationary distribution to be ergodic (time averages $=$ ensemble averages), and BM simply never settles into one.
+
+**Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\operatorname{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
+
+### 6. Simulation via Euler–Maruyama
 
 Because the increments are independent and Gaussian, exact simulation is straightforward:
 
@@ -200,37 +215,7 @@ This is exact (not an approximation) for Brownian motion itself. For SDEs driven
 2. Draw $n$ independent samples $Z_0, Z_1, \ldots, Z_{n-1} \sim \mathcal{N}(0,1)$.
 3. Set $W_0 = 0$.
 4. For $k = 0, 1, \ldots, n-1$: set $W_{k+1} = W_k + \sqrt{\Delta t} \cdot Z_k$.
-5. The resulting vector $(W_0, W_1, \ldots, W_n)$ is one sample path at times $(0, \Delta t, 2\Delta t, \ldots, T)$.
-
-### 6. The Itô Multiplication Table
-
-When manipulating differentials in stochastic calculus we keep terms up to order $dt$ and discard anything of higher order. The rules are:
-
-$$
-\begin{array}{c|cc}
-\times & dt & dW_t \\
-\hline
-dt & 0 & 0 \\
-dW_t & 0 & dt
-\end{array}
-$$
-
-Written out:
-
-$$
-(dW_t)^2 = dt, \qquad dt \cdot dW_t = 0, \qquad (dt)^2 = 0.
-$$
-
-**Why $(dW_t)^2 = dt$.**
-This is precisely the quadratic variation result proved above. Over an infinitesimal interval $[t, t+dt]$, we have $(\Delta W)^2 \approx \Delta t$ with variance $2(\Delta t)^2 \to 0$, so the squared increment is *deterministic* at leading order and equals $dt$.
-
-**Why $dt \cdot dW_t = 0$.**
-The product $dt \cdot dW_t$ is of order $\Delta t \cdot \sqrt{\Delta t} = (\Delta t)^{3/2}$, which vanishes faster than $\Delta t$ and is therefore negligible compared to both $dt$ and $(dW_t)^2 = dt$.
-
-**Why $(dt)^2 = 0$.**
-The product $dt \cdot dt$ is of order $(\Delta t)^2$, which is even smaller and clearly negligible.
-
-These rules are the engine that drives Itô's Lemma: the second-order Taylor term $\tfrac{1}{2}f''(W_t)(dW_t)^2$ survives because $(dW_t)^2 = dt$ is first-order, not zero as it would be for a smooth driving function.
+5. The resulting vector $(W_0, W_1, \ldots, W_n)$ is one sample path at times $(0, \Delta t, 2\Delta t, \ldots, T)$. 
 
 ### 7. Geometric Brownian Motion (GBM) — from levels to equities
 
@@ -263,6 +248,16 @@ $$
 $$
 
 The factor $e^{-\sigma^2 t/2}$ in the median is the same Itô correction that appears in the log dynamics above.
+
+**Confidence band and volatility.** The parameter $\sigma$ is the standard deviation of log-returns per unit time. Because $\sigma W_t \sim \mathcal{N}(0, \sigma^2 t)$, the $\pm 2\sigma$ confidence band fans out as $\sqrt{t}$, tracing the sideways-parabola shape visible in path plots. For arithmetic BM the band is symmetric around the drift:
+
+$$S_t \in \left[\mu t - 2\sigma\sqrt{t},\;\mu t + 2\sigma\sqrt{t}\right] \quad (\approx 95\%).$$
+
+For GBM the band is **asymmetric** because the exponential stretches the upper tail:
+
+$$S_t \in \left[S_0\, e^{(\mu-\frac{1}{2}\sigma^2)t - 2\sigma\sqrt{t}},\;\; S_0\, e^{(\mu-\frac{1}{2}\sigma^2)t + 2\sigma\sqrt{t}}\right].$$
+
+Crucially, the centre of this band is the **median** $S_0 e^{(\mu-\sigma^2/2)t}$, not the mean $S_0 e^{\mu t}$ — the Itô correction $-\sigma^2/2$ shifts the typical path below the ensemble average, exactly as discussed above.
 
 **Why GBM instead of arithmetic BM for (portfolios of) stocks?**
 

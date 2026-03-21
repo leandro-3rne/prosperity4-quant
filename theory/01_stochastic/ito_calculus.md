@@ -58,6 +58,36 @@ $$
 
 which is the **same order** as the first-order term $f'(W_t)\Delta W = O(\sqrt{\Delta t})$. In fact, $(\Delta W)^2 \to \Delta t$ deterministically (quadratic variation), so this term contributes a non-random drift of $\frac{1}{2}f''(W_t)\,dt$ that cannot be discarded.
 
+**The Itô Multiplication Table**
+
+When manipulating differentials in stochastic calculus we keep terms up to order $dt$ and discard anything of higher order. The rules are:
+
+$$
+\begin{array}{c|cc}
+\times & dt & dW_t \\
+\hline
+dt & 0 & 0 \\
+dW_t & 0 & dt
+\end{array}
+$$
+
+Written out:
+
+$$
+(dW_t)^2 = dt, \qquad dt \cdot dW_t = 0, \qquad (dt)^2 = 0.
+$$
+
+**Why $(dW_t)^2 = dt$.**
+This is precisely the quadratic variation result proved above. Over an infinitesimal interval $[t, t+dt]$, we have $(\Delta W)^2 \approx \Delta t$ with variance $2(\Delta t)^2 \to 0$, so the squared increment is *deterministic* at leading order and equals $dt$.
+
+**Why $dt \cdot dW_t = 0$.**
+The product $dt \cdot dW_t$ is of order $\Delta t \cdot \sqrt{\Delta t} = (\Delta t)^{3/2}$, which vanishes faster than $\Delta t$ and is therefore negligible compared to both $dt$ and $(dW_t)^2 = dt$.
+
+**Why $(dt)^2 = 0$.**
+The product $dt \cdot dt$ is of order $(\Delta t)^2$, which is even smaller and clearly negligible.
+
+These rules are the engine that drives Itô's Lemma: the second-order Taylor term $\tfrac{1}{2}f''(W_t)(dW_t)^2$ survives because $(dW_t)^2 = dt$ is first-order, not zero as it would be for a smooth driving function.
+
 Higher-order terms: $(\Delta W)^3 = O((\Delta t)^{3/2})$ is negligible compared to $dt$, so we truncate after the second-order term. This is the key insight.
 
 ### 2. Itô's Lemma — Simple Form: $f(t, W_t)$
