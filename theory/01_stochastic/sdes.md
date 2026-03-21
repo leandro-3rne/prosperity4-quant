@@ -60,6 +60,10 @@ In a strong solution, the randomness in $X$ comes entirely from $W$: given $W(\o
 
 Here we are allowed to construct a *new* Brownian motion to go with the solution — the specific BM driving $X$ is not prescribed in advance. A weak solution specifies only the *law* (probability distribution) of $X$, not a pathwise construction.
 
+**In short:** A *strong solution* is constructed pathwise on a fixed probability space with a given $W_t$ — the process $X_t$ is an explicit function of that specific noise realisation, so individual paths are meaningful and comparable. A *weak solution* only requires the correct joint distribution of $(X_t, W_t)$; driving noise and process are constructed together, making pathwise comparison undefined.
+
+This distinction carries directly into numerical convergence: *strong convergence* measures how close a simulated path is to the exact path driven by the same $W_t$, while *weak convergence* only measures how well the scheme reproduces expectations. If an SDE admits only a weak solution, strong convergence is not meaningful — there is no fixed $W_t$ to compare against.
+
 **Relationship:** Every strong solution is a weak solution (just take the given $W$). The converse is not always true — there exist SDEs with weak but not strong solutions. For all SDEs encountered in this repository (GBM, OU, CIR), strong solutions exist.
 
 ### 2. Existence and Uniqueness
@@ -171,130 +175,83 @@ $$
 
 **Exact solution.** Multiply both sides by the integrating factor $e^{\theta t}$:
 
-$$
-d(e^{\theta t} X_t) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt.
-$$
+$$d(e^{\theta t} X_t) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt.$$
 
-By Itô's Lemma (with $f(t,x) = e^{\theta t}x$, so $f_t = \theta e^{\theta t}x$, $f_x = e^{\theta t}$, $f_{xx} = 0$):
+By Itô's Lemma (with $f(t,x) = e^{\theta t}x$):
 
-$$
-d(e^{\theta t} X_t) = e^{\theta t}\bigl[\theta(\mu - X_t)\,dt + \sigma\,dW_t\bigr] + \theta e^{\theta t} X_t\,dt.
-$$
+$$d(e^{\theta t} X_t) = \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t.$$
 
-$$
-= e^{\theta t}\theta\mu\,dt - e^{\theta t}\theta X_t\,dt + e^{\theta t}\sigma\,dW_t + \theta e^{\theta t} X_t\,dt.
-$$
+Integrating from $0$ to $t$ and dividing by $e^{\theta t}$:
 
-$$
-= \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t.
-$$
+$$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}\,dW_s.}$$
 
-Integrate from $0$ to $t$:
+**Interpretation.**
 
-$$
-e^{\theta t}X_t - x_0 = \theta\mu \int_0^t e^{\theta s}\,ds + \sigma \int_0^t e^{\theta s}\,dW_s.
-$$
+- $(x_0 - \mu)e^{-\theta t}$: deterministic decay of the initial deviation from $\mu$, with half-life $\ln(2)/\theta$.
+- The stochastic integral is Gaussian with mean zero and variance $\frac{\sigma^2}{2\theta}(1 - e^{-2\theta t})$.
+- As $t \to \infty$: $X_t \to \mathcal{N}\!\left(\mu,\;\frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
 
-$$
-e^{\theta t}X_t - x_0 = \mu(e^{\theta t} - 1) + \sigma \int_0^t e^{\theta s}\,dW_s.
-$$
+**Lipschitz check.** $a(x) = \theta(\mu - x)$ satisfies $|a(x) - a(y)| = \theta|x-y|$; $b(x) = \sigma$ is constant. Both conditions hold — unique strong solution by Itô's theorem.
 
-Divide by $e^{\theta t}$:
+**Use cases.**
 
-$$
-\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}\,dW_s.}
-$$
-
-**Interpretation:**
-
-- The term $(x_0 - \mu)e^{-\theta t}$ is the deterministic decay of the initial deviation from $\mu$, with half-life $\ln(2)/\theta$.
-- The stochastic integral $\sigma\int_0^t e^{-\theta(t-s)}\,dW_s$ is a Gaussian random variable (since the integrand is deterministic) with mean zero and variance:
-
-$$
-\operatorname{Var}(X_t) = \sigma^2 \int_0^t e^{-2\theta(t-s)}\,ds = \frac{\sigma^2}{2\theta}\bigl(1 - e^{-2\theta t}\bigr).
-$$
-
-- As $t \to \infty$, $X_t \to \mathcal{N}\!\left(\mu,\;\frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
-
-**Lipschitz check:** $a(x) = \theta(\mu - x)$, so $|a(x) - a(y)| = \theta|x - y|$ — Lipschitz with constant $K = \theta$. The diffusion $b(x) = \sigma$ is constant, hence trivially Lipschitz. The OU process therefore has a unique strong solution by Itô's theorem.
+- Modelling mean-reverting spreads in stat arb. The half-life $\ln(2)/\hat\theta$ determines how fast the spread reverts and whether a mean-reversion strategy is viable over a given horizon.
+- Calibrated via OLS regression of $\Delta X_t$ on $X_t$ to extract $(\theta, \mu, \sigma)$.
 
 ### 6. Example 2 — Geometric Brownian Motion (GBM)
 
-$$
-dS_t = \mu S_t\,dt + \sigma S_t\,dW_t, \qquad S_0 = s_0 > 0.
-$$
+$$dS_t = \mu S_t\,dt + \sigma S_t\,dW_t, \qquad S_0 = s_0 > 0.$$
 
 **Parameters:** $\mu$ (drift rate), $\sigma > 0$ (volatility), $s_0 > 0$ (initial price).
 
-**Exact solution.** Apply Itô's Lemma to $f(S) = \ln S$ (fully derived in [ito_calculus.md](ito_calculus.md)):
+**Exact solution.** Apply Itô's Lemma to $f(S) = \ln S$:
 
-$$
-d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.
-$$
+$$d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.$$
 
-This is an SDE with constant coefficients, so we integrate directly:
+Integrating und exponentiating:
 
-$$
-\ln S_t - \ln S_0 = \left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t.
-$$
+$$\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}$$
 
-Exponentiate:
+**Interpretation.**
 
-$$
-\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}
-$$
-
-**Key properties:**
-
-- $S_t > 0$ for all $t$ almost surely (the exponential is always positive).
-- $\mathbb{E}[S_t] = S_0 e^{\mu t}$ (compute by using $\mathbb{E}[e^{\sigma W_t}] = e^{\sigma^2 t/2}$, the moment generating function of a Gaussian).
-- $\text{Median}(S_t) = S_0 e^{(\mu - \sigma^2/2)t}$ (the exponent of the median of $\ln S_t$).
+- $S_t > 0$ almost surely; log-returns $\ln(S_t/S_0) \sim \mathcal{N}((\mu - \sigma^2/2)t,\;\sigma^2 t)$.
+- $\mathbb{E}[S_t] = S_0 e^{\mu t}$, driven by the MGF of the Gaussian: $\mathbb{E}[e^{\sigma W_t}] = e^{\sigma^2 t/2}$.
+- The $-\sigma^2/2$ Itô correction causes the median $S_0 e^{(\mu-\sigma^2/2)t}$ to lie below the mean — a direct consequence of Jensen's inequality applied to the exponential.
 - $\operatorname{Var}(S_t) = S_0^2 e^{2\mu t}(e^{\sigma^2 t} - 1)$.
-- Log-returns $\ln(S_t / S_0) \sim \mathcal{N}\!\left((\mu - \sigma^2/2)t,\;\sigma^2 t\right)$.
 
-**Lipschitz check:** $a(S) = \mu S$ and $b(S) = \sigma S$ are both globally Lipschitz in $S$ with constants $|\mu|$ and $\sigma$. Linear growth is also satisfied. Unique strong solution guaranteed.
+**Lipschitz check.** $a(S) = \mu S$ and $b(S) = \sigma S$ are both globally Lipschitz in $S$ with constants $|\mu|$ and $\sigma$; linear growth holds. Unique strong solution guaranteed.
+
+**Use cases.**
+
+- Standard model for equity prices; the foundation of Black–Scholes (replace $\mu$ with $r$ under the risk-neutral measure).
+- Exact simulation via $S_T = S_0 e^{(\mu - \sigma^2/2)T + \sigma\sqrt{T}Z}$ avoids discretisation error entirely — prefer this over EM whenever the model is GBM.
+- The Milstein correction $\frac{1}{2}\sigma^2 S[(\Delta W)^2 - \Delta t]$ is particularly effective here since $b'(S) = \sigma \ne 0$.
 
 ### 7. Example 3 — Cox–Ingersoll–Ross (CIR) Model
 
-$$
-dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t, \qquad X_0 = x_0 \ge 0.
-$$
+$$dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t, \qquad X_0 = x_0 \ge 0.$$
 
-**Parameters:** $\kappa > 0$ (mean-reversion speed), $\theta > 0$ (long-run mean level), $\sigma > 0$ (volatility of volatility), $x_0 \ge 0$ (initial level).
+**Parameters:** $\kappa > 0$ (mean-reversion speed), $\theta > 0$ (long-run mean), $\sigma > 0$ (volatility of volatility), $x_0 \ge 0$.
 
-**The Feller condition.** The critical condition for the process to remain strictly positive is:
+**Exact solution.** No closed-form path expression exists. The transition distribution is known analytically: $X_t \mid X_s$ follows a scaled non-central chi-squared distribution, which can be used for exact simulation. The stationary distribution is:
 
-$$
-\boxed{2\kappa\theta \ge \sigma^2.}
-$$
+$$X_\infty \sim \operatorname{Gamma}\!\left(\frac{2\kappa\theta}{\sigma^2},\;\frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
 
-**Why the Feller condition works (heuristic).** Near $X = 0$, the drift $\kappa(\theta - X) \approx \kappa\theta$ pushes $X$ upward, while the diffusion $\sigma\sqrt{X}$ vanishes (since $\sqrt{0} = 0$). The balance between these forces determines whether $X$ can reach zero:
+**Interpretation.**
 
-- The drift provides an upward "push" of size $\kappa\theta\,dt$.
-- The diffusion provides random fluctuations of size $\sigma\sqrt{X}\sqrt{dt}$.
-- Near zero, the drift dominates if $\kappa\theta$ is large enough relative to $\sigma^2$. The precise boundary is $2\kappa\theta = \sigma^2$.
+- Near $X = 0$: drift $\kappa\theta > 0$ pushes the process upward while diffusion $\sigma\sqrt{X} \to 0$ vanishes, so the boundary is inaccessible when $2\kappa\theta \ge \sigma^2$ (Feller condition).
+- When $2\kappa\theta < \sigma^2$: the process can touch zero but is immediately reflected; $X_t \ge 0$ always.
+- The Feller ratio $2\kappa\theta/\sigma^2 \ge 1$ is the key diagnostic — check it whenever calibrating CIR parameters.
 
-When $2\kappa\theta < \sigma^2$, the process can reach zero but is immediately reflected back (it does not get absorbed); $X_t \ge 0$ always holds, but $X_t = 0$ occurs with positive probability.
+**Lipschitz check.** $b(x) = \sigma\sqrt{x}$ is *not* Lipschitz at $x = 0$ (standard Itô theorem does not apply). Existence and uniqueness follow instead from the **Yamada–Watanabe theorem** under the weaker Hölder condition, which $\sqrt{x}$ satisfies. Unique strong solution exists despite the failure of Lipschitz.
 
-**Stationary distribution.** As $t \to \infty$, $X_t$ converges to a Gamma distribution:
+**Use cases.**
 
-$$
-X_\infty \sim \text{Gamma}\!\left(\alpha = \frac{2\kappa\theta}{\sigma^2},\;\beta = \frac{\sigma^2}{2\kappa}\right),
-$$
-
-with mean $\theta$ and variance $\theta\sigma^2 / (2\kappa)$.
-
-**Use cases:**
-
-- *Interest rate modelling:* $X_t$ represents a short rate (always non-negative).
-- *Stochastic volatility:* In the Heston model, the variance $v_t$ follows a CIR process.
-- *Prosperity 4:* If a product's volatility appears to mean-revert and must stay non-negative, CIR is the appropriate dynamics.
+- Interest rate modelling: guarantees non-negative short rates.
+- Variance process in the Heston stochastic volatility model.
+- Dynamically adjusting market-making spreads: widen when the CIR variance estimate is high, tighten when it is low.
 
 **Note on numerics:** Because the diffusion $\sigma\sqrt{X}$ is not Lipschitz at $X = 0$, naive Euler–Maruyama can produce negative values. Common fixes:
-
-1. **Absorption:** set $\hat{X}_{n+1} = \max(\hat{X}_{n+1}, 0)$.
-2. **Reflection:** set $\hat{X}_{n+1} = |\hat{X}_{n+1}|$.
-3. **Implicit schemes** or the **exact transition density** (which is a non-central chi-squared distribution).
 
 ## Key Parameters
 
