@@ -54,7 +54,7 @@ $$
 Define the **best-response correspondence** for player $i$:
 
 $$
-BR_i(s_{-i}) \;=\; \bigl\{ s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \;;\; \forall\, s_i' \in S_i \bigr\}.
+BR_i(s_{-i}) = \{ s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \quad \forall\, s_i' \in S_i \}.
 $$
 
 Then $s^*$ is a NE if and only if $s_i^{ * } \in BR_i(s_{-i}^{ * })$ for every $i$.
