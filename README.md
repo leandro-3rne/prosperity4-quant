@@ -53,7 +53,7 @@ $$r_t = S_t - q_t\,\gamma\,\sigma^2(T-t), \quad \delta^* = \frac{\gamma\sigma^2(
 
 Mean-reversion trading via the Ornstein-Uhlenbeck process, cointegration testing, and z-score signals. When two assets share a long-run equilibrium, their spread is stationary and mean-reverting. The spread's z-score provides entry and exit signals: go long when the spread is unusually low, short when unusually high, and exit when it reverts. The OU half-life $`t_{1/2} = \ln 2 / \theta`$ determines whether mean-reversion is fast enough to trade within a given horizon.
 
-$$dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t$$
+$$u_i(s_i^{ * }, s_{-i}^{ * }) \ge u_i(s_i, s_{-i}^{ * }) \quad \forall\, s_i \in S_i$$
 
 ### 5. Game Theory
 
