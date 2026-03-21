@@ -44,7 +44,7 @@ $$
 W_{t_2} - W_{t_1},\; W_{t_3} - W_{t_2},\; \ldots,\; W_{t_k} - W_{t_{k-1}}
 $$
 
-are mutually independent.
+are mutually independent. Unlike classical functions — where knowing the path up to time $t$ determines all future increments — the independence of BM increments means the past carries zero information about the future, which is precisely what makes it a stochastic process rather than a deterministic one.
 
 **(A4) Gaussian increments.** For every $0 \le s < t$,
 
@@ -67,6 +67,8 @@ By **(A4)**, each increment satisfies $\Delta W_k \sim \mathcal{N}(0, \Delta t)$
 $$
 \mathbb{E}[\Delta W_k] = 0, \qquad \operatorname{Var}(\Delta W_k) = \Delta t.
 $$
+
+For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is deterministic given the path, so $\operatorname{Var}(\Delta f_k) = 0$.
 
 By **(A3)**, the increments are independent, so variances add:
 
@@ -97,6 +99,8 @@ Since $\Delta W_i \sim \mathcal{N}(0, \Delta t_i)$, we have
 $$
 \mathbb{E}[(\Delta W_i)^2] = \operatorname{Var}(\Delta W_i) + (\mathbb{E}[\Delta W_i])^2 = \Delta t_i + 0 = \Delta t_i.
 $$
+
+This is the critical departure from classical calculus: for a smooth function $(\Delta f)^2 \sim (\Delta t)^2$ vanishes to second order, but for BM $(\Delta W)^2 \sim \Delta t$ survives to first order — the seed of Itô's Lemma. For more details, see [ito_calculus.md](ito_calculus.md).
 
 Summing over the partition:
 
@@ -249,7 +253,7 @@ $$
 
 The factor $e^{-\sigma^2 t/2}$ in the median is the same Itô correction that appears in the log dynamics above.
 
-**Confidence band and volatility.** The parameter $\sigma$ is the standard deviation of log-returns per unit time. Because $\sigma W_t \sim \mathcal{N}(0, \sigma^2 t)$, the $\pm 2\sigma$ confidence band fans out as $\sqrt{t}$, tracing the sideways-parabola shape visible in path plots. For arithmetic BM the band is symmetric around the drift:
+**Confidence band and volatility.** The parameter $\sigma$ is the standard deviation of log-returns per unit time, also called volatility. Because $\sigma W_t \sim \mathcal{N}(0, \sigma^2 t)$, the $\pm 2\sigma$ confidence band fans out as $\sqrt{t}$, tracing the sideways-parabola shape visible in path plots. For arithmetic BM the band is symmetric around the drift:
 
 $$S_t \in \left[\mu t - 2\sigma\sqrt{t},\;\mu t + 2\sigma\sqrt{t}\right] \quad (\approx 95\%).$$
 

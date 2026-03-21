@@ -78,7 +78,7 @@ $$
 $$
 
 **Why $(dW_t)^2 = dt$.**
-This is precisely the quadratic variation result proved above. Over an infinitesimal interval $[t, t+dt]$, we have $(\Delta W)^2 \approx \Delta t$ with variance $2(\Delta t)^2 \to 0$, so the squared increment is *deterministic* at leading order and equals $dt$.
+This is precisely the quadratic variation result proved in [brownian_motion.md](brownian_motion.md). Over an infinitesimal interval $[t, t+dt]$, we have $(\Delta W)^2 \approx \Delta t$ with variance $2(\Delta t)^2 \to 0$, so the squared increment is *deterministic* at leading order and equals $dt$.
 
 **Why $dt \cdot dW_t = 0$.**
 The product $dt \cdot dW_t$ is of order $\Delta t \cdot \sqrt{\Delta t} = (\Delta t)^{3/2}$, which vanishes faster than $\Delta t$ and is therefore negligible compared to both $dt$ and $(dW_t)^2 = dt$.
