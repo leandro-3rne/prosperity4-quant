@@ -59,7 +59,7 @@ $$dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t$$
 
 Nash equilibrium, auction theory, and repeated games applied to multi-agent trading. In Prosperity, multiple bots compete on the order book simultaneously. Nash equilibrium analysis predicts where competitors will quote. Auction theory (Vickrey's dominant-strategy truthful bidding, first-price bid shading) applies to pricing rounds. Repeated-game theory (folk theorem, tit-for-tat) explains how cooperation or competition can emerge across multiple rounds.
 
-$$u_i(s_i^*, s_{-i}^*) \ge u_i(s_i, s_{-i}^{*}) \quad \forall\, s_i \in S_i$$
+$$u_i(s_i^{*}, s_{-i}^{*}) \ge u_i(s_i, s_{-i}^{*}) \quad \forall\, s_i \in S_i$$
 
 ### 6. Prosperity Strategy
 
