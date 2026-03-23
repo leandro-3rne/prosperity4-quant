@@ -188,6 +188,14 @@ $$
 
 we want the dynamics of $Y_t = \ln S_t$.
 
+**Why choose $\ln S_t$ at all?** The GBM SDE is multiplicative: every term on the right is multiplied by $S_t$. That means working directly with $S_t$ keeps the state variable tangled inside drift and diffusion. The logarithm is the natural ansatz because:
+
+- $dS_t/S_t$ is the instantaneous **relative** return (percentage change),
+- $\frac{d}{dS}\ln S = 1/S$ cancels the $S_t$ factor,
+- the multiplicative model for $S_t$ becomes an additive model for $\ln S_t$, which is directly integrable.
+
+So the strategic goal of the derivation is: "transform GBM into arithmetic BM in log-space."
+
 **Step 1 — Identify the function and its derivatives.**
 
 Set $f(S) = \ln S$. Then:

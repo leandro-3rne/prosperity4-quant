@@ -32,6 +32,8 @@ $$
 dX_t = a(t, X_t)\,dt + b(t, X_t)\,dW_t, \qquad X_0 = x_0.
 $$
 
+Here $a(t,X_t)\,dt$ is the **deterministic increment** (drift part, predictable trend over a short time step), while $b(t,X_t)\,dW_t$ is the **stochastic increment** (random shock driven by Brownian motion $W_t$).
+
 The rigorous meaning of this notation is the integral equation:
 
 $$
@@ -95,38 +97,105 @@ $$
 
 **Note on CIR:** The CIR diffusion coefficient $b(x) = \sigma\sqrt{x}$ is *not* Lipschitz at $x = 0$ (since $|\sqrt{x} - \sqrt{y}| \le |x-y|/\sqrt{\min(x,y)}$ blows up). However, the Yamada–Watanabe theorem provides existence and uniqueness under weaker Hölder conditions, which $\sqrt{x}$ satisfies. Thus CIR still has a unique strong solution, but the standard Itô theorem does not directly apply.
 
-### 3. Euler–Maruyama Discretisation
+### 3. Closed-Form (Exact) Solutions
 
-The Euler–Maruyama (EM) method is the simplest and most widely used scheme for numerically solving SDEs. It is the stochastic analogue of the Euler method for ODEs.
+The Itô existence theorem (§2) guarantees that a solution process $X_t$ *exists*, but it says nothing about whether we can write it down as an explicit formula. A **closed-form solution** (also called an **exact** or **analytical** solution) is an expression for $X_t$ in terms of elementary functions, the initial condition $x_0$, the parameters, and the driving Brownian motion $W_t$ — without any integral that still involves the unknown $X_s$.
 
-**Algorithm.** Partition $[0, T]$ into $N$ equal steps of size $\Delta t = T/N$. Set $\hat{X}_0 = x_0$. For $n = 0, 1, \ldots, N-1$:
+**Concretely:** a closed-form solution lets you compute $X_t$ for any $t$ directly from $(x_0, t, W_t)$ in $O(1)$ operations, rather than having to march forward step-by-step through a discretisation grid.
 
-$$
-\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n, \qquad Z_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).
-$$
+**Why it matters.**
 
-**Derivation.** Integrate the SDE from $t_n$ to $t_{n+1}$:
+1. **Exact simulation.** When a closed form exists, you can draw an exact sample $X_T$ without any time-stepping. For GBM this means $S_T = S_0 e^{(\mu - \sigma^2/2)T + \sigma\sqrt{T}Z}$ — one exponentiation instead of $N$ Euler–Maruyama steps. The result has *zero* discretisation error, which eliminates an entire class of numerical artefacts.
+2. **Analytical tractability.** Expectations, variances, transition densities, and option prices can often be derived in closed form once the SDE solution is known. The Black–Scholes formula is a direct consequence of the closed-form GBM solution.
+3. **Benchmarking.** Even when you ultimately need Monte Carlo for a more complex model, the closed-form solution of a simpler sub-model serves as a ground truth to verify your numerical code against.
+
+**When does a closed form exist?** There is no general algorithm to decide this. In practice, a handful of techniques cover most cases encountered in finance:
+
+| Technique | Idea | Applies to |
+|-----------|------|------------|
+| **Direct integration** | If $a$ and $b$ are constants, integrate $dX = a\,dt + b\,dW$ directly | Arithmetic BM with drift |
+| **Itô's Lemma + transform** | Apply $f(X)$ (e.g. $\ln X$) to eliminate state-dependence in the coefficients | GBM ($f = \ln$) |
+| **Integrating factor** | Multiply by $e^{\theta t}$ to turn a linear SDE into a directly integrable one | OU process |
+| **Variation of constants** | Combine the homogeneous solution with a particular integral | Linear SDEs in general |
+
+For the three SDEs in this file:
+
+- **OU:** Closed form via integrating factor — $X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s$ (§6). The remaining stochastic integral is Gaussian with known variance, so $X_t$ can be sampled exactly.
+- **GBM:** Closed form via the $\ln$-transform — $S_t = S_0 e^{(\mu - \sigma^2/2)t + \sigma W_t}$ (§7). Exact sampling requires only a single Gaussian draw.
+- **CIR:** *No* closed-form path expression. The transition density is a scaled non-central $\chi^2$, which allows exact sampling but not a formula of the form "$X_t = g(x_0, t, W_t)$".
+
+When no closed form is available — which is the generic case for nonlinear SDEs, multi-factor models, and SDEs with path-dependent coefficients — we fall back on numerical discretisation schemes: Euler–Maruyama (§4) and Milstein (§5).
+
+### 4. Euler–Maruyama Discretisation
+
+When no closed-form solution is available (§3), we need a numerical recipe that turns the continuous SDE into a sequence of discrete updates we can execute on a computer. The **Euler–Maruyama (EM)** method is the simplest and most widely used such scheme — the stochastic analogue of the forward-Euler method for ODEs.
+
+#### 4.1 Core idea — "freeze and step"
+
+Recall the ODE Euler method: given $\dot{x} = f(t, x)$, we approximate $x(t + \Delta t) \approx x(t) + f(t, x(t))\,\Delta t$ by pretending the slope $f$ stays constant over the interval $[t, t+\Delta t]$. Euler–Maruyama does the same thing, but with an additional stochastic term driven by a Brownian increment $\Delta W$.
+
+The idea is to *freeze* both the drift $a$ and the diffusion $b$ at the start of each sub-interval and treat them as constants over that step. This turns each infinitesimal SDE step into a simple arithmetic update.
+
+#### 4.2 Derivation
+
+Start from the integral form of the SDE over one step $[t_n, t_{n+1}]$:
 
 $$
 X_{t_{n+1}} = X_{t_n} + \int_{t_n}^{t_{n+1}} a(s, X_s)\,ds + \int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s.
 $$
 
-Freeze the coefficients at their left-endpoint values $a(t_n, X_{t_n})$ and $b(t_n, X_{t_n})$:
+This is exact but not computable — $a(s, X_s)$ and $b(s, X_s)$ depend on the (unknown) solution $X_s$ at every intermediate time $s \in (t_n, t_{n+1})$.
+
+**Step 1 — Freeze the drift.** Replace $a(s, X_s)$ by its value at the left endpoint $a(t_n, X_{t_n})$. Since the integrand is now a constant:
 
 $$
-X_{t_{n+1}} \approx X_{t_n} + a(t_n, X_{t_n})\,\Delta t + b(t_n, X_{t_n})\,(W_{t_{n+1}} - W_{t_n}).
+\int_{t_n}^{t_{n+1}} a(s, X_s)\,ds \;\approx\; a(t_n, X_{t_n})\,\Delta t.
 $$
 
-Since $W_{t_{n+1}} - W_{t_n} \sim \mathcal{N}(0, \Delta t) = \sqrt{\Delta t}\;Z_n$, we arrive at the EM formula.
+**Step 2 — Freeze the diffusion.** Similarly, replace $b(s, X_s)$ by $b(t_n, X_{t_n})$:
 
-**Convergence.** The Euler–Maruyama method has:
+$$
+\int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s \;\approx\; b(t_n, X_{t_n})\,(W_{t_{n+1}} - W_{t_n}).
+$$
+
+**Step 3 — Substitute the BM increment.** By the properties of Brownian motion (see [brownian_motion.md](brownian_motion.md), §6), $W_{t_{n+1}} - W_{t_n} \sim \mathcal{N}(0, \Delta t)$, which we write as $\sqrt{\Delta t}\;Z_n$ with $Z_n \sim \mathcal{N}(0,1)$.
+
+Combining all three steps:
+
+$$
+X_{t_{n+1}} \approx X_{t_n} + a(t_n, X_{t_n})\,\Delta t + b(t_n, X_{t_n})\,\sqrt{\Delta t}\;Z_n.
+$$
+
+#### 4.3 Algorithm
+
+Partition $[0, T]$ into $N$ equal steps of size $\Delta t = T/N$. Set $\hat{X}_0 = x_0$. For $n = 0, 1, \ldots, N-1$:
+
+$$
+\boxed{\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n, \qquad Z_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).}
+$$
+
+Each step requires exactly one Gaussian draw and two coefficient evaluations — the computational cost per path is $O(N)$.
+
+#### 4.4 When is EM exact?
+
+If both $a$ and $b$ are *constant* (i.e. state-independent), freezing introduces no error at all — the approximation is exact at every step. This is the case for **arithmetic Brownian motion** $dX = \mu\,dt + \sigma\,dW$, where the EM recursion $\hat{X}_{n+1} = \hat{X}_n + \mu\,\Delta t + \sigma\sqrt{\Delta t}\,Z_n$ reproduces the true dynamics perfectly. Simulating a pure Wiener process ($\mu = 0$, $\sigma = 1$) is therefore a special case of EM with zero discretisation error.
+
+For state-dependent coefficients — GBM ($b = \sigma S$), OU ($a = \theta(\mu - X)$), CIR ($b = \sigma\sqrt{X}$) — the freezing approximation introduces an error that shrinks as $\Delta t \to 0$.
+
+#### 4.5 Convergence
+
+The Euler–Maruyama method has:
 
 - **Strong convergence order $\gamma = 0.5$:** $\mathbb{E}[|X_T - \hat{X}_N|] = O((\Delta t)^{0.5})$.
 - **Weak convergence order $\beta = 1.0$:** $|\mathbb{E}[g(X_T)] - \mathbb{E}[g(\hat{X}_N)]| = O(\Delta t)$ for smooth test functions $g$.
 
-Strong convergence measures pathwise accuracy (important for hedging simulations), while weak convergence measures accuracy of expectations (sufficient for pricing via Monte Carlo).
+**Strong convergence** measures pathwise accuracy: how close is the simulated path to the exact path driven by the *same* Brownian motion? This matters when the path itself is an input — for example, in delta-hedging simulations where the hedge is rebalanced at each time step.
 
-### 4. Milstein Scheme
+**Weak convergence** measures distributional accuracy: how close are expectations computed from the scheme to the true expectations? This is sufficient for Monte Carlo pricing, where we only care about $\mathbb{E}[f(X_T)]$, not about any individual path.
+
+The strong order $0.5$ means that halving $\Delta t$ only reduces the pathwise error by a factor of $\sqrt{2} \approx 1.41$, not $2$. This relatively slow convergence motivates higher-order schemes like Milstein (§5).
+
+### 5. Milstein Scheme
 
 The Milstein method improves strong convergence to order 1.0 by including the next term in the stochastic Taylor expansion of $b$.
 
@@ -165,7 +234,7 @@ $$
 \frac{1}{2}\sigma S \cdot \sigma \cdot \bigl[(\Delta W)^2 - \Delta t\bigr] = \frac{1}{2}\sigma^2 S\bigl[(\Delta W)^2 - \Delta t\bigr].
 $$
 
-### 5. Example 1 — Ornstein–Uhlenbeck (OU) Process
+### 6. Example 1 — Ornstein–Uhlenbeck (OU) Process
 
 $$
 dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t, \qquad X_0 = x_0.
@@ -198,19 +267,21 @@ $$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}
 - Modelling mean-reverting spreads in stat arb. The half-life $\ln(2)/\hat\theta$ determines how fast the spread reverts and whether a mean-reversion strategy is viable over a given horizon.
 - Calibrated via OLS regression of $\Delta X_t$ on $X_t$ to extract $(\theta, \mu, \sigma)$.
 
-### 6. Example 2 — Geometric Brownian Motion (GBM)
+### 7. Example 2 — Geometric Brownian Motion (GBM)
 
 $$dS_t = \mu S_t\,dt + \sigma S_t\,dW_t, \qquad S_0 = s_0 > 0.$$
 
 **Parameters:** $\mu$ (drift rate), $\sigma > 0$ (volatility), $s_0 > 0$ (initial price).
 
-**Exact solution.** Apply Itô's Lemma to $f(S) = \ln S$:
+**Exact solution (compact).** Using the standard log-transform $f(S)=\ln S$:
 
 $$d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.$$
 
-Integrating und exponentiating:
+Integrating and exponentiating:
 
 $$\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}$$
+
+For the full step-by-step Itô derivation (and why the $\ln$ ansatz removes the multiplicative $S_t$ on the right-hand side), see [ito_calculus.md](ito_calculus.md), §4. For the modeling intuition (nominal vs relative changes), see [brownian_motion.md](brownian_motion.md), §5–§6.
 
 **Interpretation.**
 
@@ -227,7 +298,7 @@ $$\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W
 - Exact simulation via $S_T = S_0 e^{(\mu - \sigma^2/2)T + \sigma\sqrt{T}Z}$ avoids discretisation error entirely — prefer this over EM whenever the model is GBM.
 - The Milstein correction $\frac{1}{2}\sigma^2 S[(\Delta W)^2 - \Delta t]$ is particularly effective here since $b'(S) = \sigma \ne 0$.
 
-### 7. Example 3 — Cox–Ingersoll–Ross (CIR) Model
+### 8. Example 3 — Cox–Ingersoll–Ross (CIR) Model
 
 $$dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t, \qquad X_0 = x_0 \ge 0.$$
 

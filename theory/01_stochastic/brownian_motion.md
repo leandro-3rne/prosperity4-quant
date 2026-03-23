@@ -68,7 +68,7 @@ $$
 \mathbb{E}[\Delta W_k] = 0, \qquad \operatorname{Var}(\Delta W_k) = \Delta t.
 $$
 
-For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is deterministic given the path, so $\operatorname{Var}(\Delta f_k) = 0$.
+For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is deterministic given the path, so $\mathbb{E}[\Delta f_k] = \Delta f_k$ and $\operatorname{Var}(\Delta f_k) = 0$.
 
 By **(A3)**, the increments are independent, so variances add:
 
@@ -81,6 +81,8 @@ Since $W_t$ is the sum of $n$ independent Gaussians, it is itself Gaussian with 
 $$
 W_t \sim \mathcal{N}(0, t). \qquad \blacksquare
 $$
+
+
 
 ### 3. Quadratic Variation — Full Proof
 
@@ -188,42 +190,47 @@ $$
 
 This is immediate: each $|\Delta W_i| \sim \sqrt{\Delta t} \cdot |Z|$ and the sum of $n$ such terms grows as $\sqrt{n}$. Unbounded first-order variation combined with finite quadratic variation is the hallmark of a semimartingale and the reason we need Itô (not Riemann–Stieltjes) integration.
 
-### 5. Ergodicity
+### 5. Arithmetic Brownian Motion for Stock Prices — nominal differences
 
-Brownian motion is **not ergodic** in the strict sense — a single infinite path does not reproduce all statistical properties of the ensemble.
-
-The key distinction:
-
-- **Ensemble average:** Fix time $t$, average over many independent paths:
-  $\mathbb{E}[W_t] = 0$, $\operatorname{Var}(W_t) = t$.
-- **Time average:** Follow one path and average over time:
-  $\frac{1}{T}\int_0^T W_t\,dt \;\xrightarrow{T\to\infty}\; 0$, but the *variance* keeps growing — the path drifts without bound.
-
-The variance $\operatorname{Var}(W_t) = t \to \infty$ means BM has **no stationary distribution**. A process needs a stationary distribution to be ergodic (time averages $=$ ensemble averages), and BM simply never settles into one.
-
-**Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\operatorname{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
-
-### 6. Simulation via Euler–Maruyama
-
-Because the increments are independent and Gaussian, exact simulation is straightforward:
+A natural first attempt at modelling a stock price $S_t$ is to apply the Wiener process directly to the **level**:
 
 $$
-W_{t_{k+1}} = W_{t_k} + \sqrt{\Delta t}\; Z_k, \qquad Z_k \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1), \qquad W_0 = 0.
+S_t = S_0 + \mu\,t + \sigma\,W_t,
 $$
 
-This is exact (not an approximation) for Brownian motion itself. For SDEs driven by $W$, the same increment generation feeds into the Euler–Maruyama or Milstein discretisation (see [sdes.md](sdes.md)).
+or in differential form
 
-**Algorithm:**
+$$
+dS_t = \mu\,dt + \sigma\,dW_t.
+$$
 
-1. Choose the number of steps $n$ and compute $\Delta t = T / n$.
-2. Draw $n$ independent samples $Z_0, Z_1, \ldots, Z_{n-1} \sim \mathcal{N}(0,1)$.
-3. Set $W_0 = 0$.
-4. For $k = 0, 1, \ldots, n-1$: set $W_{k+1} = W_k + \sqrt{\Delta t} \cdot Z_k$.
-5. The resulting vector $(W_0, W_1, \ldots, W_n)$ is one sample path at times $(0, \Delta t, 2\Delta t, \ldots, T)$. 
+Here $dS_t$ is the **nominal (absolute) price change**: if $S_t = 100$ and $dS_t = 2$, the stock rose by \$2, regardless of the price level. The parameters have a straightforward reading:
 
-### 7. Geometric Brownian Motion (GBM) — from levels to equities
+| Parameter | Meaning |
+|-----------|---------|
+| $S_0$ | Initial stock price |
+| $\mu$ | Absolute drift in currency units per unit time |
+| $\sigma$ | Absolute volatility in currency units per $\sqrt{\text{time}}$ |
 
-For a **stock price** (or any strictly positive nominal value) we usually do **not** model the level $S_t$ as arithmetic Brownian motion $S_t = S_0 + \mu t + \sigma W_t$. The standard choice, used throughout [Black–Scholes](../02_options/black_scholes.md) in exactly the same notation, is **geometric Brownian motion (GBM)**.
+**Moments.** Because $W_t \sim \mathcal{N}(0, t)$, the price at time $t$ is Gaussian:
+
+$$
+S_t \sim \mathcal{N}\!\bigl(S_0 + \mu t,\;\sigma^2 t\bigr).
+$$
+
+The $\pm 2\sigma$ confidence band is symmetric around the drift:
+
+$$
+S_t \in \bigl[S_0 + \mu t - 2\sigma\sqrt{t},\;\; S_0 + \mu t + 2\sigma\sqrt{t}\bigr] \quad (\approx 95\%).
+$$
+
+**Limitations for equity prices.** This model treats a \$2 move the same whether the stock trades at \$10 or \$1000 — the volatility $\sigma$ is a fixed *dollar* amount, not a *percentage* of the price. More critically, the Gaussian distribution assigns positive probability to $S_t < 0$ for large $t$, which is not acceptable for a limited-liability equity. These two shortcomings — constant absolute volatility and the possibility of negative prices — motivate the switch to **relative** (percentage) changes in the next section.
+
+**Where arithmetic BM on the level is still useful.** For **spreads**, **log-prices**, **short-horizon mid-price dynamics** (e.g. the Avellaneda–Stoikov model $dS = \sigma\,dW$), or **interest-rate increments** in narrow ranges, modelling with ordinary BM or OU is common. In those settings the quantity can be negative or mean-reverting without violating any economic constraint.
+
+### 6. Geometric Brownian Motion (GBM) — from nominal to relative changes
+
+The previous section modelled **nominal** changes $dS_t = \mu\,dt + \sigma\,dW_t$, where a fixed dollar amount of noise is added regardless of the price level. For a stock price we instead want **relative** (percentage) changes to scale with the current level — a 1 % move on a \$10 stock and on a \$100 stock should be equally likely. GBM achieves this by making the coefficients proportional to $S_t$:
 
 **Definition (physical measure $\mathbb{P}$).** Let $W_t$ be a standard Wiener process and let $S_0 > 0$, $\mu \in \mathbb{R}$, $\sigma > 0$. GBM is the unique strong solution of
 
@@ -231,19 +238,37 @@ $$
 dS_t = \mu S_t\,dt + \sigma S_t\,dW_t.
 $$
 
-The coefficients are **state-dependent**: the instantaneous mean and variance of $dS_t$ scale with the current level $S_t$. This is the same SDE as in *Step 1 — Geometric Brownian Motion* in [black_scholes.md](../02_options/black_scholes.md).
-
-**Closed form.** Applying Itô's lemma to $f(S) = \ln S$ (using $(dS_t)^2 = \sigma^2 S_t^2\,dt$) gives
+Dividing both sides by $S_t$ makes the relative interpretation explicit:
 
 $$
-d(\ln S_t) = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW_t,
+\frac{dS_t}{S_t} = \mu\,dt + \sigma\,dW_t.
 $$
 
-hence
+The left-hand side is the **instantaneous return** (relative change); the right-hand side is arithmetic BM — so GBM is simply "arithmetic BM on the *returns*, not on the *levels*". This is the same SDE as in *Step 1 — Geometric Brownian Motion* in [black_scholes.md](../02_options/black_scholes.md).
+
+**Important: $\mu$ and $\sigma$ are relative (percentage) quantities here.** Although we reuse the same Greek letters as in the arithmetic BM section (§5), they have a fundamentally different dimension. In §5, $\mu$ is an absolute drift in *currency units per unit time* (e.g. \$5/year) and $\sigma$ is an absolute volatility in *currency units per $\sqrt{\text{time}}$*. In GBM, the $S_t$ factor absorbs the price level, so:
+
+| | Arithmetic BM (§5) | GBM (§6) |
+|---|---|---|
+| $\mu$ | Absolute drift (\$/year) | **Relative** drift (per year, dimensionless) |
+| $\sigma$ | Absolute volatility (\$/$\sqrt{\text{year}}$) | **Relative** volatility (per $\sqrt{\text{year}}$, dimensionless) |
+| $dS_t$ driven by | $\mu\,dt + \sigma\,dW_t$ | $\mu S_t\,dt + \sigma S_t\,dW_t$ |
+
+In GBM, $\mu = 0.10$ means the stock drifts at 10 % per year regardless of its dollar level, and $\sigma = 0.30$ means 30 % annualised volatility — the same numbers that markets quote for returns. This is why GBM parameters transfer naturally across tickers and through time, while the dollar-denominated $\mu, \sigma$ of arithmetic BM change meaning whenever the price level shifts.
+
+**Closed form via $\ln S_t$ (short version).** Because $dS_t = \mu S_t\,dt + \sigma S_t\,dW_t$ is multiplicative in $S_t$, we use $f(S)=\ln S$ so that $f'(S)=1/S$ divides out the right-hand-side $S_t$ factor. Applying Itô's lemma gives
+
+$$
+d(\ln S_t)=\left(\mu-\tfrac{1}{2}\sigma^2\right)dt+\sigma\,dW_t,
+$$
+
+which integrates to
 
 $$
 S_t = S_0 \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right].
 $$
+
+The full step-by-step derivation (including where the Itô correction $-\sigma^2/2$ comes from) is in [ito_calculus.md](ito_calculus.md), §4.
 
 So $\ln S_t$ is **arithmetic** Brownian motion with drift $\mu - \sigma^2/2$ and volatility $\sigma$; equivalently, $S_t$ is **log-normal**. Expectation and median differ:
 
@@ -276,6 +301,31 @@ Crucially, the centre of this band is the **median** $S_0 e^{(\mu-\sigma^2/2)t}$
 5. **Consistency with Black–Scholes.** European options in [black_scholes.md](../02_options/black_scholes.md) are priced assuming exactly this GBM dynamics (under $\mathbb{Q}$, drift $r$ instead of $\mu$). Using GBM for the spot model aligns simulation, risk management, and option-implied $\sigma$ in one framework.
 
 **When arithmetic BM is still used.** For **log-prices**, **spreads**, or **increments of rates** (in small ranges), modeling with ordinary BM or OU is common — those quantities can be negative or mean-reverting without violating economic signs. The Avellaneda–Stoikov mid-price $dS = \sigma\,dW$ is deliberately arithmetic on the *level* as a local approximation over short horizons; it is not meant as a long-horizon model for strictly positive spot in the same way as GBM.
+
+### 7. Ergodicity
+
+Brownian motion is **not ergodic** in the strict sense — a single infinite path does not reproduce all statistical properties of the ensemble.
+
+The key distinction:
+
+- **Ensemble average:** Fix time $t$, average over many independent paths:
+  $\mathbb{E}[W_t] = 0$, $\operatorname{Var}(W_t) = t$.
+- **Time average:** Follow one path and average over time:
+  $\frac{1}{T}\int_0^T W_t\,dt \;\xrightarrow{T\to\infty}\; 0$, but the *variance* keeps growing — the path drifts without bound.
+
+The variance $\operatorname{Var}(W_t) = t \to \infty$ means BM has **no stationary distribution**. A process needs a stationary distribution to be ergodic (time averages $=$ ensemble averages), and BM simply never settles into one.
+
+**Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\operatorname{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
+
+### 8. Simulation
+
+Simulating a Brownian motion path requires nothing beyond the axioms themselves. By **(A3)** and **(A4)**, the increments $\Delta W_k = W_{t_{k+1}} - W_{t_k}$ are independent and $\mathcal{N}(0, \Delta t)$-distributed. Writing $\Delta W_k = \sqrt{\Delta t}\;Z_k$ with $Z_k \sim \mathcal{N}(0,1)$ and summing gives
+
+$$
+W_{t_{k+1}} = W_{t_k} + \sqrt{\Delta t}\; Z_k, \qquad Z_k \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1), \qquad W_0 = 0.
+$$
+
+This is **exact** — not an approximation — because BM has constant (state-independent) coefficients. The resulting $\Delta W_k$ increments are the same building blocks that feed into the Euler–Maruyama and Milstein discretisation schemes for general SDEs (see [sdes.md](sdes.md), §4–§5).
 
 ## Key Parameters
 
@@ -332,9 +382,9 @@ The quadratic variations are all within $\pm 0.002$ of the theoretical value $1.
 
 ## Connections
 
-- **[Itô Calculus](ito_calculus.md):** The Itô multiplication table, proved here via quadratic variation, is the foundation for Itô's Lemma. The non-zero $(dW)^2 = dt$ term is exactly why stochastic calculus differs from ordinary calculus.
+- **[Itô Calculus](ito_calculus.md):** The Itô multiplication table is proved via quadratic variation and is the foundation for Itô's Lemma. The non-zero $(dW)^2 = dt$ term is exactly why stochastic calculus differs from ordinary calculus.
 - **[Stochastic Differential Equations](sdes.md):** Every SDE in this repository ($dX = a\,dt + b\,dW$) uses Brownian motion as its driving noise. The simulation algorithm above generates the $\Delta W$ increments fed into Euler–Maruyama and Milstein schemes.
-- **[Black–Scholes](../02_options/black_scholes.md):** Geometric Brownian Motion $dS = \mu S\,dt + \sigma S\,dW$ is the price process underlying the Black–Scholes formula — the same SDE, log dynamics, and closed form $S_t$ as in *Step 1* of that file appear in **§7** above, together with why GBM is preferred to arithmetic BM for equity levels and portfolios.
+- **[Black–Scholes](../02_options/black_scholes.md):** Geometric Brownian Motion $dS = \mu S\,dt + \sigma S\,dW$ is the price process underlying the Black–Scholes formula — the same SDE, log dynamics, and closed form $S_t$ as in *Step 1* of that file appear in **§8** above, together with why GBM is preferred to arithmetic BM for equity levels and portfolios.
 - **[Ornstein–Uhlenbeck Process](../04_stat_arb/ornstein_uhlenbeck.md):** The mean-reverting OU process $dX = \theta(\mu - X)dt + \sigma\,dW$ is another SDE driven by BM, used to model spread dynamics in pairs trading.
 - **[Market Making — Avellaneda–Stoikov](../03_market_making/avellaneda_stoikov.md):** The mid-price in the AS model follows pure BM ($dS = \sigma\,dW$). Calibrating $\sigma$ from empirical data is equivalent to estimating the diffusion coefficient of the Wiener process.
 
