@@ -5,7 +5,7 @@
 
 ## Intuition
 
-Options are nonlinear instruments — their value curves with respect to every input, rather than moving in a straight line. The Greeks measure how the option price responds to small changes in each input, one at a time. Think of them as the "dashboard gauges" of a car: Delta tells you how fast you're going (directional exposure), Gamma tells you how quickly your steering responds (convexity), Theta is fuel consumption (time decay), Vega measures sensitivity to road conditions (volatility), and Rho captures the cost of financing.
+Options are nonlinear instruments — their value curves with respect to every input, rather than moving in a straight line. The Greeks measure how the option price responds to small changes in each input, one at a time. Think of them as the "dashboard gauges" of a car: Delta tells you how fast you're going (directional exposure), Gamma tells you how quickly your steering responds (convexity), Vega measures sensitivity to road conditions (volatility), Theta is fuel consumption (time decay), and Rho captures the cost of financing.
 
 For a trader, the Greeks translate abstract partial derivatives into concrete dollar risks. If your portfolio Delta is +500, a \$1 move in the underlying gains you \$500. If your Gamma is +50, that Delta increases by 50 for every additional dollar move, making gains accelerate (or losses, if you're short gamma). This nonlinearity is what makes options trading fundamentally different from trading the underlying.
 
@@ -71,7 +71,23 @@ $$\boxed{\Delta_{\text{put}} = -N(-d_1)}$$
 
 Since $0 < N(-d_1) < 1$, put Delta is always between $-1$ and $0$.
 
-**Interpretation:** Delta measures the equivalent stock position. A call with $\Delta = 0.6$ behaves like holding 0.6 shares for small price moves. Delta also approximates the probability (under $\mathbb{Q}$) that the option finishes in the money, though this approximation is only exact for digital options.
+**Interpretation — hedge ratio.** Delta is the **first-order sensitivity** to the spot: for a small move $dS$, the option value changes by about $\Delta\,dS$. Equivalently, it is the **number of shares of the underlying** to hold **per one option** (on one share of stock) so that the **combined** option-plus-stock position is insensitive to infinitesimal moves in $S$. That is the sense in which Delta is the **equivalent stock exposure**.
+
+**Delta hedging** is a concrete rule for how many shares to hold against an option for a riskless portfolio (See in **[Delta hedging](#delta-hedging)** below).
+
+**Moneyness (calls, same strike and expiry).** As $S$ moves:
+
+| Region | Roughly | Typical $\Delta_{\text{call}}$ |
+|--------|---------|--------------------------------|
+| Deep OTM | $S \ll K$ | $\Delta \to 0^+$ |
+| ATM | $S \approx K$ | $\Delta$ often around $\tfrac{1}{2}$ (depends on $r$, $\sigma$, $T$) |
+| Deep ITM | $S \gg K$ | $\Delta \to 1^-$ |
+
+For **puts**, $\Delta_{\text{put}} = N(d_1) - 1$: deep ITM puts ($S \ll K$) have $\Delta \to -1$, ATM puts lie in $(-1, 0)$, deep OTM puts have $\Delta \to 0^-$.
+
+**Probability vs. $\Delta$.** The risk-neutral probability that a European **call** expires in the money is
+$$\mathbb{Q}(S_T > K) = N(d_2),$$
+not $N(d_1)$. Since $d_1 = d_2 + \sigma\sqrt{T}$, we have $N(d_1) > N(d_2)$: $\Delta_{\text{call}} = N(d_1)$ is **not** the ITM probability, though it is often confused with it in conversation. Intuitively, $d_1$ encodes the drift adjustment tied to using the **stock** as numeraire in the $S\,N(d_1)$ term of the BS formula. For **deep OTM** or **deep ITM** options, $d_1$ and $d_2$ lie in the same tail of the normal, so $N(d_1)$ and $N(d_2)$ are numerically **close**; **near ATM** the gap is most noticeable. The statement “Delta equals ITM probability under $\mathbb{Q}$” is **exact** for a **digital / cash-or-nothing** call under the same model assumptions, not for a vanilla call.
 
 ### Gamma — $\Gamma = \partial^2 V/\partial S^2 = \partial\Delta/\partial S$
 
@@ -87,7 +103,13 @@ $$\boxed{\Gamma = \frac{n(d_1)}{S\sigma\sqrt{T}} \quad \text{(same for calls and
 
 Gamma is always positive for long options. It is largest when the option is at-the-money ($S \approx K$) and near expiry ($T$ small), because that's when Delta changes most rapidly with the stock price.
 
-**Interpretation:** Gamma is the convexity of the option payoff. High Gamma means your Delta changes rapidly, so you benefit from large moves in either direction. This is why long Gamma positions profit from volatility.
+**Interpretation**: Gamma measures the convexity of the option payoff. High Gamma means your Delta changes rapidly as the stock moves, allowing you to benefit from large swings in either direction.
+
+**Gamma Scalping**: When you are Long Gamma (Γ>0), you profit by constantly re-hedging your Delta.
+- As the stock rises, your Delta increases (becomes "longer"), so you sell shares to return to Delta-neutral.
+-  As the stock falls, your Delta decreases (becomes "shorter"), so you buy shares to return to Delta-neutral.
+
+Result: By "selling high and buying low" through continuous re-balancing, you capture small profits from volatility. This "scalping" offsets the daily cost of holding the option (Theta). For Short Gamma these effects are reversed.
 
 ### Vega — $\mathcal{V} = \partial V/\partial\sigma$
 
@@ -150,6 +172,8 @@ $$\boxed{\Theta_{\text{put}} = -\frac{S\,n(d_1)\,\sigma}{2\sqrt{T}} + rKe^{-rT}N
 For puts, the second term is positive because you earn interest on the strike you will receive. Deep in-the-money puts can have positive total Theta.
 
 **Interpretation:** Theta is "time decay" — the price you pay for holding optionality. At-the-money options have the largest (most negative) Theta because that's where the option value is most sensitive to remaining time.
+- The "Rent" Intuition: Think of Theta as the daily rent you pay to keep your position in the "game of uncertainty"; as the clock ticks toward expiration, the chance of a massive price swing decreases, making the "ticket" less valuable every day.
+- The ATM Sensitivity: Because an ATM option is on the knife-edge of being "in" or "out" of the money, every lost hour of trading significantly reduces the probability of a profitable outcome, causing the price to bleed faster than for options far away from the strike.
 
 ### Rho — $\rho = \partial V/\partial r$
 
@@ -181,19 +205,25 @@ $$\boxed{\rho_{\text{put}} = -KTe^{-rT}N(-d_2)}$$
 
 **Reading the table:** Long options (calls or puts) always have positive Gamma and Vega — you benefit from volatility and large moves. The cost is negative Theta: time works against you. Short options have the mirror image.
 
-## Delta Hedging
+## Delta hedging
 
-### Concept
+**Hedging intuition (the delta-neutral position).** Delta is your **equivalent stock exposure**. That is what makes **delta hedging** a concrete rule for how many shares to hold against an option.
 
-A delta-neutral portfolio has $\Delta_{\text{portfolio}} = 0$, meaning it is locally insensitive to small moves in the underlying. To hedge a short call position with $\Delta_{\text{call}} = 0.6$:
+- **Logic (short one call).** The call’s delta $\Delta = 0.60$ is quoted **to the long holder**. If you have **sold** one call on one share, your option leg has exposure **$-\Delta = -0.60$** share-equivalents. To be **delta-neutral**, hold **$+0.60$ shares** of the stock against that short call.
+
+- **Outcome.** If the stock rises by \$1, you lose roughly \$0.60 on the short call (the call becomes more valuable — your liability increases) but gain \$0.60 on the $0.60$ share position.
+
+- **Result.** To **first order**, the **combined** portfolio value is unchanged for a small spot move. Delta tells you exactly how many shares to trade so that option and stock **offset** for infinitesimal moves in $S$.
+
+**Symmetry (long one call).** Long one call with $\Delta = 0.60$ contributes **$+0.60$** share-equivalents; delta-neutrality means **short $0.60$ shares**. A \$1 rise then gains ~\$0.60 on the call and loses ~\$0.60 on the hedge.
+
+**Scaling to many options.** A delta-neutral portfolio has $\Delta_{\text{portfolio}} = 0$, meaning it is locally insensitive to small moves in the underlying. To hedge a short call position with $\Delta_{\text{call}} = 0.6$:
 
 $$\text{Shares to buy} = \Delta_{\text{call}} \times \text{number of calls sold}$$
 
-If you sold 100 calls, buy 60 shares. The portfolio is now delta-neutral.
+If you sold 100 calls (each on one share), buy 60 shares. Listed options usually have a **contract multiplier** (e.g.\ 100 shares per contract); multiply all share counts by that multiplier.
 
-### Rebalancing
-
-Delta changes as $S$ moves (because of Gamma), so you must rebalance. After $S$ moves by $\delta S$:
+**Rebalancing.** Delta changes as $S$ moves (because of Gamma), so you must rebalance. After $S$ moves by $\delta S$:
 
 $$\Delta_{\text{new}} \approx \Delta_{\text{old}} + \Gamma \cdot \delta S$$
 
@@ -209,15 +239,15 @@ You trade $\Gamma \cdot \delta S$ additional shares to restore neutrality.
 
 In the BS world with continuous trading and no costs, continuous rebalancing is optimal. In practice (and in Prosperity), you rebalance discretely — typically whenever $|\Delta_{\text{portfolio}}|$ exceeds a threshold.
 
-### Discrete hedging P&L
-
-Over one rebalancing interval, the P&L of a delta-hedged short call position is approximately:
+**Discrete hedging P&L.** Over one rebalancing interval, the P&L of a delta-hedged short call position is approximately:
 
 $$\text{P\&L} \approx -\frac{1}{2}\Gamma(\delta S)^2 + \Theta\,\delta t$$
 
 $$= \frac{1}{2}\Gamma\left[\sigma^2 S^2\,\delta t - (\delta S)^2\right]$$
 
 This is the **Gamma-Theta P&L**: you earn Theta but pay whenever realised moves $|\delta S|$ exceed what the implied volatility predicted ($\sigma S\sqrt{\delta t}$).
+
+**Continuous-time derivation.** The portfolio $\Pi = V - \Delta S$ with $\Delta = \partial V/\partial S$ removes the $dW$ term from $d\Pi$; imposing no-arbitrage yields the Black–Scholes PDE — see [Black–Scholes](black_scholes.md), Step 3.
 
 ## Gamma-Theta Tradeoff
 

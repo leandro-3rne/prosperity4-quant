@@ -39,7 +39,7 @@ $$S_t = S_0 \exp\!\bigl((\mu - \tfrac{1}{2}\sigma^2)\,t + \sigma W_t\bigr)$$
 
 ### 2. Options Pricing
 
-Black-Scholes pricing, the Greeks, jump-diffusion extensions, and implied volatility. The BS model derives a closed-form option price by constructing a self-financing delta-hedging portfolio and invoking no-arbitrage. The five Greeks (Delta, Gamma, Vega, Theta, Rho) quantify an option's sensitivity to each input parameter and are essential for risk management. Jump-diffusion (Merton 1976) extends the model to capture fat tails and volatility skew.
+Derivatives (forwards, calls, puts), hedging, Black–Scholes pricing, the Greeks, jump-diffusion extensions, and implied volatility. The starting point is the replication principle: if a derivative's payoff can be synthesised by dynamically trading the underlying, its fair price is the cost of that hedge. Delta-hedging constructs a locally risk-free portfolio and invokes no-arbitrage to derive the BS PDE, whose solution is the closed-form pricing formula. The five Greeks (Delta, Gamma, Vega, Theta, Rho) quantify sensitivity to each input and are the primary risk-management toolkit. Jump-diffusion (Merton 1976) extends the model to capture fat tails and volatility skew.
 
 $$C = S\,N(d_1) - K e^{-rT} N(d_2), \quad d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)\,T}{\sigma\sqrt{T}}$$
 
@@ -88,6 +88,7 @@ prosperity4-quant/
 │   │   ├── ito_calculus.md
 │   │   └── sdes.md
 │   ├── 02_options/
+│   │   ├── derivatives_and_hedging.md
 │   │   ├── black_scholes.md
 │   │   ├── greeks.md
 │   │   ├── jump_diffusion.md

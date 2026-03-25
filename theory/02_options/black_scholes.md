@@ -11,6 +11,10 @@ The model says: in a world with no arbitrage, continuous trading, and log-normal
 
 Financially, $N(d_2)$ is the risk-neutral probability that the call finishes in the money, and $N(d_1)$ is the delta-weighted counterpart. The formula decomposes the call value into "what you receive" ($S\,N(d_1)$) minus "what you pay" ($K e^{-rT} N(d_2)$), each probability-weighted under the appropriate numeraire.
 
+### Hedging Principle
+
+The key step in the derivation is choosing the stock position (delta) so that the stochastic $dW_t$ term cancels in the hedged portfolio. Once randomness is removed, the portfolio is locally riskless and must earn the risk-free rate $r$ — this no-arbitrage condition yields the Black–Scholes PDE. For a broader introduction to derivatives, hedging, and the replication principle, see [Derivatives and Hedging](derivatives_and_hedging.md).
+
 ## Mathematical Setup
 
 ### Symbols and assumptions
@@ -77,6 +81,7 @@ Under $\mathbb{Q}$, the terminal stock price is:
 
 $$S_T = S_0 \exp\!\left[\left(r - \tfrac{1}{2}\sigma^2\right)T + \sigma \widetilde{W}_T\right]$$
 
+
 ### Step 3 — Delta-hedging and the Black–Scholes PDE
 
 Consider a derivative $V(S,t)$ on the stock. We form a self-financing portfolio:
@@ -121,7 +126,7 @@ This is the **Black–Scholes PDE**. Note that $\mu$ does not appear — the dri
 
 ### Step 4 — Reduction to the heat equation
 
-The BS PDE has variable coefficients because of the $S^2$ and $S$ terms. We transform to constant-coefficient form via substitution.
+The BS PDE has variable coefficients in $S$ because $S^2$ and $S$ multiply $\partial^2 V/\partial S^2$ and $\partial V/\partial S$. Substitution 1 ($\tau = T-t$, $x = \ln(S/K)$, $V = Kv$) yields a PDE for $v$ in which the leading term $\tfrac{1}{2}\sigma^2\,\partial^2 v/\partial x^2$ already has constant coefficients, but first-order ($\partial v/\partial x$) and zeroth-order ($-rv$) terms remain — so it is not yet the heat equation. Substitution 2 ($v = e^{\alpha x + \beta\tau}u$ with suitable $\alpha,\beta$) eliminates those lower-order terms and leaves the standard heat equation for $u$. That PDE admits the classical Gaussian fundamental solution; convolving with the transformed terminal payoff and reversing the substitutions gives the closed-form Black–Scholes formula.
 
 **Substitution 1:** Let $\tau = T - t$ (time to expiry, so $\tau = 0$ at expiry) and $x = \ln(S/K)$ (log-moneyness). Define:
 
@@ -324,6 +329,7 @@ print(f"Put-call parity check: C - P = {C - P:.3f}, S - Ke^(-rT) = {S - K*np.exp
 
 ## Connections
 
+- [Derivatives and Hedging](derivatives_and_hedging.md) — Primer on forwards, options, put-call parity, and the replication / no-arbitrage principle that motivates the delta-hedging argument here.
 - [Brownian motion](../01_stochastic/brownian_motion.md) — GBM is the exponential of a drift-adjusted Brownian motion; the quadratic variation of $W_t$ is the reason the $\sigma^2/2$ Itô correction appears.
 - [Greeks](greeks.md) — All Greek letters are partial derivatives of the BS formula; they quantify the sensitivity of $C$ and $P$ to each input.
 - [Implied volatility](implied_volatility.md) — The BS formula is inverted numerically to extract the market's implied $\sigma$ from observed option prices; the fact that implied vol varies with strike reveals the model's limitations.

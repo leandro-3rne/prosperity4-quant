@@ -302,7 +302,57 @@ Crucially, the centre of this band is the **median** $S_0 e^{(\mu-\sigma^2/2)t}$
 
 **When arithmetic BM is still used.** For **log-prices**, **spreads**, or **increments of rates** (in small ranges), modeling with ordinary BM or OU is common — those quantities can be negative or mean-reverting without violating economic signs. The Avellaneda–Stoikov mid-price $dS = \sigma\,dW$ is deliberately arithmetic on the *level* as a local approximation over short horizons; it is not meant as a long-horizon model for strictly positive spot in the same way as GBM.
 
-### 7. Ergodicity
+### 7. Log-Returns
+
+**Definition.** The **log-return** over an interval $[t, t+\Delta t]$ is
+
+$$r_t = \ln\frac{S_{t+\Delta t}}{S_t} = \ln S_{t+\Delta t} - \ln S_t.$$
+
+Under GBM, each log-return is exactly Gaussian:
+
+$$r_t = \left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t + \sigma\,\Delta W_t \;\sim\; \mathcal{N}\!\left(\left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t,\;\sigma^2\Delta t\right).$$
+
+Summing $n$ non-overlapping log-returns over $[0, T]$ gives $\ln(S_T/S_0)$, consistent with the closed-form GBM solution from §6.
+
+**Why log-returns instead of simple returns $\Delta S / S$?**
+
+| Property | Simple return $\Delta S/S$ | Log-return $\ln(S_{t+\Delta}/S_t)$ |
+|---|---|---|
+| Lower bound | $-100\%$ (can't lose more than all) | $-\infty$ (no lower bound by construction) |
+| Distribution under GBM | Approximately normal for small $\Delta t$; exact distribution is more complex | **Exactly** Gaussian for any $\Delta t$ |
+| Aggregation over time | Non-additive: $(1+r_1)(1+r_2)\neq 1+r_1+r_2$ | **Additive**: $\ln(S_T/S_0) = \sum_i r_i$ |
+| Aggregation over assets | Weighted sum gives portfolio return (with weights summing to 1) | No clean closed-form for portfolio of log-returns |
+| Symmetry | A $+10\%$ and $-10\%$ move do not cancel: $1.1 \times 0.9 = 0.99$ | $+r$ and $-r$ cancel exactly: $\ln 1.1 + \ln(1/1.1) = 0$ |
+
+**The four key advantages of log-returns:**
+
+1. **Exact Gaussianity under GBM.** Because $d(\ln S) = (\mu - \sigma^2/2)\,dt + \sigma\,dW$ (the Itô dynamics), the log-return over any finite $\Delta t$ is an exact normal random variable — not an approximation. This makes all calculations with quantiles, tail probabilities, and VaR exact under the model.
+
+2. **Time-additivity.** Multi-period log-returns add: the return from $t=0$ to $t=T$ is simply the sum of daily log-returns. This means you can **fit a single daily $\sigma$** and scale it to any horizon by $\sigma_T = \sigma_{\text{daily}}\sqrt{T}$ — the same rule used to annualise volatility ($\sigma_{\text{annual}} = \sigma_{\text{daily}}\sqrt{252}$).
+
+3. **Stationarity.** Under GBM, log-returns across non-overlapping intervals are **i.i.d.** Gaussian. This is exactly the stationarity needed to estimate $\sigma$ from a historical window of returns and expect the estimate to transfer forward. Levels $S_t$ are non-stationary (they grow with $\mu$); log-returns strip out that trend.
+
+4. **Numerical stability.** Working with $\ln S$ avoids overflow/underflow when prices become very large or very small over long simulations. Summing logs is numerically more stable than multiplying relative changes.
+
+**Annualising volatility.** If $r_{\text{daily}} \sim \mathcal{N}(\mu_d, \sigma_d^2)$ and trading days are independent:
+
+$$\sigma_{\text{annual}} = \sigma_d \sqrt{252}, \qquad \mu_{\text{annual}} = 252\,\mu_d.$$
+
+This square-root-of-time scaling comes directly from the time-additivity of log-returns and is the standard convention in options markets ($T$ in years, $\sigma$ annualised).
+
+**Relationship to the Itô correction.** The drift of $\ln S$ under GBM is $\mu - \sigma^2/2$, not $\mu$. This means:
+
+$$\mathbb{E}[\ln S_T] = \ln S_0 + \left(\mu - \tfrac{\sigma^2}{2}\right)T, \quad \text{whereas} \quad \mathbb{E}[S_T] = S_0 e^{\mu T}.$$
+
+The gap $\sigma^2/2$ is the Itô correction from §6. For a volatile asset, the **typical** path (median) grows slower than the **average** path (mean) — high variance paths that contribute a lot to the mean are rare and upward-skewed. This is the mathematical explanation for why $\ln S$ is the right object to work with when fitting historical data.
+
+**Estimating $\sigma$ from data.** Given observed prices $S_0, S_1, \ldots, S_n$ at equally spaced intervals of length $\Delta t$, compute log-returns $r_i = \ln(S_i/S_{i-1})$ and estimate:
+
+$$\hat{\sigma} = \frac{\text{std}(r_1, \ldots, r_n)}{\sqrt{\Delta t}}, \qquad \hat{\mu} = \frac{\text{mean}(r_1, \ldots, r_n)}{\Delta t} + \frac{\hat{\sigma}^2}{2}.$$
+
+The $\hat{\sigma}^2/2$ correction recovers $\mu$ from the log-return mean (which estimates $\mu - \sigma^2/2$). In practice $\sigma$ is estimated much more reliably than $\mu$ from short samples — volatility converges at rate $1/\sqrt{n}$, while the mean (drift) converges at the much slower rate $1/\sqrt{nT}$ due to the variance growing with $T$.
+
+### 8. Ergodicity
 
 Brownian motion is **not ergodic** in the strict sense — a single infinite path does not reproduce all statistical properties of the ensemble.
 
@@ -317,7 +367,7 @@ The variance $\operatorname{Var}(W_t) = t \to \infty$ means BM has **no stationa
 
 **Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\operatorname{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
 
-### 8. Simulation
+### 9. Simulation
 
 Simulating a Brownian motion path requires nothing beyond the axioms themselves. By **(A3)** and **(A4)**, the increments $\Delta W_k = W_{t_{k+1}} - W_{t_k}$ are independent and $\mathcal{N}(0, \Delta t)$-distributed. Writing $\Delta W_k = \sqrt{\Delta t}\;Z_k$ with $Z_k \sim \mathcal{N}(0,1)$ and summing gives
 
@@ -326,6 +376,84 @@ W_{t_{k+1}} = W_{t_k} + \sqrt{\Delta t}\; Z_k, \qquad Z_k \stackrel{\text{i.i.d.
 $$
 
 This is **exact** — not an approximation — because BM has constant (state-independent) coefficients. The resulting $\Delta W_k$ increments are the same building blocks that feed into the Euler–Maruyama and Milstein discretisation schemes for general SDEs (see [sdes.md](sdes.md), §4–§5).
+
+#### Monte Carlo Simulation
+
+**What it is.** Monte Carlo (MC) simulation is the technique of estimating a quantity — an expectation, a probability, a quantile — by generating a large number $M$ of **independent sample paths** of the process, computing the quantity along each path, and averaging across paths.
+
+The name comes from the Casino de Monte-Carlo; the method was formalised by Ulam and von Neumann in the 1940s for nuclear physics calculations. In quantitative finance it is indispensable wherever closed-form formulas do not exist (path-dependent options, multi-asset baskets, stochastic-vol models).
+
+**The three-step recipe:**
+
+1. **Generate** $M$ independent paths $W^{(1)}, W^{(2)}, \ldots, W^{(M)}$ using the exact BM discretisation above (or GBM paths via $S_t^{(m)} = S_0 \exp[(\mu - \sigma^2/2)t + \sigma W_t^{(m)}]$).
+2. **Evaluate** the payoff or statistic of interest $f(W^{(m)})$ on each path independently.
+3. **Average** the results:
+
+$$\hat{I}_M = \frac{1}{M}\sum_{m=1}^{M} f(W^{(m)}) \;\xrightarrow{M\to\infty}\; \mathbb{E}[f(W)].$$
+
+By the **law of large numbers**, $\hat{I}_M \to \mathbb{E}[f(W)]$ almost surely as $M \to \infty$. By the **central limit theorem**, the error is
+
+$$\hat{I}_M - \mathbb{E}[f(W)] \;\approx\; \mathcal{N}\!\left(0,\;\frac{\operatorname{Var}(f(W))}{M}\right),$$
+
+so the **standard error** decays as $\sigma_f / \sqrt{M}$. Doubling accuracy requires **quadrupling** the number of paths — the famous $\sqrt{M}$ convergence rate, independent of dimension. This dimension-independence makes MC uniquely powerful for high-dimensional problems (many assets, many time steps) where grid-based methods are infeasible.
+
+**Confidence interval.** A 95% MC confidence interval for $\mathbb{E}[f(W)]$ is
+
+$$\hat{I}_M \;\pm\; 1.96\,\frac{\hat{\sigma}_f}{\sqrt{M}},$$
+
+where $\hat{\sigma}_f = \text{std}(f(W^{(1)}),\ldots,f(W^{(M)}))$ is the sample standard deviation of the payoffs.
+
+**Applying MC to GBM paths.** To simulate $M$ GBM paths of $S_t$ at times $0 = t_0 < t_1 < \cdots < t_n = T$:
+
+$$S_{t_{k+1}}^{(m)} = S_{t_k}^{(m)} \exp\!\left[\left(\mu - \tfrac{\sigma^2}{2}\right)\Delta t + \sigma\sqrt{\Delta t}\;Z_{k}^{(m)}\right], \qquad Z_k^{(m)} \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).$$
+
+For **European option pricing**, set $\mu = r$ (risk-neutral measure), evaluate payoffs $\max(S_T^{(m)} - K, 0)$, discount and average:
+
+$$\hat{C} = e^{-rT}\,\frac{1}{M}\sum_{m=1}^{M}\max\!\left(S_T^{(m)} - K,\;0\right).$$
+
+For large $M$ this recovers the Black–Scholes formula numerically (it provides an independent cross-check).
+
+**Variance reduction.** Because accuracy scales as $1/\sqrt{M}$, reducing $\operatorname{Var}(f(W))$ gives the same accuracy with fewer paths. Common techniques:
+
+| Technique | Idea | Typical speedup |
+|-----------|------|-----------------|
+| **Antithetic variates** | For each $Z_k$, also use $-Z_k$; the two payoffs are negatively correlated, reducing variance | $2\times$ to $10\times$ |
+| **Control variates** | Subtract a related quantity with known mean (e.g. use the underlying stock as a control for a call) | $2\times$ to $100\times$ |
+| **Quasi-Monte Carlo** | Replace i.i.d. normals with low-discrepancy sequences (Sobol, Halton); convergence improves to $O((\ln M)^d / M)$ | $10\times$ to $1000\times$ in low dimensions |
+
+**Example: estimating the terminal distribution of GBM.** Below, $M = 10\,000$ paths verify that $\ln(S_T/S_0) \sim \mathcal{N}((\mu-\sigma^2/2)T, \sigma^2 T)$ and the MC call-price estimate matches the BS formula.
+
+```python
+import numpy as np
+from scipy.stats import norm
+
+rng = np.random.default_rng(42)
+
+S0, mu, sigma, T, r, K = 100.0, 0.08, 0.20, 1.0, 0.05, 105.0
+M, n = 100_000, 252
+dt = T / n
+
+# Generate GBM paths (log-return step)
+Z = rng.standard_normal((M, n))
+log_increments = (mu - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * Z
+log_S = np.log(S0) + np.cumsum(log_increments, axis=1)   # shape (M, n)
+S_T = np.exp(log_S[:, -1])                                # terminal prices
+
+# Monte Carlo call price (risk-neutral: replace mu with r)
+Z_rn = rng.standard_normal((M, n))
+log_rn = (r - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * Z_rn
+S_T_rn = S0 * np.exp(np.sum(log_rn, axis=1))
+mc_call = np.exp(-r * T) * np.mean(np.maximum(S_T_rn - K, 0))
+
+# Black-Scholes call for comparison
+d1 = (np.log(S0 / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
+d2 = d1 - sigma * np.sqrt(T)
+bs_call = S0 * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+
+print(f"MC call price:  {mc_call:.4f}")
+print(f"BS call price:  {bs_call:.4f}")
+print(f"MC std error:   {np.exp(-r*T) * np.std(np.maximum(S_T_rn-K,0)) / np.sqrt(M):.4f}")
+```
 
 ## Key Parameters
 
@@ -384,7 +512,7 @@ The quadratic variations are all within $\pm 0.002$ of the theoretical value $1.
 
 - **[Itô Calculus](ito_calculus.md):** The Itô multiplication table is proved via quadratic variation and is the foundation for Itô's Lemma. The non-zero $(dW)^2 = dt$ term is exactly why stochastic calculus differs from ordinary calculus.
 - **[Stochastic Differential Equations](sdes.md):** Every SDE in this repository ($dX = a\,dt + b\,dW$) uses Brownian motion as its driving noise. The simulation algorithm above generates the $\Delta W$ increments fed into Euler–Maruyama and Milstein schemes.
-- **[Black–Scholes](../02_options/black_scholes.md):** Geometric Brownian Motion $dS = \mu S\,dt + \sigma S\,dW$ is the price process underlying the Black–Scholes formula — the same SDE, log dynamics, and closed form $S_t$ as in *Step 1* of that file appear in **§8** above, together with why GBM is preferred to arithmetic BM for equity levels and portfolios.
+- **[Black–Scholes](../02_options/black_scholes.md):** Geometric Brownian Motion $dS = \mu S\,dt + \sigma S\,dW$ is the price process underlying the Black–Scholes formula — the same SDE, log dynamics, and closed form $S_t$ as in *Step 1* of that file appear in **§6** above, together with why GBM is preferred to arithmetic BM for equity levels and portfolios. Log-returns (§7) are the natural empirical counterpart used to estimate $\sigma$ and verify the Gaussian assumption.
 - **[Ornstein–Uhlenbeck Process](../04_stat_arb/ornstein_uhlenbeck.md):** The mean-reverting OU process $dX = \theta(\mu - X)dt + \sigma\,dW$ is another SDE driven by BM, used to model spread dynamics in pairs trading.
 - **[Market Making — Avellaneda–Stoikov](../03_market_making/avellaneda_stoikov.md):** The mid-price in the AS model follows pure BM ($dS = \sigma\,dW$). Calibrating $\sigma$ from empirical data is equivalent to estimating the diffusion coefficient of the Wiener process.
 
