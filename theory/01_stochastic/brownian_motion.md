@@ -334,7 +334,7 @@ Summing $n$ non-overlapping log-returns over $[0, T]$ gives $\ln(S_T/S_0)$, cons
 
 4. **Numerical stability.** Working with $\ln S$ avoids overflow/underflow when prices become very large or very small over long simulations. Summing logs is numerically more stable than multiplying relative changes.
 
-**Annualising volatility.** If $r_{\text{daily}} \sim \mathcal{N}(\mu_d, \sigma_d^2)$ and trading days are independent:
+**Annualising volatility.** If $r_{\text{daily}} \sim \mathcal{N}(\mu_d, \sigma_d^2)$ and trading days are independent (there are 252 trading days):
 
 $$\sigma_{\text{annual}} = \sigma_d \sqrt{252}, \qquad \mu_{\text{annual}} = 252\,\mu_d.$$
 

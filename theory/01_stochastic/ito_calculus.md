@@ -32,31 +32,33 @@ For a trader, Itô calculus is the bridge between a model for price dynamics ($d
 
 ### 1. Why the Classical Chain Rule Fails for Brownian Motion
 
-Consider a twice-differentiable function $f(x)$ and a smooth deterministic path $x(t)$. Taylor's theorem gives:
+**The core question.** We have a stochastic process $X_t$ and a function $f$. We want to know how $f(X_t)$ evolves — i.e., what is $\Delta f = f(X_{t+\Delta t}) - f(X_t)$? This is exactly the same question as in ordinary calculus: "how does $f$ change when its argument changes by $\Delta x$?" The natural tool is the **Taylor expansion** of $\Delta f$:
 
 $$
-f(x + \Delta x) = f(x) + f'(x)\,\Delta x + \frac{1}{2}f''(x)\,(\Delta x)^2 + O(|\Delta x|^3).
+\Delta f = f(x + \Delta x) - f(x) = f'(x)\,\Delta x + \frac{1}{2}f''(x)\,(\Delta x)^2 + O(|\Delta x|^3).
 $$
 
-For a smooth function, $\Delta x = O(\Delta t)$, so $(\Delta x)^2 = O((\Delta t)^2)$, which is negligible compared to $\Delta x = O(\Delta t)$. Only the first-order term survives:
+For a **smooth deterministic** path, $\Delta x = O(\Delta t)$, so $(\Delta x)^2 = O((\Delta t)^2)$, which is negligible. Only the first-order term survives:
 
 $$
 df = f'(x)\,dx. \qquad \text{(ordinary chain rule)}
 $$
 
-Now replace $x(t)$ with $W_t$. Over an interval of length $\Delta t$:
+**Why this breaks for Brownian motion.** Now replace $x(t)$ with $W_t$. Over an interval of length $\Delta t$:
 
 $$
 \Delta W = W_{t+\Delta t} - W_t \sim \mathcal{N}(0, \Delta t),
 $$
 
-so $\Delta W = O(\sqrt{\Delta t})$ in the sense that $\mathbb{E}[(\Delta W)^2] = \Delta t$. The second-order term becomes:
+so $\Delta W = O(\sqrt{\Delta t})$. The second-order Taylor term is:
 
 $$
 \frac{1}{2}f''(W_t)(\Delta W)^2 = O(\Delta t),
 $$
 
 which is the **same order** as the first-order term $f'(W_t)\Delta W = O(\sqrt{\Delta t})$. In fact, $(\Delta W)^2 \to \Delta t$ deterministically (quadratic variation), so this term contributes a non-random drift of $\frac{1}{2}f''(W_t)\,dt$ that cannot be discarded.
+
+**Summary.** The Taylor expansion of $\Delta f = f(X_{t+\Delta t}) - f(X_t)$ is the same starting point as in classical calculus — the only difference is that for Brownian motion the second-order term $\frac{1}{2}f''(\Delta X)^2$ does **not** vanish, because $(\Delta W)^2 \sim \Delta t$ rather than $(\Delta t)^2$. The motivation for this route is that $W$ is **not differentiable**, so you cannot form $dW$ as an ordinary derivative of a smooth function; instead you work directly with the **increments** $\Delta W$. Itô's Lemma is the result of keeping that extra term in the increment-based expansion.
 
 **The Itô Multiplication Table**
 
@@ -196,6 +198,8 @@ we want the dynamics of $Y_t = \ln S_t$.
 
 So the strategic goal of the derivation is: "transform GBM into arithmetic BM in log-space."
 
+**How.** We apply the same Taylor-expansion logic from §1: write $\Delta(\ln S) = \ln(S+\Delta S) - \ln S$, expand via Itô's Lemma keeping the second-order term (since $(\Delta S)^2$ contains $(\Delta W)^2 = dt$), and integrate. The $-\sigma^2/2$ correction is exactly the second-order term that would vanish in ordinary calculus but survives here.
+
 **Step 1 — Identify the function and its derivatives.**
 
 Set $f(S) = \ln S$. Then:
@@ -258,7 +262,9 @@ $$
 \boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}
 $$
 
-**Where does the $-\sigma^2/2$ come from?** It is entirely due to the second-derivative (Itô correction) term $\frac{1}{2}f''(S)(dS)^2 = -\frac{1}{2}\sigma^2\,dt$. Because $f(S) = \ln S$ is concave ($f'' < 0$), the stochastic fluctuations systematically reduce the growth rate of the logarithm relative to the arithmetic growth rate $\mu$. In financial terms, the *median* path of GBM grows at rate $\mu - \sigma^2/2$ (the geometric mean return) while the *expected* path grows at rate $\mu$ (the arithmetic mean return). This wedge is the "volatility drag" that erodes compounded returns.
+**Where does the $-\sigma^2/2$ come from?** It is entirely due to the second-derivative (Itô correction) term $\frac{1}{2}f''(S)(dS)^2 = -\frac{1}{2}\sigma^2\,dt$. Because $f(S) = \ln S$ is concave ($f'' < 0$), the stochastic fluctuations systematically reduce the growth rate of the logarithm relative to the arithmetic growth rate $\mu$. In financial terms, the *median* path of GBM grows at rate $\mu - \sigma^2/2$ (the geometric mean return) while the *expected* path grows at rate $\mu$ (the arithmetic mean return). This wedge is the "volatility drag" that erodes compounded returns, also known as Jensen's Inequality.
+
+**Intuition (why this can happen even if $\mathbb{E}[W_t]=0$).** A mean-zero Brownian shock means “up and down moves are equally likely” in an additive sense, but prices compound multiplicatively. A +10% move followed by a -10% move does **not** bring you back: $100 \to 110 \to 99$, a net loss of 1%. That is exactly what the Itô correction captures: random volatility lowers the typical (median) compounded growth rate even when the noise has zero mean.
 
 ### 5. The Itô Integral — Definition as an $L^2$ Limit
 

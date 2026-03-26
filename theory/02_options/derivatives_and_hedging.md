@@ -96,7 +96,6 @@ If the fair value differs from the market price, you buy the cheap version, sell
 **Dynamic hedging:** Continuously rebalance a portfolio of the underlying and cash so that the portfolio tracks the option value at every instant. This is the Black–Scholes approach: the key assumption is that you can trade **continuously** and **without transaction costs**.
 
 Dynamic hedging is more powerful (can replicate any smooth payoff) but requires a model for price dynamics (typically GBM) and is costly in practice due to transaction costs and discrete rebalancing.
-
 The standard implementation is **delta hedging**: how many shares to hold against an option so the book is locally neutral to small moves in $S$, how to rebalance as Gamma moves Delta, and what P&L discrete hedging generates. See [greeks.md — Delta hedging](greeks.md#delta-hedging). The continuous-time argument $\Pi = V - \Delta S$ with $\Delta = \partial V/\partial S$ that removes the Brownian term and yields the **Black–Scholes PDE** is in [Black–Scholes](black_scholes.md), Step 3.
 
 ## Connections
