@@ -9,7 +9,9 @@ The Black–Scholes model assumes stock prices move smoothly — no gaps, no sud
 
 Robert Merton's 1976 model addresses this by layering a Poisson jump process on top of the standard GBM diffusion. Between jumps, the stock moves continuously via Brownian motion. At random Poisson arrival times, the stock price multiplies by a random factor $J$ (which can be greater or less than 1). The result: most of the time the price behaves normally, but occasionally it makes a large discrete move — exactly the behaviour we observe empirically.
 
-The financial consequence is dramatic for option pricing. Jump risk makes out-of-the-money puts more valuable than BS predicts (because crashes are more likely), generating the **volatility skew** seen in real markets. It also makes near-expiry options more valuable, because a jump can push them from worthless to deep in-the-money in an instant. The Merton model was the first rigorous framework to explain these phenomena.
+The financial consequence is dramatic for option pricing. Jump risk makes out-of-the-money puts more valuable than BS predicts (because crashes are more likely), generating the **volatility smile** — the strike-dependence of implied volatility. The shape of this smile depends on the mean jump direction $\mu_J$: symmetric jumps ($\mu_J = 0$) produce a symmetric U-shaped smile, while downward-biased jumps ($\mu_J < 0$, as is realistic for equities) skew it to the left, producing the **volatility skew** observed in real markets. The smile is also more pronounced at short maturities, where jumps dominate; at longer horizons the diffusive component takes over and the smile flattens. It also makes near-expiry options more valuable, because a jump can push them from worthless to deep in-the-money in an instant. The Merton model was the first rigorous framework to explain these phenomena.
+
+In practice, implied volatility (IV) — the value of $\sigma$ that equates the BS formula to the observed market price — serves as the market's common language for quoting options. IV is always backed out using Black–Scholes, not Merton; Merton instead explains *why* IV is strike-dependent in the first place. For daily pricing and trading, practitioners use BS+IV directly, reading parameters from market prices without any estimation. Merton and related models are reserved for risk management, exotic option pricing, and understanding the deeper structure of the smile.
 
 ## Mathematical Setup
 
@@ -175,21 +177,27 @@ $$C_{\text{Merton}} \approx \text{Term}_0 + \text{Term}_1 + \text{Term}_2 + \ldo
 
 ### Step 7 — Comparison to Black–Scholes
 
-When $\lambda = 0$ (no jumps), the Merton formula reduces exactly to BS: only the $n=0$ term survives with $\lambda' = 0$, $r_0 = r$, $\sigma_0 = \sigma$.
+When $\lambda = 0$ (no jumps), the Merton formula reduces exactly to BS: only the $n=0$ term survives, with $\lambda' = 0$, $r_0 = r$, $\sigma_0 = \sigma$.
 
-When $\lambda > 0$, the key differences are:
+When $\lambda > 0$, four key differences emerge:
 
-1. **Fat tails:** The mixture of normals (different $\sigma_n$ for each $n$) produces heavier tails than a single normal. Large moves become more probable.
+**1. Fat tails**
 
-2. **Volatility skew:** OTM puts become more expensive relative to BS. For downward jumps ($\mu_J < 0$), the left tail is fatter, increasing the implied vol for low strikes — the classic equity skew.
+The total distribution is a mixture of normals — one per possible jump count $n$, each with a different width $\sigma_n$. Even rare scenarios (e.g. $n=5$ jumps) stretch the tails far outward. The result: large moves are more probable than under pure GBM. The excess kurtosis is always positive:
 
-3. **Term structure of implied vol:** Near-expiry options are most affected by jumps (a jump can move the option from OTM to ITM in one step), so short-dated implied vol is elevated relative to BS. Long-dated options are less affected because diffusion dominates over long horizons.
+$$\kappa_{\text{excess}} = \frac{\lambda T(\sigma_J^4 + 4\sigma_J^2\mu_J^2 + \mu_J^4 + 6\sigma_J^4)}{(\sigma^2 T + \lambda T(\sigma_J^2 + \mu_J^2))^2} > 0$$
 
-4. **Kurtosis:** The excess kurtosis of Merton log-returns over $[0,T]$ is:
+**2. Volatility skew**
 
-$$\kappa_{\text{excess}} = \frac{\lambda T(\sigma_J^4 + 4\sigma_J^2\mu_J^2 + \mu_J^4 + 6\sigma_J^4)}{(\sigma^2 T + \lambda T(\sigma_J^2 + \mu_J^2))^2}$$
+OTM puts become more expensive relative to BS. The reason: for downward jumps ($\mu_J < 0$), the mixture distribution has more mass in the left tail — i.e. a higher probability of large losses. Pricing OTM puts requires accounting for this, which shows up as elevated implied volatility at low strikes. This is the classic equity skew that BS cannot structurally produce.
 
-   which is always positive, confirming fatter tails than GBM.
+**3. Term structure of implied volatility**
+
+Short-dated options are more affected by jumps than long-dated ones. Why? At short maturities $T$, a single jump is enough to push an OTM option into the money — the jump component dominates. At long maturities, the jump effect averages out over time and diffusion $\sigma\sqrt{T}$ takes over. Merton therefore produces a downward-sloping implied vol curve across maturities, whereas BS produces a flat implied vol for all $T$.
+
+**4. Limiting case $\lambda \to 0$**
+
+As the jump rate goes to zero, all terms with $n \geq 1$ vanish (Poisson weights $\to 0$), and the formula collapses cleanly to the pure BS price. Merton is therefore a genuine extension of BS, not a separate model.
 
 ## Key Parameters
 
@@ -299,7 +307,7 @@ print(f"Difference  = {C_merton - C_bs:.3f}")
 
 In Prosperity 4, price dynamics often exhibit jumps — sudden shifts when other bots execute large orders, or when information arrives between rounds. The Merton model is directly applicable in several ways:
 
-- **Calibrating jump parameters:** From historical round data, estimate $\lambda$ (count the number of price moves exceeding 3$\sigma$), $\mu_J$ and $\sigma_J$ (fit a normal distribution to the log-sizes of those jumps), and $\sigma$ (from the remaining continuous returns after removing jumps). Use a simple threshold rule: classify any return $|r_t| > 3\sigma_{\text{diffusive}}$ as a jump.
+- **Calibrating jump parameters:** From historical round data, estimate $\lambda$ (count the number of price moves exceeding $3\sigma$), $\mu_J$ and $\sigma_J$ (fit a normal distribution to the log-sizes of those jumps), and $\sigma$ (from the remaining continuous returns after removing jumps). Use a simple threshold rule: classify any return $|r_t| > 3\sigma_{\text{diffusive}}$ as a jump.
 - **Option pricing with jumps:** If the competition includes option-like instruments, the Merton model gives more accurate fair values than BS, especially for OTM puts. Quoting OTM puts at BS prices when jumps are present means you are systematically under-pricing crash risk.
 - **Risk management:** The expected loss from a jump event is $\lambda \cdot \mathbb{E}[|J-1|] \cdot |q| \cdot S$ per unit time, where $q$ is your inventory. If this exceeds your risk budget, reduce position size regardless of what the continuous-time model suggests.
 - **Spread widening:** When jump risk is high (e.g., volatile periods in the competition), widen your bid-ask spread to compensate for the possibility that the price jumps through your quote before you can cancel it. The extra spread should be approximately $\lambda\,\mathbb{E}[|J-1|]\,S\,\Delta t$, where $\Delta t$ is your cancel latency.
