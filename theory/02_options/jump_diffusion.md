@@ -5,7 +5,7 @@
 
 ## Intuition
 
-The Black–Scholes model assumes stock prices move smoothly — no gaps, no sudden crashes. But real markets are full of jumps: earnings surprises, central bank announcements, geopolitical shocks, or in the context of Prosperity, sudden large orders that move the price instantaneously. When you look at the histogram of real stock returns, the tails are fatter than a normal distribution predicts. There are far more extreme moves than GBM allows.
+The Black–Scholes model assumes stock prices move smoothly — no gaps, no sudden crashes. But real markets are full of jumps: earnings surprises, central bank announcements, geopolitical shocks, or in the context of Prosperity, sudden large orders that move the price instantaneously. A particularly clean empirical source of jumps are overnight and weekend gaps: markets close, news arrives, and when trading resumes the price opens at a discrete step away from yesterday's close — a discontinuity that GBM cannot produce by construction. When you look at the histogram of real stock returns, the tails are fatter than a normal distribution predicts. There are far more extreme moves than GBM allows.
 
 Robert Merton's 1976 model addresses this by layering a Poisson jump process on top of the standard GBM diffusion. Between jumps, the stock moves continuously via Brownian motion. At random Poisson arrival times, the stock price multiplies by a random factor $J$ (which can be greater or less than 1). The result: most of the time the price behaves normally, but occasionally it makes a large discrete move — exactly the behaviour we observe empirically.
 

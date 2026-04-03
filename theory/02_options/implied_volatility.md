@@ -41,7 +41,7 @@ $$\max(S - Ke^{-rT}, 0) < C_{\text{market}} < S$$
 
 there exists a **unique** $\sigma_{\text{impl}} > 0$ solving the equation. If $C_{\text{market}}$ falls outside this range, the price violates no-arbitrage bounds and no implied vol exists.
 
-Because of the Put-Call-Parity, The IV found applies for **call** and **put** options with the same strike and maturity.
+Because of the Put-Call Parity, the IV found applies for **call** and **put** options with the same strike and maturity.
 
 ### Symbols
 

@@ -181,7 +181,7 @@ where $\mathbb{E}[|x|]$ is the expected absolute order size. This connects Kyle'
 
 **Empirical estimation:** regress price changes on signed order flow:
 
-$$\Delta S_t = \lambda \, x_t + \varepsilon_t$$
+$$\Delta S_t = \hat{\lambda} \, x_t + \varepsilon_t$$
 
 The slope coefficient $\hat{\lambda}$ estimates Kyle's lambda. Higher $\hat{\lambda}$ indicates a less liquid market with more informational content in order flow.
 
