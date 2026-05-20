@@ -12,7 +12,7 @@ The model is not perfect — real markets exhibit jumps, heavy tails, and volati
 
 ## Mathematical Setup
 
-We work on a filtered probability space $(\Omega, \mathcal{F}, \{\mathcal{F}_t\}_{t \ge 0}, \mathbb{P})$ satisfying the usual conditions (right-continuity and completeness).
+We work on a filtered probability space $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t \ge 0}, \mathbb{P})$ satisfying the usual conditions (right-continuity and completeness).
 
 **Symbols used throughout:**
 
@@ -54,7 +54,7 @@ $$
 
 These four properties uniquely characterise the law of the process (Lévy's characterisation gives an equivalent formulation via the martingale property and quadratic variation).
 
-### 2. Proof that $\operatorname{Var}(W_t) = t$
+### 2. Proof that $\mathrm{Var}(W_t) = t$
 
 Fix $t > 0$ and partition $[0, t]$ into $n$ equal sub-intervals of length $\Delta t = t/n$. Define
 
@@ -65,15 +65,15 @@ $$
 By **(A4)**, each increment satisfies $\Delta W_k \sim \mathcal{N}(0, \Delta t)$, so
 
 $$
-\mathbb{E}[\Delta W_k] = 0, \qquad \operatorname{Var}(\Delta W_k) = \Delta t.
+\mathbb{E}[\Delta W_k] = 0, \qquad \mathrm{Var}(\Delta W_k) = \Delta t.
 $$
 
-For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is deterministic given the path, so $\mathbb{E}[\Delta f_k] = \Delta f_k$ and $\operatorname{Var}(\Delta f_k) = 0$.
+For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is deterministic given the path, so $\mathbb{E}[\Delta f_k] = \Delta f_k$ and $\mathrm{Var}(\Delta f_k) = 0$.
 
 By **(A3)**, the increments are independent, so variances add:
 
 $$
-\operatorname{Var}(W_t) = \operatorname{Var}\left(\sum_{k=0}^{n-1} \Delta W_k\right) = \sum_{k=0}^{n-1} \operatorname{Var}(\Delta W_k) = \sum_{k=0}^{n-1} \Delta t = n \cdot \frac{t}{n} = t.
+\mathrm{Var}(W_t) = \mathrm{Var}\left(\sum_{k=0}^{n-1} \Delta W_k\right) = \sum_{k=0}^{n-1} \mathrm{Var}(\Delta W_k) = \sum_{k=0}^{n-1} \Delta t = n \cdot \frac{t}{n} = t.
 $$
 
 Since $W_t$ is the sum of $n$ independent Gaussians, it is itself Gaussian with mean zero:
@@ -99,7 +99,7 @@ $$
 Since $\Delta W_i \sim \mathcal{N}(0, \Delta t_i)$, we have
 
 $$
-\mathbb{E}[(\Delta W_i)^2] = \operatorname{Var}(\Delta W_i) + (\mathbb{E}[\Delta W_i])^2 = \Delta t_i + 0 = \Delta t_i.
+\mathbb{E}[(\Delta W_i)^2] = \mathrm{Var}(\Delta W_i) + (\mathbb{E}[\Delta W_i])^2 = \Delta t_i + 0 = \Delta t_i.
 $$
 
 This is the critical departure from classical calculus: for a smooth function $(\Delta f)^2 \sim (\Delta t)^2$ vanishes to second order, but for BM $(\Delta W)^2 \sim \Delta t$ survives to first order — the seed of Itô's Lemma. For more details, see [ito_calculus.md](ito_calculus.md).
@@ -117,13 +117,13 @@ So $Q_n$ is an unbiased estimator of $T$.
 For $X \sim \mathcal{N}(0, \sigma^2)$, the fourth moment is $\mathbb{E}[X^4] = 3\sigma^4$, so
 
 $$
-\operatorname{Var}(X^2) = \mathbb{E}[X^4] - (\mathbb{E}[X^2])^2 = 3\sigma^4 - \sigma^4 = 2\sigma^4.
+\mathrm{Var}(X^2) = \mathbb{E}[X^4] - (\mathbb{E}[X^2])^2 = 3\sigma^4 - \sigma^4 = 2\sigma^4.
 $$
 
 Applying this with $\sigma^2 = \Delta t_i$:
 
 $$
-\operatorname{Var}\bigl((\Delta W_i)^2\bigr) = 2(\Delta t_i)^2.
+\mathrm{Var}\bigl((\Delta W_i)^2\bigr) = 2(\Delta t_i)^2.
 $$
 
 **Step 3 — Variance of the sum.**
@@ -131,7 +131,7 @@ $$
 Because increments over non-overlapping intervals are independent, the squared increments $(\Delta W_i)^2$ are also independent. Therefore
 
 $$
-\operatorname{Var}(Q_n) = \sum_{i=0}^{n-1} \operatorname{Var}\bigl((\Delta W_i)^2\bigr) = \sum_{i=0}^{n-1} 2(\Delta t_i)^2.
+\mathrm{Var}(Q_n) = \sum_{i=0}^{n-1} \mathrm{Var}\bigl((\Delta W_i)^2\bigr) = \sum_{i=0}^{n-1} 2(\Delta t_i)^2.
 $$
 
 **Step 4 — Bounding the sum.**
@@ -143,7 +143,7 @@ $$
 **Step 5 — $L^2$ convergence.**
 
 $$
-\mathbb{E}\bigl[(Q_n - T)^2\bigr] = \operatorname{Var}(Q_n) + \bigl(\mathbb{E}[Q_n] - T\bigr)^2 = \operatorname{Var}(Q_n) + 0  \le  2\|\Pi_n\| T  \xrightarrow{\|\Pi_n\|\to 0}  0.
+\mathbb{E}\bigl[(Q_n - T)^2\bigr] = \mathrm{Var}(Q_n) + \bigl(\mathbb{E}[Q_n] - T\bigr)^2 = \mathrm{Var}(Q_n) + 0  \le  2\|\Pi_n\| T  \xrightarrow{\|\Pi_n\|\to 0}  0.
 $$
 
 Therefore $Q_n \to T$ in $L^2$ (mean-square), and hence also in probability. With a finer argument (Borel–Cantelli along dyadic partitions) the convergence holds almost surely:
@@ -273,7 +273,7 @@ The full step-by-step derivation (including where the Itô correction $-\sigma^2
 So $\ln S_t$ is **arithmetic** Brownian motion with drift $\mu - \sigma^2/2$ and volatility $\sigma$; equivalently, $S_t$ is **log-normal**. Expectation and median differ:
 
 $$
-\mathbb{E}[S_t] = S_0 e^{\mu t}, \qquad \operatorname{median}(S_t) = S_0 e^{(\mu - \sigma^2/2)t}.
+\mathbb{E}[S_t] = S_0 e^{\mu t}, \qquad \mathrm{median}(S_t) = S_0 e^{(\mu - \sigma^2/2)t}.
 $$
 
 The factor $e^{-\sigma^2 t/2}$ in the median is the same Itô correction that appears in the log dynamics above.
@@ -361,13 +361,13 @@ Brownian motion is **not ergodic** in the strict sense — a single infinite pat
 The key distinction:
 
 - **Ensemble average:** Fix time $t$, average over many independent paths:
-  $\mathbb{E}[W_t] = 0$, $\operatorname{Var}(W_t) = t$.
+  $\mathbb{E}[W_t] = 0$, $\mathrm{Var}(W_t) = t$.
 - **Time average:** Follow one path and average over time:
   $\frac{1}{T}\int_0^T W_t dt  \xrightarrow{T\to\infty}  0$, but the *variance* keeps growing — the path drifts without bound.
 
-The variance $\operatorname{Var}(W_t) = t \to \infty$ means BM has **no stationary distribution**. A process needs a stationary distribution to be ergodic (time averages $=$ ensemble averages), and BM simply never settles into one.
+The variance $\mathrm{Var}(W_t) = t \to \infty$ means BM has **no stationary distribution**. A process needs a stationary distribution to be ergodic (time averages $=$ ensemble averages), and BM simply never settles into one.
 
-**Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\operatorname{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
+**Practical consequence.** You cannot estimate $\mathbb{E}[W_t]$ or $\mathrm{Var}(W_t)$ by observing one long path of BM — you need either many paths or a model with stationarity (e.g. log-returns rather than the price level itself).
 
 ### 9. Simulation
 
@@ -395,7 +395,7 @@ $$\hat{I}_M = \frac{1}{M}\sum_{m=1}^{M} f(W^{(m)})  \xrightarrow{M\to\infty}  \m
 
 By the **law of large numbers**, $\hat{I}_M \to \mathbb{E}[f(W)]$ almost surely as $M \to \infty$. By the **central limit theorem**, the error is
 
-$$\hat{I}_M - \mathbb{E}[f(W)]  \approx  \mathcal{N}\left(0, \frac{\operatorname{Var}(f(W))}{M}\right)$$
+$$\hat{I}_M - \mathbb{E}[f(W)]  \approx  \mathcal{N}\left(0, \frac{\mathrm{Var}(f(W))}{M}\right)$$
 
 so the **standard error** decays as $\sigma_f / \sqrt{M}$. Doubling accuracy requires **quadrupling** the number of paths — the famous $\sqrt{M}$ convergence rate, independent of dimension. This dimension-independence makes MC uniquely powerful for high-dimensional problems (many assets, many time steps) where grid-based methods are infeasible.
 
@@ -415,7 +415,7 @@ $$\hat{C} = e^{-rT} \frac{1}{M}\sum_{m=1}^{M}\max\left(S_T^{(m)} - K, 0\right).$
 
 For large $M$ this recovers the Black–Scholes formula numerically (it provides an independent cross-check).
 
-**Variance reduction.** Because accuracy scales as $1/\sqrt{M}$, reducing $\operatorname{Var}(f(W))$ gives the same accuracy with fewer paths. Common techniques:
+**Variance reduction.** Because accuracy scales as $1/\sqrt{M}$, reducing $\mathrm{Var}(f(W))$ gives the same accuracy with fewer paths. Common techniques:
 
 | Technique | Idea | Typical speedup |
 |-----------|------|-----------------|

@@ -12,7 +12,7 @@ The challenge is that SDEs cannot generally be solved in closed form. We therefo
 
 ## Mathematical Setup
 
-**Probability space.** $(\Omega, \mathcal{F}, \{\mathcal{F}_t\}_{t \ge 0}, \mathbb{P})$ carrying a standard Wiener process $W_t$, with the filtration $\{\mathcal{F}_t\}$ satisfying the usual conditions.
+**Probability space.** $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t \ge 0}, \mathbb{P})$ carrying a standard Wiener process $W_t$, with the filtration $(\mathcal{F}_t)$ satisfying the usual conditions.
 
 **Symbols:**
 
@@ -288,7 +288,7 @@ For the full step-by-step Itô derivation (and why the $\ln$ ansatz removes the 
 - $S_t > 0$ almost surely; log-returns $\ln(S_t/S_0) \sim \mathcal{N}((\mu - \sigma^2/2)t, \sigma^2 t)$.
 - $\mathbb{E}[S_t] = S_0 e^{\mu t}$, driven by the MGF of the Gaussian: $\mathbb{E}[e^{\sigma W_t}] = e^{\sigma^2 t/2}$.
 - The $-\sigma^2/2$ Itô correction causes the median $S_0 e^{(\mu-\sigma^2/2)t}$ to lie below the mean — a direct consequence of Jensen's inequality applied to the exponential.
-- $\operatorname{Var}(S_t) = S_0^2 e^{2\mu t}(e^{\sigma^2 t} - 1)$.
+- $\mathrm{Var}(S_t) = S_0^2 e^{2\mu t}(e^{\sigma^2 t} - 1)$.
 
 **Lipschitz check.** $a(S) = \mu S$ and $b(S) = \sigma S$ are both globally Lipschitz in $S$ with constants $|\mu|$ and $\sigma$; linear growth holds. Unique strong solution guaranteed.
 
@@ -306,7 +306,7 @@ $$dX_t = \kappa(\theta - X_t) dt + \sigma\sqrt{X_t} dW_t, \qquad X_0 = x_0 \ge 0
 
 **Exact solution.** No closed-form path expression exists. The transition distribution is known analytically: $X_t \mid X_s$ follows a scaled non-central chi-squared distribution, which can be used for exact simulation. The stationary distribution is:
 
-$$X_\infty \sim \operatorname{Gamma}\left(\frac{2\kappa\theta}{\sigma^2}, \frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
+$$X_\infty \sim \mathrm{Gamma}\left(\frac{2\kappa\theta}{\sigma^2}, \frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
 
 **Interpretation.**
 

@@ -12,7 +12,7 @@ For a trader, Itô calculus is the bridge between a model for price dynamics ($d
 
 ## Mathematical Setup
 
-**Probability space.** We work on $(\Omega, \mathcal{F}, \{\mathcal{F}_t\}_{t \ge 0}, \mathbb{P})$ carrying a standard Wiener process $W_t$.
+**Probability space.** We work on $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t \ge 0}, \mathbb{P})$ carrying a standard Wiener process $W_t$.
 
 **Symbols:**
 
@@ -342,7 +342,7 @@ The extension to general $f$ follows by taking $L^2$ limits. $\blacksquare$
 
 **Why it matters:**
 
-1. **Variance computation.** If $dX = \sigma dW$, then $\operatorname{Var}(X_T - X_0) = \mathbb{E}[\sigma^2 T] = \sigma^2 T$. More generally, for time-varying $\sigma(t)$, you integrate $\sigma(t)^2$.
+1. **Variance computation.** If $dX = \sigma dW$, then $\mathrm{Var}(X_T - X_0) = \mathbb{E}[\sigma^2 T] = \sigma^2 T$. More generally, for time-varying $\sigma(t)$, you integrate $\sigma(t)^2$.
 2. **Convergence guarantee.** The isometry shows that the Itô integral map $f \mapsto \int f dW$ is an isometry from $L^2([0,T] \times \Omega)$ to $L^2(\Omega)$. This is what makes the $L^2$ limit in the definition well-defined.
 3. **Monte Carlo error analysis.** The variance of a stochastic integral (e.g. a hedging error) is computed via the isometry without needing to evaluate the integral pathwise.
 
