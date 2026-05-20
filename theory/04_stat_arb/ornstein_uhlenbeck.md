@@ -1,6 +1,6 @@
 # Ornstein-Uhlenbeck Process
 
-> **Core formula:** $$dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t$$
+> **Core formula:** $$dX_t = \theta(\mu - X_t) dt + \sigma dW_t$$
 
 ## Intuition
 
@@ -26,55 +26,55 @@ The OU process is also the continuous-time analogue of a discrete AR(1) process,
 **SDE:**
 
 $$
-dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t
+dX_t = \theta(\mu - X_t) dt + \sigma dW_t
 $$
 
-The drift term $\theta(\mu - X_t)$ is negative when $X_t > \mu$ (pulling $X$ down) and positive when $X_t < \mu$ (pulling $X$ up). The diffusion term $\sigma\,dW_t$ adds Gaussian noise.
+The drift term $\theta(\mu - X_t)$ is negative when $X_t > \mu$ (pulling $X$ down) and positive when $X_t < \mu$ (pulling $X$ up). The diffusion term $\sigma dW_t$ adds Gaussian noise.
 
 ## Derivation
 
 ### Step 1: Exact Solution via Integrating Factor
 
-We want to solve the SDE $dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t$. Rearrange:
+We want to solve the SDE $dX_t = \theta(\mu - X_t) dt + \sigma dW_t$. Rearrange:
 
 $$
-dX_t + \theta X_t\,dt = \theta\mu\,dt + \sigma\,dW_t
+dX_t + \theta X_t dt = \theta\mu dt + \sigma dW_t
 $$
 
 Multiply both sides by the integrating factor $e^{\theta t}$:
 
 $$
-e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt = e^{\theta t}\theta\mu\,dt + e^{\theta t}\sigma\,dW_t
+e^{\theta t} dX_t + \theta e^{\theta t} X_t dt = e^{\theta t}\theta\mu dt + e^{\theta t}\sigma dW_t
 $$
 
 Recognize that the left-hand side is the differential of the product $e^{\theta t} X_t$. By the product rule for Itô processes (note that $e^{\theta t}$ is a deterministic, smooth function, so no second-order Itô correction arises):
 
 $$
-d\left(e^{\theta t} X_t\right) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt
+d\left(e^{\theta t} X_t\right) = e^{\theta t} dX_t + \theta e^{\theta t} X_t dt
 $$
 
 Therefore:
 
 $$
-d\left(e^{\theta t} X_t\right) = \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t
+d\left(e^{\theta t} X_t\right) = \theta\mu e^{\theta t} dt + \sigma e^{\theta t} dW_t
 $$
 
 ### Step 2: Integrate Both Sides from $0$ to $t$
 
 $$
-e^{\theta t} X_t - e^{0} X_0 = \int_0^t \theta\mu\,e^{\theta s}\,ds + \int_0^t \sigma\,e^{\theta s}\,dW_s
+e^{\theta t} X_t - e^{0} X_0 = \int_0^t \theta\mu e^{\theta s} ds + \int_0^t \sigma e^{\theta s} dW_s
 $$
 
 Evaluate the deterministic integral:
 
 $$
-\int_0^t \theta\mu\,e^{\theta s}\,ds = \theta\mu \cdot \frac{e^{\theta s}}{\theta}\Bigg|_{s=0}^{s=t} = \mu\left(e^{\theta t} - 1\right)
+\int_0^t \theta\mu e^{\theta s} ds = \theta\mu \cdot \frac{e^{\theta s}}{\theta}\Bigg|_{s=0}^{s=t} = \mu\left(e^{\theta t} - 1\right)
 $$
 
 Substituting:
 
 $$
-e^{\theta t} X_t = X_0 + \mu\left(e^{\theta t} - 1\right) + \sigma\int_0^t e^{\theta s}\,dW_s
+e^{\theta t} X_t = X_0 + \mu\left(e^{\theta t} - 1\right) + \sigma\int_0^t e^{\theta s} dW_s
 $$
 
 ### Step 3: Solve for $X_t$
@@ -82,29 +82,29 @@ $$
 Divide both sides by $e^{\theta t}$:
 
 $$
-X_t = X_0\,e^{-\theta t} + \mu\left(1 - e^{-\theta t}\right) + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s
+X_t = X_0 e^{-\theta t} + \mu\left(1 - e^{-\theta t}\right) + \sigma\int_0^t e^{-\theta(t-s)} dW_s
 $$
 
 Rearranging:
 
 $$
-\boxed{X_t = \mu + (X_0 - \mu)\,e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s}
+\boxed{X_t = \mu + (X_0 - \mu) e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)} dW_s}
 $$
 
 The three terms are: (1) the long-run mean, (2) a deterministic decay of the initial deviation, and (3) a stochastic integral representing accumulated noise.
 
 ### Step 4: Expectation
 
-Since the Itô integral has zero expectation ($\mathbb{E}\left[\int_0^t f(s)\,dW_s\right] = 0$ for any adapted $f$ with $\mathbb{E}\left[\int_0^t f(s)^2\,ds\right] < \infty$):
+Since the Itô integral has zero expectation ($\mathbb{E}\left[\int_0^t f(s) dW_s\right] = 0$ for any adapted $f$ with $\mathbb{E}\left[\int_0^t f(s)^2 ds\right] < \infty$):
 
 $$
-\mathbb{E}[X_t] = \mu + (X_0 - \mu)\,e^{-\theta t}
+\mathbb{E}[X_t] = \mu + (X_0 - \mu) e^{-\theta t}
 $$
 
 As $t \to \infty$:
 
 $$
-\mathbb{E}[X_t] \;\longrightarrow\; \mu
+\mathbb{E}[X_t]  \longrightarrow  \mu
 $$
 
 ### Step 5: Variance via Itô Isometry
@@ -112,19 +112,19 @@ $$
 The Itô isometry states that for a deterministic integrand $g(s)$:
 
 $$
-\text{Var}\left(\int_0^t g(s)\,dW_s\right) = \mathbb{E}\left[\left(\int_0^t g(s)\,dW_s\right)^2\right] = \int_0^t g(s)^2\,ds
+\text{Var}\left(\int_0^t g(s) dW_s\right) = \mathbb{E}\left[\left(\int_0^t g(s) dW_s\right)^2\right] = \int_0^t g(s)^2 ds
 $$
 
-Apply this with $g(s) = \sigma\,e^{-\theta(t-s)}$:
+Apply this with $g(s) = \sigma e^{-\theta(t-s)}$:
 
 $$
-\text{Var}(X_t) = \int_0^t \sigma^2\,e^{-2\theta(t-s)}\,ds
+\text{Var}(X_t) = \int_0^t \sigma^2 e^{-2\theta(t-s)} ds
 $$
 
 Substitute $u = t - s$, so $du = -ds$, and when $s=0$ we get $u=t$, when $s=t$ we get $u=0$:
 
 $$
-\text{Var}(X_t) = \int_0^t \sigma^2\,e^{-2\theta u}\,du
+\text{Var}(X_t) = \int_0^t \sigma^2 e^{-2\theta u} du
 $$
 
 Evaluate:
@@ -140,7 +140,7 @@ $$
 As $t \to \infty$:
 
 $$
-\text{Var}(X_t) \;\longrightarrow\; \frac{\sigma^2}{2\theta}
+\text{Var}(X_t)  \longrightarrow  \frac{\sigma^2}{2\theta}
 $$
 
 ### Step 6: Stationary Distribution
@@ -148,7 +148,7 @@ $$
 Since $X_t$ is a Gaussian process (as a linear functional of Gaussian noise), its distribution is fully characterized by its mean and variance. In the long run:
 
 $$
-\boxed{X_\infty \sim \mathcal{N}\left(\mu,\;\frac{\sigma^2}{2\theta}\right)}
+\boxed{X_\infty \sim \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)}
 $$
 
 The stationary standard deviation is $\sigma_\infty = \sigma / \sqrt{2\theta}$.
@@ -158,13 +158,13 @@ The stationary standard deviation is $\sigma_\infty = \sigma / \sqrt{2\theta}$.
 The expected deviation from the mean decays exponentially:
 
 $$
-\mathbb{E}[X_t] - \mu = (X_0 - \mu)\,e^{-\theta t}
+\mathbb{E}[X_t] - \mu = (X_0 - \mu) e^{-\theta t}
 $$
 
 The half-life $t_{1/2}$ is the time for this deviation to shrink to half its initial value:
 
 $$
-(X_0 - \mu)\,e^{-\theta t_{1/2}} = \frac{1}{2}(X_0 - \mu)
+(X_0 - \mu) e^{-\theta t_{1/2}} = \frac{1}{2}(X_0 - \mu)
 $$
 
 Divide both sides by $(X_0 - \mu)$:
@@ -176,7 +176,7 @@ $$
 Take the natural logarithm:
 
 $$
--\theta\,t_{1/2} = \ln\left(\frac{1}{2}\right) = -\ln 2
+-\theta t_{1/2} = \ln\left(\frac{1}{2}\right) = -\ln 2
 $$
 
 $$
@@ -190,13 +190,13 @@ Suppose we observe $X_0, X_1, \ldots, X_n$ at equally spaced times $0, \Delta t,
 **Conditional distribution.** From the exact solution, conditional on $X_i$:
 
 $$
-X_{i+1} \mid X_i \;\sim\; \mathcal{N}\left(\mu + (X_i - \mu)\,e^{-\theta\Delta t},\;\frac{\sigma^2(1 - e^{-2\theta\Delta t})}{2\theta}\right)
+X_{i+1} \mid X_i  \sim  \mathcal{N}\left(\mu + (X_i - \mu) e^{-\theta\Delta t}, \frac{\sigma^2(1 - e^{-2\theta\Delta t})}{2\theta}\right)
 $$
 
 **AR(1) representation.** Define $a = \mu(1 - e^{-\theta\Delta t})$, $b = e^{-\theta\Delta t}$, and $\sigma_\varepsilon^2 = \sigma^2(1 - e^{-2\theta\Delta t})/(2\theta)$. Then:
 
 $$
-X_{i+1} = a + b\,X_i + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0,\;\sigma_\varepsilon^2)
+X_{i+1} = a + b X_i + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma_\varepsilon^2)
 $$
 
 This is a standard AR(1) model, estimable by OLS regression of $X_{i+1}$ on $X_i$.
@@ -208,7 +208,7 @@ $$
 $$
 
 $$
-\hat{a} = \bar{X}_+ - \hat{b}\,\bar{X}
+\hat{a} = \bar{X}_+ - \hat{b} \bar{X}
 $$
 
 **Recovering continuous-time parameters:**
@@ -221,13 +221,13 @@ $$
 \hat{\mu} = \frac{\hat{a}}{1 - \hat{b}}
 $$
 
-For the volatility, compute the residual variance $\hat{\sigma}_\varepsilon^2 = \frac{1}{n-2}\sum_{i=0}^{n-1}(X_{i+1} - \hat{a} - \hat{b}\,X_i)^2$, then:
+For the volatility, compute the residual variance $\hat{\sigma}_\varepsilon^2 = \frac{1}{n-2}\sum_{i=0}^{n-1}(X_{i+1} - \hat{a} - \hat{b} X_i)^2$, then:
 
 $$
-\hat{\sigma}^2 = \frac{2\hat{\theta}\,\hat{\sigma}_\varepsilon^2}{1 - \hat{b}^2}
+\hat{\sigma}^2 = \frac{2\hat{\theta} \hat{\sigma}_\varepsilon^2}{1 - \hat{b}^2}
 $$
 
-Equivalently, since $\hat{b}^2 = e^{-2\hat{\theta}\Delta t}$, this is $\hat{\sigma}^2 = 2\hat{\theta}\,\hat{\sigma}_\varepsilon^2 / (1 - e^{-2\hat{\theta}\Delta t})$.
+Equivalently, since $\hat{b}^2 = e^{-2\hat{\theta}\Delta t}$, this is $\hat{\sigma}^2 = 2\hat{\theta} \hat{\sigma}_\varepsilon^2 / (1 - e^{-2\hat{\theta}\Delta t})$.
 
 ## Key Parameters
 
@@ -241,12 +241,12 @@ Equivalently, since $\hat{b}^2 = e^{-2\hat{\theta}\Delta t}$, this is $\hat{\sig
 
 ## Numerical Example
 
-**Setup:** $\theta = 5.0\;\text{day}^{-1}$, $\mu = 100$, $\sigma = 2.0$, $X_0 = 103$, $\Delta t = 1/252$ (one trading day).
+**Setup:** $\theta = 5.0 \text{day}^{-1}$, $\mu = 100$, $\sigma = 2.0$, $X_0 = 103$, $\Delta t = 1/252$ (one trading day).
 
 **Half-life:**
 
 $$
-t_{1/2} = \frac{\ln 2}{5.0} = \frac{0.6931}{5.0} = 0.1386\;\text{days} \approx 0.99\;\text{trading hours}
+t_{1/2} = \frac{\ln 2}{5.0} = \frac{0.6931}{5.0} = 0.1386 \text{days} \approx 0.99 \text{trading hours}
 $$
 
 **Stationary standard deviation:**
@@ -258,13 +258,13 @@ $$
 **Expected value after 0.5 days:**
 
 $$
-\mathbb{E}[X_{0.5}] = 100 + (103 - 100)\,e^{-5.0 \times 0.5} = 100 + 3\,e^{-2.5} = 100 + 3 \times 0.0821 = 100.246
+\mathbb{E}[X_{0.5}] = 100 + (103 - 100) e^{-5.0 \times 0.5} = 100 + 3 e^{-2.5} = 100 + 3 \times 0.0821 = 100.246
 $$
 
 **Variance after 0.5 days:**
 
 $$
-\text{Var}(X_{0.5}) = \frac{4.0}{10}(1 - e^{-10 \times 0.5}) = 0.4\,(1 - e^{-5}) = 0.4 \times 0.9933 = 0.3973
+\text{Var}(X_{0.5}) = \frac{4.0}{10}(1 - e^{-10 \times 0.5}) = 0.4 (1 - e^{-5}) = 0.4 \times 0.9933 = 0.3973
 $$
 
 **AR(1) parameters for daily observations ($\Delta t = 1/252$):**

@@ -21,13 +21,13 @@ $$f(\sigma) \equiv C_{\text{BS}}(S, K, T, r, \sigma) - C_{\text{market}} = 0$$
 
 where:
 
-$$C_{\text{BS}} = S\,N(d_1) - Ke^{-rT}N(d_2)$$
+$$C_{\text{BS}} = S N(d_1) - Ke^{-rT}N(d_2)$$
 
 $$d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}$$
 
 ### Existence and uniqueness
 
-**Monotonicity:** Vega $= \partial C_{\text{BS}}/\partial\sigma = S\,n(d_1)\sqrt{T} > 0$ for all $\sigma > 0$. The BS price is strictly increasing in $\sigma$.
+**Monotonicity:** Vega $= \partial C_{\text{BS}}/\partial\sigma = S n(d_1)\sqrt{T} > 0$ for all $\sigma > 0$. The BS price is strictly increasing in $\sigma$.
 
 **Limits:**
 
@@ -51,7 +51,7 @@ Because of the Put-Call Parity, the IV found applies for **call** and **put** op
 | $\sigma_{\text{realised}}$ | Realised (historical) volatility, computed from past returns |
 | $C_{\text{market}}$ | Market-observed option price |
 | $C_{\text{BS}}(\sigma)$ | BS theoretical price as a function of $\sigma$ |
-| $\mathcal{V}(\sigma)$ | Vega: $\partial C_{\text{BS}}/\partial\sigma = S\,n(d_1)\sqrt{T}$ |
+| $\mathcal{V}(\sigma)$ | Vega: $\partial C_{\text{BS}}/\partial\sigma = S n(d_1)\sqrt{T}$ |
 
 ## Derivation
 
@@ -95,7 +95,7 @@ $$\sigma_0 \approx \frac{C_{\text{market}}}{S}\sqrt{\frac{2\pi}{T}}$$
 
 For even faster convergence, use Halley's method which includes the second derivative (Volga = $\partial\mathcal{V}/\partial\sigma$):
 
-$$\sigma_{n+1} = \sigma_n - \frac{f(\sigma_n)}{f'(\sigma_n)}\cdot\frac{1}{1 - \frac{f(\sigma_n)\,f''(\sigma_n)}{2\,[f'(\sigma_n)]^2}}$$
+$$\sigma_{n+1} = \sigma_n - \frac{f(\sigma_n)}{f'(\sigma_n)}\cdot\frac{1}{1 - \frac{f(\sigma_n) f''(\sigma_n)}{2 [f'(\sigma_n)]^2}}$$
 
 where $f''(\sigma) = \mathcal{V}(\sigma)\cdot d_1 d_2/\sigma$ (the "Volga" or "Vomma"). This converges cubically but is rarely needed in practice since Newton-Raphson is already fast enough.
 

@@ -1,14 +1,14 @@
 # Itô Calculus
 
-> **Core formula:** $$df = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x}\,dW_t$$
+> **Core formula:** $$df = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x} dW_t$$
 
 ## Intuition
 
-In ordinary calculus, when you know how a variable $x$ changes and you want to know how $f(x)$ changes, you use the chain rule: $df = f'(x)\,dx$. This works perfectly when $x$ is a smooth function of time, because the second-order term $\tfrac{1}{2}f''(x)(dx)^2$ involves $(dx)^2$, which is infinitesimally small compared to $dx$ and vanishes. But Brownian motion is not smooth — its paths are so jagged that the squared increment $(dW)^2$ does *not* vanish. Instead, as shown in the [quadratic variation proof](brownian_motion.md), $(dW_t)^2 = dt$, which is first-order and must be retained. Itô's Lemma is simply the chain rule corrected for this extra term.
+In ordinary calculus, when you know how a variable $x$ changes and you want to know how $f(x)$ changes, you use the chain rule: $df = f'(x) dx$. This works perfectly when $x$ is a smooth function of time, because the second-order term $\tfrac{1}{2}f''(x)(dx)^2$ involves $(dx)^2$, which is infinitesimally small compared to $dx$ and vanishes. But Brownian motion is not smooth — its paths are so jagged that the squared increment $(dW)^2$ does *not* vanish. Instead, as shown in the [quadratic variation proof](brownian_motion.md), $(dW_t)^2 = dt$, which is first-order and must be retained. Itô's Lemma is simply the chain rule corrected for this extra term.
 
 The practical upshot is a systematic "correction factor" that appears whenever you transform a stochastic process. The most famous instance is the drift adjustment $-\sigma^2/2$ that emerges when you take the logarithm of Geometric Brownian Motion — this is not an approximation or a convention but an inevitable consequence of the roughness of Brownian paths. Itô calculus provides the rigorous framework for deriving such corrections and for manipulating stochastic differential equations in general.
 
-For a trader, Itô calculus is the bridge between a model for price dynamics ($dS = \mu S\,dt + \sigma S\,dW$) and the quantities needed for hedging and pricing: the dynamics of a portfolio, the Black–Scholes PDE, Greeks, and risk-neutral valuation. Every formula in this repository that involves transforming or combining stochastic processes relies on Itô's Lemma.
+For a trader, Itô calculus is the bridge between a model for price dynamics ($dS = \mu S dt + \sigma S dW$) and the quantities needed for hedging and pricing: the dynamics of a portfolio, the Black–Scholes PDE, Greeks, and risk-neutral valuation. Every formula in this repository that involves transforming or combining stochastic processes relies on Itô's Lemma.
 
 ## Mathematical Setup
 
@@ -19,7 +19,7 @@ For a trader, Itô calculus is the bridge between a model for price dynamics ($d
 | Symbol | Meaning |
 |--------|---------|
 | $W_t$ | Standard Wiener process (Brownian motion) |
-| $X_t$ | An Itô process satisfying $dX_t = \mu(t, X_t)\,dt + \sigma(t, X_t)\,dW_t$ |
+| $X_t$ | An Itô process satisfying $dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t$ |
 | $f(t, x)$ | A function that is $C^1$ in $t$ and $C^2$ in $x$ |
 | $f_t, f_x, f_{xx}$ | Shorthand for $\partial f / \partial t$, $\partial f / \partial x$, $\partial^2 f / \partial x^2$ |
 | $\mu(t,x)$ | Drift coefficient of the SDE |
@@ -35,13 +35,13 @@ For a trader, Itô calculus is the bridge between a model for price dynamics ($d
 **The core question.** We have a stochastic process $X_t$ and a function $f$. We want to know how $f(X_t)$ evolves — i.e., what is $\Delta f = f(X_{t+\Delta t}) - f(X_t)$? This is exactly the same question as in ordinary calculus: "how does $f$ change when its argument changes by $\Delta x$?" The natural tool is the **Taylor expansion** of $\Delta f$:
 
 $$
-\Delta f = f(x + \Delta x) - f(x) = f'(x)\,\Delta x + \frac{1}{2}f''(x)\,(\Delta x)^2 + O(|\Delta x|^3).
+\Delta f = f(x + \Delta x) - f(x) = f'(x) \Delta x + \frac{1}{2}f''(x) (\Delta x)^2 + O(|\Delta x|^3).
 $$
 
 For a **smooth deterministic** path, $\Delta x = O(\Delta t)$, so $(\Delta x)^2 = O((\Delta t)^2)$, which is negligible. Only the first-order term survives:
 
 $$
-df = f'(x)\,dx. \qquad \text{(ordinary chain rule)}
+df = f'(x) dx. \qquad \text{(ordinary chain rule)}
 $$
 
 **Why this breaks for Brownian motion.** Now replace $x(t)$ with $W_t$. Over an interval of length $\Delta t$:
@@ -56,7 +56,7 @@ $$
 \frac{1}{2}f''(W_t)(\Delta W)^2 = O(\Delta t)
 $$
 
-which is the **same order** as the first-order term $f'(W_t)\Delta W = O(\sqrt{\Delta t})$. In fact, $(\Delta W)^2 \to \Delta t$ deterministically (quadratic variation), so this term contributes a non-random drift of $\frac{1}{2}f''(W_t)\,dt$ that cannot be discarded.
+which is the **same order** as the first-order term $f'(W_t)\Delta W = O(\sqrt{\Delta t})$. In fact, $(\Delta W)^2 \to \Delta t$ deterministically (quadratic variation), so this term contributes a non-random drift of $\frac{1}{2}f''(W_t) dt$ that cannot be discarded.
 
 **Summary.** The Taylor expansion of $\Delta f = f(X_{t+\Delta t}) - f(X_t)$ is the same starting point as in classical calculus — the only difference is that for Brownian motion the second-order term $\frac{1}{2}f''(\Delta X)^2$ does **not** vanish, because $(\Delta W)^2 \sim \Delta t$ rather than $(\Delta t)^2$. The motivation for this route is that $W$ is **not differentiable**, so you cannot form $dW$ as an ordinary derivative of a smooth function; instead you work directly with the **increments** $\Delta W$. Itô's Lemma is the result of keeping that extra term in the increment-based expansion.
 
@@ -97,19 +97,19 @@ Higher-order terms: $(\Delta W)^3 = O((\Delta t)^{3/2})$ is negligible compared 
 **Theorem.** Let $f(t, x)$ be $C^1$ in $t$ and $C^2$ in $x$. Then:
 
 $$
-df(t, W_t) = \frac{\partial f}{\partial t}\,dt + \frac{\partial f}{\partial x}\,dW_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}\,dt.
+df(t, W_t) = \frac{\partial f}{\partial t} dt + \frac{\partial f}{\partial x} dW_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2} dt.
 $$
 
 Or more compactly:
 
 $$
-df = f_t\,dt + f_x\,dW_t + \tfrac{1}{2}f_{xx}\,dt = \bigl(f_t + \tfrac{1}{2}f_{xx}\bigr)\,dt + f_x\,dW_t.
+df = f_t dt + f_x dW_t + \tfrac{1}{2}f_{xx} dt = \bigl(f_t + \tfrac{1}{2}f_{xx}\bigr) dt + f_x dW_t.
 $$
 
 **Proof sketch.** Write the second-order Taylor expansion:
 
 $$
-\Delta f = f_t \,\Delta t + f_x \,\Delta W + \frac{1}{2}f_{tt}\,(\Delta t)^2 + f_{tx}\,\Delta t\,\Delta W + \frac{1}{2}f_{xx}\,(\Delta W)^2.
+\Delta f = f_t  \Delta t + f_x  \Delta W + \frac{1}{2}f_{tt} (\Delta t)^2 + f_{tx} \Delta t \Delta W + \frac{1}{2}f_{xx} (\Delta W)^2.
 $$
 
 Apply the Itô multiplication table:
@@ -121,13 +121,13 @@ Apply the Itô multiplication table:
 Substituting:
 
 $$
-\Delta f \;\to\; f_t\,dt + f_x\,dW_t + \frac{1}{2}f_{xx}\,dt.
+\Delta f  \to  f_t dt + f_x dW_t + \frac{1}{2}f_{xx} dt.
 $$
 
 Collecting the $dt$ terms:
 
 $$
-df = \bigl(f_t + \tfrac{1}{2}f_{xx}\bigr)dt + f_x\,dW_t. \qquad \blacksquare
+df = \bigl(f_t + \tfrac{1}{2}f_{xx}\bigr)dt + f_x dW_t. \qquad \blacksquare
 $$
 
 ### 3. Itô's Lemma — General Form: $f(t, X_t)$
@@ -135,49 +135,49 @@ $$
 **Theorem.** Let $X_t$ be an Itô process satisfying
 
 $$
-dX_t = \mu(t, X_t)\,dt + \sigma(t, X_t)\,dW_t
+dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
 $$
 
 and let $f(t, x)$ be $C^1$ in $t$ and $C^2$ in $x$. Then $Y_t = f(t, X_t)$ satisfies:
 
 $$
-dY_t = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2 \frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x}\,dW_t.
+dY_t = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2 \frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x} dW_t.
 $$
 
 **Full proof sketch via Taylor expansion.**
 
-**Step 1.** Write the second-order Taylor expansion of $f(t + \Delta t,\, X_t + \Delta X)$ around $(t, X_t)$:
+**Step 1.** Write the second-order Taylor expansion of $f(t + \Delta t,  X_t + \Delta X)$ around $(t, X_t)$:
 
 $$
-\Delta f = f_t\,\Delta t + f_x\,\Delta X + \frac{1}{2}f_{tt}\,(\Delta t)^2 + f_{tx}\,\Delta t\,\Delta X + \frac{1}{2}f_{xx}\,(\Delta X)^2.
+\Delta f = f_t \Delta t + f_x \Delta X + \frac{1}{2}f_{tt} (\Delta t)^2 + f_{tx} \Delta t \Delta X + \frac{1}{2}f_{xx} (\Delta X)^2.
 $$
 
-**Step 2.** Substitute $\Delta X = \mu\,\Delta t + \sigma\,\Delta W$:
+**Step 2.** Substitute $\Delta X = \mu \Delta t + \sigma \Delta W$:
 
 $$
-(\Delta X)^2 = (\mu\,\Delta t + \sigma\,\Delta W)^2 = \mu^2(\Delta t)^2 + 2\mu\sigma\,\Delta t\,\Delta W + \sigma^2(\Delta W)^2.
+(\Delta X)^2 = (\mu \Delta t + \sigma \Delta W)^2 = \mu^2(\Delta t)^2 + 2\mu\sigma \Delta t \Delta W + \sigma^2(\Delta W)^2.
 $$
 
 **Step 3.** Apply the Itô multiplication table to $(\Delta X)^2$:
 
 - $\mu^2(\Delta t)^2 \to 0$
-- $2\mu\sigma\,\Delta t\,\Delta W \to 0$
-- $\sigma^2(\Delta W)^2 \to \sigma^2\,dt$
+- $2\mu\sigma \Delta t \Delta W \to 0$
+- $\sigma^2(\Delta W)^2 \to \sigma^2 dt$
 
-So $(\Delta X)^2 \to \sigma^2\,dt$.
+So $(\Delta X)^2 \to \sigma^2 dt$.
 
-**Step 4.** The cross-term $f_{tx}\,\Delta t\,\Delta X = f_{tx}\,\Delta t\,(\mu\,\Delta t + \sigma\,\Delta W)$. Both pieces are $O((\Delta t)^2)$ or $O((\Delta t)^{3/2})$, hence negligible. Similarly $f_{tt}(\Delta t)^2 \to 0$.
+**Step 4.** The cross-term $f_{tx} \Delta t \Delta X = f_{tx} \Delta t (\mu \Delta t + \sigma \Delta W)$. Both pieces are $O((\Delta t)^2)$ or $O((\Delta t)^{3/2})$, hence negligible. Similarly $f_{tt}(\Delta t)^2 \to 0$.
 
 **Step 5.** Collect surviving terms:
 
 $$
-\Delta f \;\to\; f_t\,dt + f_x\,(\mu\,dt + \sigma\,dW_t) + \frac{1}{2}f_{xx}\,\sigma^2\,dt.
+\Delta f  \to  f_t dt + f_x (\mu dt + \sigma dW_t) + \frac{1}{2}f_{xx} \sigma^2 dt.
 $$
 
 **Step 6.** Group the $dt$ and $dW_t$ terms:
 
 $$
-\boxed{df = \left(f_t + \mu f_x + \frac{1}{2}\sigma^2 f_{xx}\right)dt + \sigma f_x\,dW_t.} \qquad \blacksquare
+\boxed{df = \left(f_t + \mu f_x + \frac{1}{2}\sigma^2 f_{xx}\right)dt + \sigma f_x dW_t.} \qquad \blacksquare
 $$
 
 ### 4. Worked Derivation: $d[\ln S_t]$ from GBM
@@ -185,7 +185,7 @@ $$
 This is the single most important application of Itô's Lemma in quantitative finance. Starting from:
 
 $$
-dS_t = \mu S_t\,dt + \sigma S_t\,dW_t
+dS_t = \mu S_t dt + \sigma S_t dW_t
 $$
 
 we want the dynamics of $Y_t = \ln S_t$.
@@ -212,44 +212,44 @@ $$
 
 **Step 2 — Apply Itô's Lemma.**
 
-With $dS = \mu S\,dt + \sigma S\,dW$, the general formula gives:
+With $dS = \mu S dt + \sigma S dW$, the general formula gives:
 
 $$
-d(\ln S) = f'(S)\,dS + \frac{1}{2}f''(S)\,(dS)^2.
+d(\ln S) = f'(S) dS + \frac{1}{2}f''(S) (dS)^2.
 $$
 
-**Step 3 — Compute $f'(S)\,dS$.**
+**Step 3 — Compute $f'(S) dS$.**
 
 $$
-f'(S)\,dS = \frac{1}{S}\bigl(\mu S\,dt + \sigma S\,dW_t\bigr) = \mu\,dt + \sigma\,dW_t.
+f'(S) dS = \frac{1}{S}\bigl(\mu S dt + \sigma S dW_t\bigr) = \mu dt + \sigma dW_t.
 $$
 
 **Step 4 — Compute $(dS)^2$.**
 
 $$
-(dS)^2 = (\mu S\,dt + \sigma S\,dW_t)^2.
+(dS)^2 = (\mu S dt + \sigma S dW_t)^2.
 $$
 
 Expanding and applying the Itô table:
 
 $$
-(dS)^2 = \mu^2 S^2\underbrace{(dt)^2}_{=\,0} + 2\mu\sigma S^2\underbrace{dt\,dW_t}_{=\,0} + \sigma^2 S^2\underbrace{(dW_t)^2}_{=\,dt} = \sigma^2 S^2\,dt.
+(dS)^2 = \mu^2 S^2\underbrace{(dt)^2}_{= 0} + 2\mu\sigma S^2\underbrace{dt dW_t}_{= 0} + \sigma^2 S^2\underbrace{(dW_t)^2}_{= dt} = \sigma^2 S^2 dt.
 $$
 
 **Step 5 — Compute $\frac{1}{2}f''(S)(dS)^2$.**
 
 $$
-\frac{1}{2}\left(-\frac{1}{S^2}\right)\sigma^2 S^2\,dt = -\frac{1}{2}\sigma^2\,dt.
+\frac{1}{2}\left(-\frac{1}{S^2}\right)\sigma^2 S^2 dt = -\frac{1}{2}\sigma^2 dt.
 $$
 
 **Step 6 — Combine.**
 
 $$
-d(\ln S_t) = \mu\,dt + \sigma\,dW_t - \frac{1}{2}\sigma^2\,dt = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.
+d(\ln S_t) = \mu dt + \sigma dW_t - \frac{1}{2}\sigma^2 dt = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma dW_t.
 $$
 
 $$
-\boxed{d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.}
+\boxed{d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma dW_t.}
 $$
 
 **Step 7 — Integrate both sides from $0$ to $t$.**
@@ -262,18 +262,18 @@ $$
 \boxed{S_t = S_0 \exp\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}
 $$
 
-**Where does the $-\sigma^2/2$ come from?** It is entirely due to the second-derivative (Itô correction) term $\frac{1}{2}f''(S)(dS)^2 = -\frac{1}{2}\sigma^2\,dt$. Because $f(S) = \ln S$ is concave ($f'' < 0$), the stochastic fluctuations systematically reduce the growth rate of the logarithm relative to the arithmetic growth rate $\mu$. In financial terms, the *median* path of GBM grows at rate $\mu - \sigma^2/2$ (the geometric mean return) while the *expected* path grows at rate $\mu$ (the arithmetic mean return). This wedge is the "volatility drag" that erodes compounded returns, also known as Jensen's Inequality.
+**Where does the $-\sigma^2/2$ come from?** It is entirely due to the second-derivative (Itô correction) term $\frac{1}{2}f''(S)(dS)^2 = -\frac{1}{2}\sigma^2 dt$. Because $f(S) = \ln S$ is concave ($f'' < 0$), the stochastic fluctuations systematically reduce the growth rate of the logarithm relative to the arithmetic growth rate $\mu$. In financial terms, the *median* path of GBM grows at rate $\mu - \sigma^2/2$ (the geometric mean return) while the *expected* path grows at rate $\mu$ (the arithmetic mean return). This wedge is the "volatility drag" that erodes compounded returns, also known as Jensen's Inequality.
 
 **Intuition (why this can happen even if $\mathbb{E}[W_t]=0$).** A mean-zero Brownian shock means “up and down moves are equally likely” in an additive sense, but prices compound multiplicatively. A +10% move followed by a -10% move does **not** bring you back: $100 \to 110 \to 99$, a net loss of 1%. That is exactly what the Itô correction captures: random volatility lowers the typical (median) compounded growth rate even when the noise has zero mean.
 
 ### 5. The Itô Integral — Definition as an $L^2$ Limit
 
-The Itô integral $\int_0^T f(t)\,dW_t$ is defined as the $L^2$ (mean-square) limit of a sequence of simple approximations.
+The Itô integral $\int_0^T f(t) dW_t$ is defined as the $L^2$ (mean-square) limit of a sequence of simple approximations.
 
 **Step 1 — Simple processes.** A simple (step) process on $[0, T]$ is a function of the form
 
 $$
-f_n(t) = \sum_{i=0}^{n-1} \phi_i \,\mathbf{1}_{[t_i, t_{i+1})}(t)
+f_n(t) = \sum_{i=0}^{n-1} \phi_i  \mathbf{1}_{[t_i, t_{i+1})}(t)
 $$
 
 where $\Pi_n = \{0 = t_0 < t_1 < \cdots < t_n = T\}$ is a partition and each $\phi_i$ is $\mathcal{F}_{t_i}$-measurable (adapted — it uses only information available at the *left* endpoint $t_i$, not at $t_{i+1}$; this is the crucial non-anticipating property).
@@ -286,64 +286,64 @@ $$
 
 This is a finite sum of random variables and is well-defined.
 
-**Step 3 — Extension to general integrands.** For a general adapted process $f(t)$ with $\mathbb{E}\left[\int_0^T f(t)^2\,dt\right] < \infty$, there exists a sequence of simple processes $f_n$ such that
+**Step 3 — Extension to general integrands.** For a general adapted process $f(t)$ with $\mathbb{E}\left[\int_0^T f(t)^2 dt\right] < \infty$, there exists a sequence of simple processes $f_n$ such that
 
 $$
-\mathbb{E}\left[\int_0^T |f(t) - f_n(t)|^2\,dt\right] \;\xrightarrow{n \to \infty}\; 0.
+\mathbb{E}\left[\int_0^T |f(t) - f_n(t)|^2 dt\right]  \xrightarrow{n \to \infty}  0.
 $$
 
 **Step 4 — Define the integral as the $L^2$ limit.**
 
 $$
-\int_0^T f(t)\,dW_t \;:=\; \lim_{n \to \infty} I_n(f_n) \quad \text{in } L^2(\Omega).
+\int_0^T f(t) dW_t  :=  \lim_{n \to \infty} I_n(f_n) \quad \text{in } L^2(\Omega).
 $$
 
 The key fact that makes this limit exist and be unique is the **Itô isometry** (below): the map $f \mapsto I(f)$ preserves the $L^2$ norm, so convergence in the function space implies convergence of the integrals.
 
 **Important properties of the Itô integral:**
 
-- **Martingale property:** $M_t = \int_0^t f(s)\,dW_s$ is a martingale: $\mathbb{E}[M_t \mid \mathcal{F}_s] = M_s$ for $s \le t$.
-- **Zero expectation:** $\mathbb{E}\left[\int_0^T f(t)\,dW_t\right] = 0$.
+- **Martingale property:** $M_t = \int_0^t f(s) dW_s$ is a martingale: $\mathbb{E}[M_t \mid \mathcal{F}_s] = M_s$ for $s \le t$.
+- **Zero expectation:** $\mathbb{E}\left[\int_0^T f(t) dW_t\right] = 0$.
 - **Non-anticipating:** The integrand $f(t)$ is evaluated at the left endpoint of each subinterval, which ensures causality (no peeking into the future).
 
 ### 6. The Itô Isometry
 
-**Theorem.** For any adapted process $f$ with $\mathbb{E}\left[\int_0^T f(t)^2\,dt\right] < \infty$:
+**Theorem.** For any adapted process $f$ with $\mathbb{E}\left[\int_0^T f(t)^2 dt\right] < \infty$:
 
 $$
-\boxed{\mathbb{E}\left[\left(\int_0^T f(t)\,dW_t\right)^{2}\right] = \mathbb{E}\left[\int_0^T f(t)^2\,dt\right].}
+\boxed{\mathbb{E}\left[\left(\int_0^T f(t) dW_t\right)^{2}\right] = \mathbb{E}\left[\int_0^T f(t)^2 dt\right].}
 $$
 
 **Proof for simple processes.** Let $f_n(t) = \sum_i \phi_i \mathbf{1}_{[t_i, t_{i+1})}(t)$. Then
 
 $$
-I_n = \sum_{i=0}^{n-1} \phi_i \,\Delta W_i.
+I_n = \sum_{i=0}^{n-1} \phi_i  \Delta W_i.
 $$
 
 Square this:
 
 $$
-I_n^2 = \sum_{i=0}^{n-1} \sum_{j=0}^{n-1} \phi_i \phi_j \,\Delta W_i \,\Delta W_j.
+I_n^2 = \sum_{i=0}^{n-1} \sum_{j=0}^{n-1} \phi_i \phi_j  \Delta W_i  \Delta W_j.
 $$
 
 Take expectations. For $i \ne j$, say $i < j$: $\phi_i \phi_j \Delta W_i$ is $\mathcal{F}_{t_j}$-measurable and $\Delta W_j$ is independent of $\mathcal{F}_{t_j}$ with $\mathbb{E}[\Delta W_j] = 0$. Therefore
 
 $$
-\mathbb{E}[\phi_i \phi_j \,\Delta W_i \,\Delta W_j] = \mathbb{E}[\phi_i \phi_j \Delta W_i] \cdot \mathbb{E}[\Delta W_j] = 0.
+\mathbb{E}[\phi_i \phi_j  \Delta W_i  \Delta W_j] = \mathbb{E}[\phi_i \phi_j \Delta W_i] \cdot \mathbb{E}[\Delta W_j] = 0.
 $$
 
 Only diagonal terms survive:
 
 $$
-\mathbb{E}[I_n^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2 \,(\Delta W_i)^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2]\,\Delta t_i = \mathbb{E}\left[\int_0^T f_n(t)^2\,dt\right].
+\mathbb{E}[I_n^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2  (\Delta W_i)^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2] \Delta t_i = \mathbb{E}\left[\int_0^T f_n(t)^2 dt\right].
 $$
 
 The extension to general $f$ follows by taking $L^2$ limits. $\blacksquare$
 
 **Why it matters:**
 
-1. **Variance computation.** If $dX = \sigma\,dW$, then $\operatorname{Var}(X_T - X_0) = \mathbb{E}[\sigma^2 T] = \sigma^2 T$. More generally, for time-varying $\sigma(t)$, you integrate $\sigma(t)^2$.
-2. **Convergence guarantee.** The isometry shows that the Itô integral map $f \mapsto \int f\,dW$ is an isometry from $L^2([0,T] \times \Omega)$ to $L^2(\Omega)$. This is what makes the $L^2$ limit in the definition well-defined.
+1. **Variance computation.** If $dX = \sigma dW$, then $\operatorname{Var}(X_T - X_0) = \mathbb{E}[\sigma^2 T] = \sigma^2 T$. More generally, for time-varying $\sigma(t)$, you integrate $\sigma(t)^2$.
+2. **Convergence guarantee.** The isometry shows that the Itô integral map $f \mapsto \int f dW$ is an isometry from $L^2([0,T] \times \Omega)$ to $L^2(\Omega)$. This is what makes the $L^2$ limit in the definition well-defined.
 3. **Monte Carlo error analysis.** The variance of a stochastic integral (e.g. a hedging error) is computed via the isometry without needing to evaluate the integral pathwise.
 
 ## Key Parameters
@@ -406,7 +406,7 @@ The empirical mean matches $\mu - \sigma^2/2 = 0.055$, not $\mu = 0.10$, confirm
 - **[Brownian Motion](brownian_motion.md):** Itô calculus is built entirely on top of the properties of BM — in particular the quadratic variation $\langle W \rangle_T = T$ and the Itô multiplication table derived there.
 - **[Stochastic Differential Equations](sdes.md):** Itô's Lemma is the main tool for solving SDEs. The exact solutions for GBM and OU processes are obtained by applying it to appropriate transformations.
 - **[Black–Scholes](../02_options/black_scholes.md):** The Black–Scholes PDE is derived by applying Itô's Lemma to a portfolio of the option and the underlying, then imposing the no-arbitrage condition. The $\frac{1}{2}\sigma^2 S^2 V_{SS}$ term in the PDE is the Itô correction.
-- **[Greeks](../02_options/greeks.md):** Delta, Gamma, Theta and other Greeks are the partial derivatives that appear in Itô's Lemma applied to the option price function $V(t, S)$. Gamma ($V_{SS}$) matters precisely because the Itô correction $\frac{1}{2}\sigma^2 S^2 V_{SS}\,dt$ is non-zero.
+- **[Greeks](../02_options/greeks.md):** Delta, Gamma, Theta and other Greeks are the partial derivatives that appear in Itô's Lemma applied to the option price function $V(t, S)$. Gamma ($V_{SS}$) matters precisely because the Itô correction $\frac{1}{2}\sigma^2 S^2 V_{SS} dt$ is non-zero.
 - **[Implied Volatility](../02_options/implied_volatility.md):** The Itô correction $-\sigma^2/2$ explains why implied volatility (which enters the BS formula) differs from realised drift: the market prices the *geometric* growth rate, not the arithmetic one.
 
 ## Relevance for Prosperity 4

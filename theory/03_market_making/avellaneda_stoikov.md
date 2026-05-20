@@ -1,7 +1,7 @@
 # Avellaneda-Stoikov Optimal Market Making
 
 > **Core formula — Reservation price:**
-> $$r_t = S_t - q_t \, \gamma \, \sigma^2 (T - t)$$
+> $$r_t = S_t - q_t   \gamma   \sigma^2 (T - t)$$
 
 ## Intuition
 
@@ -28,7 +28,7 @@ Think of it like a shopkeeper with perishable goods approaching closing time. If
 
 1. **Mid-price dynamics** — no drift under the market maker's pricing measure:
 
-$$dS_t = \sigma \, dW_t$$
+$$dS_t = \sigma   dW_t$$
 
 where $W_t$ is a standard Brownian motion and $\sigma > 0$ is constant volatility.
 
@@ -38,7 +38,7 @@ $$\lambda(\delta) = A \exp(-\kappa \delta)$$
 
 where $A > 0$ is the baseline arrival rate when quoting at mid ($\delta = 0$) and $\kappa > 0$ is the order-book depth parameter. This exponential decay captures the empirical observation that the further your quote sits from the mid-price, the less likely it is to be hit. The parameter $\kappa$ measures how rapidly fill probability drops with distance: large $\kappa$ corresponds to a thin order book where even small displacements drastically reduce fill probability; small $\kappa$ means a deep, liquid book.
 
-**Justification of the Poisson model:** Each incoming market order either fills your resting limit order or does not. At high frequency, the number of fills in a short interval $[t, t+dt)$ is well approximated by a Poisson random variable with intensity $\lambda(\delta) \, dt$. The exponential form $A e^{-\kappa \delta}$ is the simplest parametric model consistent with the stylised fact that fill probability is monotonically decreasing and convex in quote distance.
+**Justification of the Poisson model:** Each incoming market order either fills your resting limit order or does not. At high frequency, the number of fills in a short interval $[t, t+dt)$ is well approximated by a Poisson random variable with intensity $\lambda(\delta)   dt$. The exponential form $A e^{-\kappa \delta}$ is the simplest parametric model consistent with the stylised fact that fill probability is monotonically decreasing and convex in quote distance.
 
 3. **Cash process** — when the ask fills:
 
@@ -54,7 +54,7 @@ $$q_{t+dt} = q_t - 1 \quad (\text{ask fill}), \qquad q_{t+dt} = q_t + 1 \quad (\
 
 5. **Objective** — maximise expected terminal utility with CARA (constant absolute risk aversion) preferences:
 
-$$\max_{\delta^a, \delta^b} \; \mathbb{E}\left[-\exp\left(-\gamma \left(X_T + q_T S_T\right)\right)\right]$$
+$$\max_{\delta^a, \delta^b}   \mathbb{E}\left[-\exp\left(-\gamma \left(X_T + q_T S_T\right)\right)\right]$$
 
 The argument of the exponential is $-($ risk aversion $) \times ($ terminal wealth $)$. Terminal wealth is cash $X_T$ plus the mark-to-market value $q_T S_T$ of remaining inventory, liquidated at the mid-price. The CARA utility $u(w) = -e^{-\gamma w}$ implies constant absolute risk aversion: the market maker treats a \$1 gain and a \$1 loss symmetrically regardless of wealth level.
 
@@ -64,13 +64,13 @@ The argument of the exponential is $-($ risk aversion $) \times ($ terminal weal
 
 Define the value function:
 
-$$u(t, x, S, q) = \sup_{\delta^a, \delta^b} \; \mathbb{E}\left[-\exp\left(-\gamma(X_T + q_T S_T)\right) \;\Big|\; X_t = x, \, S_t = S, \, q_t = q\right]$$
+$$u(t, x, S, q) = \sup_{\delta^a, \delta^b}   \mathbb{E}\left[-\exp\left(-\gamma(X_T + q_T S_T)\right)  \Big|  X_t = x,   S_t = S,   q_t = q\right]$$
 
-Between order arrivals, the mid-price diffuses and no trades occur. Over an infinitesimal interval $dt$, three things can happen: (i) no fills — the mid-price evolves via $dS = \sigma \, dW$, (ii) the ask fills with probability $\lambda(\delta^a) \, dt$, or (iii) the bid fills with probability $\lambda(\delta^b) \, dt$.
+Between order arrivals, the mid-price diffuses and no trades occur. Over an infinitesimal interval $dt$, three things can happen: (i) no fills — the mid-price evolves via $dS = \sigma   dW$, (ii) the ask fills with probability $\lambda(\delta^a)   dt$, or (iii) the bid fills with probability $\lambda(\delta^b)   dt$.
 
 Applying dynamic programming (the Hamilton-Jacobi-Bellman equation), we require $u$ to satisfy:
 
-$$\frac{\partial u}{\partial t} + \frac{1}{2}\sigma^2 \frac{\partial^2 u}{\partial S^2} + \sup_{\delta^a}\Big[\lambda(\delta^a)\Big(u(t,\, x + S + \delta^a,\, S,\, q-1) - u(t,x,S,q)\Big)\Big] + \sup_{\delta^b}\Big[\lambda(\delta^b)\Big(u(t,\, x - S + \delta^b,\, S,\, q+1) - u(t,x,S,q)\Big)\Big] = 0$$
+$$\frac{\partial u}{\partial t} + \frac{1}{2}\sigma^2 \frac{\partial^2 u}{\partial S^2} + \sup_{\delta^a}\Big[\lambda(\delta^a)\Big(u(t,  x + S + \delta^a,  S,  q-1) - u(t,x,S,q)\Big)\Big] + \sup_{\delta^b}\Big[\lambda(\delta^b)\Big(u(t,  x - S + \delta^b,  S,  q+1) - u(t,x,S,q)\Big)\Big] = 0$$
 
 with terminal condition:
 
@@ -92,9 +92,9 @@ Since $u = -e^{-\gamma(x + qS)} \cdot w(t,q)$, let $\phi = x + qS$ for brevity:
 
 $$\frac{\partial u}{\partial t} = -e^{-\gamma \phi} \cdot \frac{\partial w}{\partial t}$$
 
-$$\frac{\partial u}{\partial S} = -e^{-\gamma \phi} \cdot (-\gamma q) \cdot w = \gamma q \, e^{-\gamma \phi} \cdot w$$
+$$\frac{\partial u}{\partial S} = -e^{-\gamma \phi} \cdot (-\gamma q) \cdot w = \gamma q   e^{-\gamma \phi} \cdot w$$
 
-$$\frac{\partial^2 u}{\partial S^2} = -\gamma^2 q^2 \, e^{-\gamma \phi} \cdot w$$
+$$\frac{\partial^2 u}{\partial S^2} = -\gamma^2 q^2   e^{-\gamma \phi} \cdot w$$
 
 So the diffusion terms give:
 
@@ -114,7 +114,7 @@ The ask jump contribution is:
 
 $$\lambda(\delta^a)\Big(u(\ldots, q-1) - u(\ldots, q)\Big) = \lambda(\delta^a)\Big(-e^{-\gamma(\phi + \delta^a)} w(t,q-1) + e^{-\gamma\phi} w(t,q)\Big)$$
 
-$$= e^{-\gamma\phi}\,\lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a} w(t,q-1)\Big)$$
+$$= e^{-\gamma\phi} \lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a} w(t,q-1)\Big)$$
 
 ### Step 4: Substituting the Bid Fill Term
 
@@ -128,7 +128,7 @@ $$u(t, x - S + \delta^b, S, q+1) = -e^{-\gamma(\phi + \delta^b)} \cdot w(t, q+1)
 
 The bid jump contribution is:
 
-$$e^{-\gamma\phi}\,\lambda(\delta^b)\Big(w(t,q) - e^{-\gamma\delta^b} w(t,q+1)\Big)$$
+$$e^{-\gamma\phi} \lambda(\delta^b)\Big(w(t,q) - e^{-\gamma\delta^b} w(t,q+1)\Big)$$
 
 ### Step 5: Simplified HJB (Dividing by $-e^{-\gamma\phi}$)
 
@@ -142,7 +142,7 @@ Note: when we divide through by $-e^{-\gamma\phi}$, the $\sup$ operators remain 
 
 Focus on the ask side. We maximise over $\delta^a$:
 
-$$\max_{\delta^a} \; \lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a}w(t,q-1)\Big)$$
+$$\max_{\delta^a}   \lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a}w(t,q-1)\Big)$$
 
 Substituting $\lambda(\delta^a) = A e^{-\kappa\delta^a}$, let $H^a(\delta^a)$ denote the objective:
 
@@ -158,7 +158,7 @@ $$-\kappa\big(w(t,q) - e^{-\gamma\delta^a}w(t,q-1)\big) + \gamma e^{-\gamma\delt
 
 Solving for $e^{-\gamma\delta^a}$:
 
-$$e^{-\gamma\delta^a} w(t,q-1)(\gamma + \kappa) = \kappa \, w(t,q)$$
+$$e^{-\gamma\delta^a} w(t,q-1)(\gamma + \kappa) = \kappa   w(t,q)$$
 
 $$e^{-\gamma\delta^a} = \frac{\kappa}{\gamma + \kappa} \cdot \frac{w(t,q)}{w(t,q-1)}$$
 
@@ -208,7 +208,7 @@ $$= -\frac{1}{2}\gamma\sigma^2(T-t)\big[(2q-1) + (2q+1)\big] = -\frac{1}{2}\gamm
 
 Therefore:
 
-$$\boxed{r_t = S_t - q_t \, \gamma \, \sigma^2 (T - t)}$$
+$$\boxed{r_t = S_t - q_t   \gamma   \sigma^2 (T - t)}$$
 
 **Interpretation of each term:**
 
@@ -321,7 +321,7 @@ print(f"Bid fill rate factor: {np.exp(-kappa*(S - bid)):.3f}")
 
 - [Inventory Risk](./inventory_risk.md): the reservation price is the primary mechanism through which the Avellaneda-Stoikov model manages inventory risk. The inventory penalty $q\gamma\sigma^2(T-t)$ is derived from the quadratic variance of inventory P&L, which is analysed in detail in the inventory risk file.
 - [Bid-Ask Spread](./bid_ask_spread.md): the optimal half-spread $\delta^*$ provides a micro-founded explanation for the existence and magnitude of the bid-ask spread. The two components (inventory risk and adverse selection) correspond to the spread decomposition discussed in the bid-ask spread file.
-- [Brownian Motion](../01_stochastic/brownian_motion.md): the mid-price model $dS = \sigma\,dW$ is a pure Brownian motion without drift. Properties of Brownian motion (independent increments, quadratic variation) underpin the variance calculations in the inventory penalty.
+- [Brownian Motion](../01_stochastic/brownian_motion.md): the mid-price model $dS = \sigma dW$ is a pure Brownian motion without drift. Properties of Brownian motion (independent increments, quadratic variation) underpin the variance calculations in the inventory penalty.
 - [Ornstein-Uhlenbeck Process](../04_stat_arb/ornstein_uhlenbeck.md): the inventory process under optimal control exhibits mean-reversion toward zero — the reservation price mechanism acts like an OU restoring force on $q_t$. The speed of mean-reversion is controlled by $\gamma$.
 - [Black-Scholes](../02_options/black_scholes.md): both models involve stochastic control under diffusion dynamics. The HJB approach used here parallels the derivation of the Black-Scholes PDE via dynamic hedging.
 

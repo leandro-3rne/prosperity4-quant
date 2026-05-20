@@ -1,10 +1,10 @@
 # Stochastic Differential Equations
 
-> **Core formula:** $$dX_t = a(t, X_t)\,dt + b(t, X_t)\,dW_t$$
+> **Core formula:** $$dX_t = a(t, X_t) dt + b(t, X_t) dW_t$$
 
 ## Intuition
 
-A stochastic differential equation (SDE) is the natural language for describing a quantity that evolves under the combined influence of a predictable trend and random noise. Think of a boat on a river: the current carries it downstream at a known speed (the drift, $a$), while gusts of wind push it randomly left and right (the diffusion, $b\,dW$). An SDE formalises this by specifying how the instantaneous drift and the intensity of random shocks depend on the current state $X_t$ and time $t$.
+A stochastic differential equation (SDE) is the natural language for describing a quantity that evolves under the combined influence of a predictable trend and random noise. Think of a boat on a river: the current carries it downstream at a known speed (the drift, $a$), while gusts of wind push it randomly left and right (the diffusion, $b dW$). An SDE formalises this by specifying how the instantaneous drift and the intensity of random shocks depend on the current state $X_t$ and time $t$.
 
 In finance, the prototypical SDE is Geometric Brownian Motion for stock prices, where both the drift and volatility are proportional to the price itself — small stocks fluctuate less in dollar terms than large stocks. But SDEs are far more flexible: the Ornstein–Uhlenbeck process captures mean reversion in spreads, the CIR model keeps interest rates non-negative, and multi-factor models combine several SDEs to describe correlated assets. The ability to write down, solve (exactly or numerically), and simulate SDEs is the core technical skill connecting theory to trading algorithms.
 
@@ -29,15 +29,15 @@ The challenge is that SDEs cannot generally be solved in closed form. We therefo
 **The general SDE** in differential form:
 
 $$
-dX_t = a(t, X_t)\,dt + b(t, X_t)\,dW_t, \qquad X_0 = x_0.
+dX_t = a(t, X_t) dt + b(t, X_t) dW_t, \qquad X_0 = x_0.
 $$
 
-Here $a(t,X_t)\,dt$ is the **deterministic increment** (drift part, predictable trend over a short time step), while $b(t,X_t)\,dW_t$ is the **stochastic increment** (random shock driven by Brownian motion $W_t$).
+Here $a(t,X_t) dt$ is the **deterministic increment** (drift part, predictable trend over a short time step), while $b(t,X_t) dW_t$ is the **stochastic increment** (random shock driven by Brownian motion $W_t$).
 
 The rigorous meaning of this notation is the integral equation:
 
 $$
-X_t = x_0 + \int_0^t a(s, X_s)\,ds + \int_0^t b(s, X_s)\,dW_s
+X_t = x_0 + \int_0^t a(s, X_s) ds + \int_0^t b(s, X_s) dW_s
 $$
 
 where the first integral is a pathwise Lebesgue (Riemann) integral and the second is an Itô integral (see [ito_calculus.md](ito_calculus.md)).
@@ -113,14 +113,14 @@ The Itô existence theorem (§2) guarantees that a solution process $X_t$ *exist
 
 | Technique | Idea | Applies to |
 |-----------|------|------------|
-| **Direct integration** | If $a$ and $b$ are constants, integrate $dX = a\,dt + b\,dW$ directly | Arithmetic BM with drift |
+| **Direct integration** | If $a$ and $b$ are constants, integrate $dX = a dt + b dW$ directly | Arithmetic BM with drift |
 | **Itô's Lemma + transform** | Apply $f(X)$ (e.g. $\ln X$) to eliminate state-dependence in the coefficients | GBM ($f = \ln$) |
 | **Integrating factor** | Multiply by $e^{\theta t}$ to turn a linear SDE into a directly integrable one | OU process |
 | **Variation of constants** | Combine the homogeneous solution with a particular integral | Linear SDEs in general |
 
 For the three SDEs in this file:
 
-- **OU:** Closed form via integrating factor — $X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s$ (§6). The remaining stochastic integral is Gaussian with known variance, so $X_t$ can be sampled exactly.
+- **OU:** Closed form via integrating factor — $X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)} dW_s$ (§6). The remaining stochastic integral is Gaussian with known variance, so $X_t$ can be sampled exactly.
 - **GBM:** Closed form via the $\ln$-transform — $S_t = S_0 e^{(\mu - \sigma^2/2)t + \sigma W_t}$ (§7). Exact sampling requires only a single Gaussian draw.
 - **CIR:** *No* closed-form path expression. The transition density is a scaled non-central $\chi^2$, which allows exact sampling but not a formula of the form "$X_t = g(x_0, t, W_t)$".
 
@@ -132,7 +132,7 @@ When no closed-form solution is available (§3), we need a numerical recipe that
 
 #### 4.1 Core idea — "freeze and step"
 
-Recall the ODE Euler method: given $\dot{x} = f(t, x)$, we approximate $x(t + \Delta t) \approx x(t) + f(t, x(t))\,\Delta t$ by pretending the slope $f$ stays constant over the interval $[t, t+\Delta t]$. Euler–Maruyama does the same thing, but with an additional stochastic term driven by a Brownian increment $\Delta W$.
+Recall the ODE Euler method: given $\dot{x} = f(t, x)$, we approximate $x(t + \Delta t) \approx x(t) + f(t, x(t)) \Delta t$ by pretending the slope $f$ stays constant over the interval $[t, t+\Delta t]$. Euler–Maruyama does the same thing, but with an additional stochastic term driven by a Brownian increment $\Delta W$.
 
 The idea is to *freeze* both the drift $a$ and the diffusion $b$ at the start of each sub-interval and treat them as constants over that step. This turns each infinitesimal SDE step into a simple arithmetic update.
 
@@ -141,7 +141,7 @@ The idea is to *freeze* both the drift $a$ and the diffusion $b$ at the start of
 Start from the integral form of the SDE over one step $[t_n, t_{n+1}]$:
 
 $$
-X_{t_{n+1}} = X_{t_n} + \int_{t_n}^{t_{n+1}} a(s, X_s)\,ds + \int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s.
+X_{t_{n+1}} = X_{t_n} + \int_{t_n}^{t_{n+1}} a(s, X_s) ds + \int_{t_n}^{t_{n+1}} b(s, X_s) dW_s.
 $$
 
 This is exact but not computable — $a(s, X_s)$ and $b(s, X_s)$ depend on the (unknown) solution $X_s$ at every intermediate time $s \in (t_n, t_{n+1})$.
@@ -149,21 +149,21 @@ This is exact but not computable — $a(s, X_s)$ and $b(s, X_s)$ depend on the (
 **Step 1 — Freeze the drift.** Replace $a(s, X_s)$ by its value at the left endpoint $a(t_n, X_{t_n})$. Since the integrand is now a constant:
 
 $$
-\int_{t_n}^{t_{n+1}} a(s, X_s)\,ds \;\approx\; a(t_n, X_{t_n})\,\Delta t.
+\int_{t_n}^{t_{n+1}} a(s, X_s) ds  \approx  a(t_n, X_{t_n}) \Delta t.
 $$
 
 **Step 2 — Freeze the diffusion.** Similarly, replace $b(s, X_s)$ by $b(t_n, X_{t_n})$:
 
 $$
-\int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s \;\approx\; b(t_n, X_{t_n})\,(W_{t_{n+1}} - W_{t_n}).
+\int_{t_n}^{t_{n+1}} b(s, X_s) dW_s  \approx  b(t_n, X_{t_n}) (W_{t_{n+1}} - W_{t_n}).
 $$
 
-**Step 3 — Substitute the BM increment.** By the properties of Brownian motion (see [brownian_motion.md](brownian_motion.md), §6), $W_{t_{n+1}} - W_{t_n} \sim \mathcal{N}(0, \Delta t)$, which we write as $\sqrt{\Delta t}\;Z_n$ with $Z_n \sim \mathcal{N}(0,1)$.
+**Step 3 — Substitute the BM increment.** By the properties of Brownian motion (see [brownian_motion.md](brownian_motion.md), §6), $W_{t_{n+1}} - W_{t_n} \sim \mathcal{N}(0, \Delta t)$, which we write as $\sqrt{\Delta t} Z_n$ with $Z_n \sim \mathcal{N}(0,1)$.
 
 Combining all three steps:
 
 $$
-X_{t_{n+1}} \approx X_{t_n} + a(t_n, X_{t_n})\,\Delta t + b(t_n, X_{t_n})\,\sqrt{\Delta t}\;Z_n.
+X_{t_{n+1}} \approx X_{t_n} + a(t_n, X_{t_n}) \Delta t + b(t_n, X_{t_n}) \sqrt{\Delta t} Z_n.
 $$
 
 #### 4.3 Algorithm
@@ -171,14 +171,14 @@ $$
 Partition $[0, T]$ into $N$ equal steps of size $\Delta t = T/N$. Set $\hat{X}_0 = x_0$. For $n = 0, 1, \ldots, N-1$:
 
 $$
-\boxed{\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n, \qquad Z_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).}
+\boxed{\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n) \Delta t + b(t_n, \hat{X}_n) \sqrt{\Delta t} Z_n, \qquad Z_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).}
 $$
 
 Each step requires exactly one Gaussian draw and two coefficient evaluations — the computational cost per path is $O(N)$.
 
 #### 4.4 When is EM exact?
 
-If both $a$ and $b$ are *constant* (i.e. state-independent), freezing introduces no error at all — the approximation is exact at every step. This is the case for **arithmetic Brownian motion** $dX = \mu\,dt + \sigma\,dW$, where the EM recursion $\hat{X}_{n+1} = \hat{X}_n + \mu\,\Delta t + \sigma\sqrt{\Delta t}\,Z_n$ reproduces the true dynamics perfectly. Simulating a pure Wiener process ($\mu = 0$, $\sigma = 1$) is therefore a special case of EM with zero discretisation error.
+If both $a$ and $b$ are *constant* (i.e. state-independent), freezing introduces no error at all — the approximation is exact at every step. This is the case for **arithmetic Brownian motion** $dX = \mu dt + \sigma dW$, where the EM recursion $\hat{X}_{n+1} = \hat{X}_n + \mu \Delta t + \sigma\sqrt{\Delta t} Z_n$ reproduces the true dynamics perfectly. Simulating a pure Wiener process ($\mu = 0$, $\sigma = 1$) is therefore a special case of EM with zero discretisation error.
 
 For state-dependent coefficients — GBM ($b = \sigma S$), OU ($a = \theta(\mu - X)$), CIR ($b = \sigma\sqrt{X}$) — the freezing approximation introduces an error that shrinks as $\Delta t \to 0$.
 
@@ -202,24 +202,24 @@ The Milstein method improves strong convergence to order 1.0 by including the ne
 **Algorithm.** Same setup as EM, but with an additional correction:
 
 $$
-\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n + \frac{1}{2}\,b(t_n, \hat{X}_n)\,b'(t_n, \hat{X}_n)\bigl((\Delta W_n)^2 - \Delta t\bigr)
+\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n) \Delta t + b(t_n, \hat{X}_n) \sqrt{\Delta t} Z_n + \frac{1}{2} b(t_n, \hat{X}_n) b'(t_n, \hat{X}_n)\bigl((\Delta W_n)^2 - \Delta t\bigr)
 $$
 
-where $b' = \partial b / \partial x$ and $\Delta W_n = \sqrt{\Delta t}\;Z_n$.
+where $b' = \partial b / \partial x$ and $\Delta W_n = \sqrt{\Delta t} Z_n$.
 
 **Derivation sketch.** Apply Itô's Lemma to $b(t, X_t)$ between $t_n$ and $t_{n+1}$:
 
 $$
-b(t_{n+1}, X_{t_{n+1}}) \approx b(t_n, X_{t_n}) + b'(t_n, X_{t_n})\,b(t_n, X_{t_n})\,\Delta W_n + \cdots
+b(t_{n+1}, X_{t_{n+1}}) \approx b(t_n, X_{t_n}) + b'(t_n, X_{t_n}) b(t_n, X_{t_n}) \Delta W_n + \cdots
 $$
 
-Substituting back into the integral $\int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s$ and using the Itô integral of $W$ against itself:
+Substituting back into the integral $\int_{t_n}^{t_{n+1}} b(s, X_s) dW_s$ and using the Itô integral of $W$ against itself:
 
 $$
-\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s = \frac{1}{2}\bigl[(\Delta W_n)^2 - \Delta t\bigr]
+\int_{t_n}^{t_{n+1}} (W_s - W_{t_n}) dW_s = \frac{1}{2}\bigl[(\Delta W_n)^2 - \Delta t\bigr]
 $$
 
-produces the correction term $\frac{1}{2}b\,b'\bigl[(\Delta W)^2 - \Delta t\bigr]$.
+produces the correction term $\frac{1}{2}b b'\bigl[(\Delta W)^2 - \Delta t\bigr]$.
 
 **Convergence:**
 
@@ -237,28 +237,28 @@ $$
 ### 6. Example 1 — Ornstein–Uhlenbeck (OU) Process
 
 $$
-dX_t = \theta(\mu - X_t)\,dt + \sigma\,dW_t, \qquad X_0 = x_0.
+dX_t = \theta(\mu - X_t) dt + \sigma dW_t, \qquad X_0 = x_0.
 $$
 
 **Parameters:** $\theta > 0$ (mean-reversion speed), $\mu$ (long-run mean), $\sigma > 0$ (volatility).
 
 **Exact solution.** Multiply both sides by the integrating factor $e^{\theta t}$:
 
-$$d(e^{\theta t} X_t) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt.$$
+$$d(e^{\theta t} X_t) = e^{\theta t} dX_t + \theta e^{\theta t} X_t dt.$$
 
 By Itô's Lemma (with $f(t,x) = e^{\theta t}x$):
 
-$$d(e^{\theta t} X_t) = \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t.$$
+$$d(e^{\theta t} X_t) = \theta\mu e^{\theta t} dt + \sigma e^{\theta t} dW_t.$$
 
 Integrating from $0$ to $t$ and dividing by $e^{\theta t}$:
 
-$$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}\,dW_s.}$$
+$$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)} dW_s.}$$
 
 **Interpretation.**
 
 - $(x_0 - \mu)e^{-\theta t}$: deterministic decay of the initial deviation from $\mu$, with half-life $\ln(2)/\theta$.
 - The stochastic integral is Gaussian with mean zero and variance $\frac{\sigma^2}{2\theta}(1 - e^{-2\theta t})$.
-- As $t \to \infty$: $X_t \to \mathcal{N}\left(\mu,\;\frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
+- As $t \to \infty$: $X_t \to \mathcal{N}\left(\mu, \frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
 
 **Lipschitz check.** $a(x) = \theta(\mu - x)$ satisfies $|a(x) - a(y)| = \theta|x-y|$; $b(x) = \sigma$ is constant. Both conditions hold — unique strong solution by Itô's theorem.
 
@@ -269,13 +269,13 @@ $$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}
 
 ### 7. Example 2 — Geometric Brownian Motion (GBM)
 
-$$dS_t = \mu S_t\,dt + \sigma S_t\,dW_t, \qquad S_0 = s_0 > 0.$$
+$$dS_t = \mu S_t dt + \sigma S_t dW_t, \qquad S_0 = s_0 > 0.$$
 
 **Parameters:** $\mu$ (drift rate), $\sigma > 0$ (volatility), $s_0 > 0$ (initial price).
 
 **Exact solution (compact).** Using the standard log-transform $f(S)=\ln S$:
 
-$$d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.$$
+$$d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma dW_t.$$
 
 Integrating and exponentiating:
 
@@ -285,7 +285,7 @@ For the full step-by-step Itô derivation (and why the $\ln$ ansatz removes the 
 
 **Interpretation.**
 
-- $S_t > 0$ almost surely; log-returns $\ln(S_t/S_0) \sim \mathcal{N}((\mu - \sigma^2/2)t,\;\sigma^2 t)$.
+- $S_t > 0$ almost surely; log-returns $\ln(S_t/S_0) \sim \mathcal{N}((\mu - \sigma^2/2)t, \sigma^2 t)$.
 - $\mathbb{E}[S_t] = S_0 e^{\mu t}$, driven by the MGF of the Gaussian: $\mathbb{E}[e^{\sigma W_t}] = e^{\sigma^2 t/2}$.
 - The $-\sigma^2/2$ Itô correction causes the median $S_0 e^{(\mu-\sigma^2/2)t}$ to lie below the mean — a direct consequence of Jensen's inequality applied to the exponential.
 - $\operatorname{Var}(S_t) = S_0^2 e^{2\mu t}(e^{\sigma^2 t} - 1)$.
@@ -300,13 +300,13 @@ For the full step-by-step Itô derivation (and why the $\ln$ ansatz removes the 
 
 ### 8. Example 3 — Cox–Ingersoll–Ross (CIR) Model
 
-$$dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t, \qquad X_0 = x_0 \ge 0.$$
+$$dX_t = \kappa(\theta - X_t) dt + \sigma\sqrt{X_t} dW_t, \qquad X_0 = x_0 \ge 0.$$
 
 **Parameters:** $\kappa > 0$ (mean-reversion speed), $\theta > 0$ (long-run mean), $\sigma > 0$ (volatility of volatility), $x_0 \ge 0$.
 
 **Exact solution.** No closed-form path expression exists. The transition distribution is known analytically: $X_t \mid X_s$ follows a scaled non-central chi-squared distribution, which can be used for exact simulation. The stationary distribution is:
 
-$$X_\infty \sim \operatorname{Gamma}\left(\frac{2\kappa\theta}{\sigma^2},\;\frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
+$$X_\infty \sim \operatorname{Gamma}\left(\frac{2\kappa\theta}{\sigma^2}, \frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
 
 **Interpretation.**
 
@@ -430,11 +430,11 @@ The Milstein error is roughly 50× smaller than the EM error on the same coarse 
 
 ## Connections
 
-- **[Brownian Motion](brownian_motion.md):** The driving noise $dW_t$ in every SDE is a Brownian motion increment. The simulation algorithms generate $\Delta W = \sqrt{\Delta t}\,Z$ using the BM properties derived there.
+- **[Brownian Motion](brownian_motion.md):** The driving noise $dW_t$ in every SDE is a Brownian motion increment. The simulation algorithms generate $\Delta W = \sqrt{\Delta t} Z$ using the BM properties derived there.
 - **[Itô Calculus](ito_calculus.md):** Itô's Lemma is the main tool for obtaining exact solutions (GBM via the log transform, OU via the integrating factor). The Milstein correction term is derived by applying Itô's Lemma to the diffusion coefficient $b(X)$.
 - **[Black–Scholes](../02_options/black_scholes.md):** The GBM solution $S_t = S_0 e^{(\mu - \sigma^2/2)t + \sigma W_t}$ is the foundation of Black–Scholes pricing. Under the risk-neutral measure, $\mu$ is replaced by $r$.
 - **[Ornstein–Uhlenbeck / Stat Arb](../04_stat_arb/ornstein_uhlenbeck.md):** The OU process models mean-reverting spreads. The exact solution derived here is used to compute the half-life $\ln(2)/\theta$ and calibrate entry/exit z-score thresholds.
-- **[Avellaneda–Stoikov](../03_market_making/avellaneda_stoikov.md):** The mid-price SDE $dS = \sigma\,dW$ (pure BM, a special case with $a = 0$, $b = \sigma$) underlies the AS market-making model. Extensions to drift or mean-reversion require SDE techniques.
+- **[Avellaneda–Stoikov](../03_market_making/avellaneda_stoikov.md):** The mid-price SDE $dS = \sigma dW$ (pure BM, a special case with $a = 0$, $b = \sigma$) underlies the AS market-making model. Extensions to drift or mean-reversion require SDE techniques.
 - **[Jump Diffusion](../02_options/jump_diffusion.md):** Merton's model adds a Poisson jump term to the GBM SDE. Understanding the baseline SDE machinery here is prerequisite to incorporating jumps.
 
 ## Relevance for Prosperity 4

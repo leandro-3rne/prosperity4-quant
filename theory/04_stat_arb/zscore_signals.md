@@ -15,7 +15,7 @@ The z-score framework also naturally handles position sizing and risk management
 **Spread:** Given a cointegrated pair $(Y_t, X_t)$ with hedge ratio $\beta$:
 
 $$
-s_t = Y_t - \beta\,X_t
+s_t = Y_t - \beta X_t
 $$
 
 **Lookback window:** $L \in \mathbb{N}$, the number of recent observations used to estimate the rolling mean and standard deviation.
@@ -39,11 +39,11 @@ $$
 **EMA-based alternative:** For faster adaptation to regime changes, replace the simple rolling mean with an exponential moving average:
 
 $$
-\hat{\mu}_t^{\text{EMA}} = \lambda\,s_t + (1-\lambda)\,\hat{\mu}_{t-1}^{\text{EMA}}, \quad \lambda = \frac{2}{L+1}
+\hat{\mu}_t^{\text{EMA}} = \lambda s_t + (1-\lambda) \hat{\mu}_{t-1}^{\text{EMA}}, \quad \lambda = \frac{2}{L+1}
 $$
 
 $$
-\hat{v}_t^{\text{EMA}} = \lambda\,(s_t - \hat{\mu}_t^{\text{EMA}})^2 + (1-\lambda)\,\hat{v}_{t-1}^{\text{EMA}}
+\hat{v}_t^{\text{EMA}} = \lambda (s_t - \hat{\mu}_t^{\text{EMA}})^2 + (1-\lambda) \hat{v}_{t-1}^{\text{EMA}}
 $$
 
 $$
@@ -73,7 +73,7 @@ $$
 Expanding the variance using the computational formula:
 
 $$
-\hat{\sigma}_t^2 = \frac{1}{L-1}\left(\sum_{i=0}^{L-1} s_{t-i}^2 - L\,\hat{\mu}_t^2\right)
+\hat{\sigma}_t^2 = \frac{1}{L-1}\left(\sum_{i=0}^{L-1} s_{t-i}^2 - L \hat{\mu}_t^2\right)
 $$
 
 The z-score is then:
@@ -85,7 +85,7 @@ $$
 **Interpretation under the OU model.** If $s_t$ follows an OU process with stationary distribution $\mathcal{N}(\mu, \sigma^2/(2\theta))$, then in the stationary regime, $z_t$ is approximately standard normal $\mathcal{N}(0,1)$. The probability of $|z_t| > 2$ under the null (stationary OU) is:
 
 $$
-P(|z| > 2) = 2\,\Phi(-2) = 2 \times 0.0228 = 0.0456 \approx 4.6\%
+P(|z| > 2) = 2 \Phi(-2) = 2 \times 0.0228 = 0.0456 \approx 4.6\%
 $$
 
 This means a z-score beyond $\pm 2$ occurs only about 4.6% of the time if the spread is behaving normally — these are the rare, high-conviction trading opportunities.
@@ -126,7 +126,7 @@ Backtested defaults that balance these tradeoffs: $z_{\text{entry}} = 2.0$, $z_{
 **Equal dollar allocation.** Allocate $D$ dollars to each leg of the trade:
 
 $$
-q_Y = \frac{D}{Y_t}, \quad q_X = \frac{\beta\,D}{X_t}
+q_Y = \frac{D}{Y_t}, \quad q_X = \frac{\beta D}{X_t}
 $$
 
 When entering a long spread position: buy $q_Y$ units of $Y$, sell $q_X$ units of $X$. The dollar exposure on each side is approximately $D$, making the position approximately dollar-neutral.
@@ -138,17 +138,17 @@ $$
 $$
 
 $$
-= D\left(\frac{Y_{t_1} - Y_{t_0}}{Y_{t_0}} - \beta\,\frac{X_{t_1} - X_{t_0}}{X_{t_0}}\right)
+= D\left(\frac{Y_{t_1} - Y_{t_0}}{Y_{t_0}} - \beta \frac{X_{t_1} - X_{t_0}}{X_{t_0}}\right)
 $$
 
 $$
-\approx D\,\frac{s_{t_1} - s_{t_0}}{Y_{t_0}} \quad\text{(for small price changes)}
+\approx D \frac{s_{t_1} - s_{t_0}}{Y_{t_0}} \quad\text{(for small price changes)}
 $$
 
 **Graduated entry (optional).** Instead of all-or-nothing at $z_{\text{entry}}$, scale position size proportionally to the excess deviation:
 
 $$
-q_{\text{scale}} = \min\left(\frac{|z_t| - z_{\text{entry}}}{z_{\text{max}} - z_{\text{entry}}},\; 1\right)
+q_{\text{scale}} = \min\left(\frac{|z_t| - z_{\text{entry}}}{z_{\text{max}} - z_{\text{entry}}},  1\right)
 $$
 
 where $z_{\text{max}}$ is the z-score at which we reach full position size. This avoids committing full capital at the first threshold breach and allows averaging into the position if the spread continues to diverge.
@@ -171,7 +171,7 @@ $$
 \text{If } t - t_{\text{entry}} > T_{\text{max}}: \quad\text{close the position}
 $$
 
-A reasonable default is $T_{\text{max}} = 3 \times t_{1/2}$ (three half-lives). Under the OU model, the probability of not having reverted by $3\,t_{1/2}$ is $(1/2)^3 = 12.5\%$ in expectation — if we're still in the trade, something may be wrong.
+A reasonable default is $T_{\text{max}} = 3 \times t_{1/2}$ (three half-lives). Under the OU model, the probability of not having reverted by $3 t_{1/2}$ is $(1/2)^3 = 12.5\%$ in expectation — if we're still in the trade, something may be wrong.
 
 **Maximum loss stop.** Set a hard dollar loss limit:
 
@@ -186,7 +186,7 @@ This is a safety net independent of the model. Even if the z-score hasn't trigge
 | Stop type | Trigger | Typical value | Rationale |
 |-----------|---------|---------------|-----------|
 | Z-score blowout | $\|z_t\| > z_{\text{stop}}$ | $z_{\text{stop}} = 4.0$ | Spread regime break |
-| Time-based | $t - t_{\text{entry}} > T_{\text{max}}$ | $T_{\text{max}} = 3\,t_{1/2}$ | Mean-reversion too slow |
+| Time-based | $t - t_{\text{entry}} > T_{\text{max}}$ | $T_{\text{max}} = 3 t_{1/2}$ | Mean-reversion too slow |
 | Maximum loss | P&L $< -$max\_loss | 2–5% of capital | Capital preservation |
 
 ## Key Parameters

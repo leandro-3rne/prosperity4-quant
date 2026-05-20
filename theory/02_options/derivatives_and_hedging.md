@@ -1,7 +1,7 @@
 # Derivatives and Hedging
 
 > **Key payoffs at expiry $T$:**
-> $$\text{Call: } \max(S_T - K,\,0), \qquad \text{Put: } \max(K - S_T,\,0), \qquad \text{Forward: } S_T - F$$
+> $$\text{Call: } \max(S_T - K, 0), \qquad \text{Put: } \max(K - S_T, 0), \qquad \text{Forward: } S_T - F$$
 
 ## Intuition
 
@@ -19,7 +19,7 @@ A **forward contract** obliges both parties to trade the underlying at a fixed p
 
 Under continuous compounding and no dividends, no-arbitrage pins the forward price to:
 
-$$F = S_0\,e^{rT}$$
+$$F = S_0 e^{rT}$$
 
 because any other price lets you replicate the forward with stock and bonds at a different cost, creating arbitrage.
 

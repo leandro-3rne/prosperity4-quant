@@ -1,7 +1,7 @@
 # Black–Scholes Option Pricing
 
 > **Core formula:**
-> $$C = S\,N(d_1) - K e^{-rT} N(d_2), \qquad d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}$$
+> $$C = S N(d_1) - K e^{-rT} N(d_2), \qquad d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}$$
 
 ## Intuition
 
@@ -9,7 +9,7 @@ Imagine you sell an insurance contract on a stock. You don't know where the stoc
 
 The model says: in a world with no arbitrage, continuous trading, and log-normal stock prices, the fair price of a European option depends on only five inputs — the current stock price $S$, the strike $K$, the time to expiry $T$, the risk-free rate $r$, and the volatility $\sigma$. Crucially, the expected return $\mu$ of the stock does **not** appear. This is the deep insight of risk-neutral pricing: hedging eliminates the drift, so only volatility matters.
 
-Financially, $N(d_2)$ is the risk-neutral probability that the call finishes in the money, and $N(d_1)$ is the delta-weighted counterpart. The formula decomposes the call value into "what you receive" ($S\,N(d_1)$) minus "what you pay" ($K e^{-rT} N(d_2)$), each probability-weighted under the appropriate numeraire.
+Financially, $N(d_2)$ is the risk-neutral probability that the call finishes in the money, and $N(d_1)$ is the delta-weighted counterpart. The formula decomposes the call value into "what you receive" ($S N(d_1)$) minus "what you pay" ($K e^{-rT} N(d_2)$), each probability-weighted under the appropriate numeraire.
 
 ### Hedging Principle
 
@@ -47,17 +47,17 @@ The key step in the derivation is choosing the stock position (delta) so that th
 
 Under the physical measure $\mathbb{P}$, the stock price follows:
 
-$$dS = \mu S\,dt + \sigma S\,dW_t$$
+$$dS = \mu S dt + \sigma S dW_t$$
 
 where $\mu$ is the expected return. By Itô's lemma applied to $f(S) = \ln S$:
 
-$$d(\ln S) = \frac{1}{S}\,dS - \frac{1}{2}\frac{1}{S^2}(dS)^2$$
+$$d(\ln S) = \frac{1}{S} dS - \frac{1}{2}\frac{1}{S^2}(dS)^2$$
 
-Substituting $dS = \mu S\,dt + \sigma S\,dW_t$ and using $(dS)^2 = \sigma^2 S^2\,dt$ (from the Itô multiplication table: $dW^2 = dt$, $dt\cdot dW = 0$, $dt^2 = 0$):
+Substituting $dS = \mu S dt + \sigma S dW_t$ and using $(dS)^2 = \sigma^2 S^2 dt$ (from the Itô multiplication table: $dW^2 = dt$, $dt\cdot dW = 0$, $dt^2 = 0$):
 
-$$d(\ln S) = \frac{1}{S}(\mu S\,dt + \sigma S\,dW_t) - \frac{1}{2}\sigma^2\,dt$$
+$$d(\ln S) = \frac{1}{S}(\mu S dt + \sigma S dW_t) - \frac{1}{2}\sigma^2 dt$$
 
-$$d(\ln S) = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW_t$$
+$$d(\ln S) = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma dW_t$$
 
 Integrating from $0$ to $T$:
 
@@ -69,11 +69,11 @@ $$S_T = S_0 \exp\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T\righ
 
 Under $\mathbb{P}$, the stock has drift $\mu$. By the Girsanov theorem, there exists an equivalent measure $\mathbb{Q}$ under which we define:
 
-$$\widetilde{W}_t = W_t + \frac{\mu - r}{\sigma}\,t$$
+$$\widetilde{W}_t = W_t + \frac{\mu - r}{\sigma} t$$
 
 The quantity $\theta = (\mu - r)/\sigma$ is the **market price of risk**. Under $\mathbb{Q}$, $\widetilde{W}_t$ is a standard Brownian motion, and the stock dynamics become:
 
-$$dS = rS\,dt + \sigma S\,d\widetilde{W}_t$$
+$$dS = rS dt + \sigma S d\widetilde{W}_t$$
 
 The drift is now $r$, not $\mu$. This is why the expected return drops out of the pricing formula: under the risk-neutral measure, all assets earn the risk-free rate on average.
 
@@ -86,23 +86,23 @@ $$S_T = S_0 \exp\left[\left(r - \tfrac{1}{2}\sigma^2\right)T + \sigma \widetilde
 
 Consider a derivative $V(S,t)$ on the stock. We form a self-financing portfolio:
 
-$$\Pi = V - \Delta\,S$$
+$$\Pi = V - \Delta S$$
 
 where $\Delta$ is the number of shares held (to be chosen). Over an infinitesimal interval, the change in portfolio value is:
 
-$$d\Pi = dV - \Delta\,dS$$
+$$d\Pi = dV - \Delta dS$$
 
 Apply Itô's lemma to $V(S,t)$:
 
-$$dV = \frac{\partial V}{\partial t}\,dt + \frac{\partial V}{\partial S}\,dS + \frac{1}{2}\frac{\partial^2 V}{\partial S^2}(dS)^2$$
+$$dV = \frac{\partial V}{\partial t} dt + \frac{\partial V}{\partial S} dS + \frac{1}{2}\frac{\partial^2 V}{\partial S^2}(dS)^2$$
 
-Substitute $(dS)^2 = \sigma^2 S^2\,dt$:
+Substitute $(dS)^2 = \sigma^2 S^2 dt$:
 
-$$dV = \frac{\partial V}{\partial t}\,dt + \frac{\partial V}{\partial S}\,dS + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2}\,dt$$
+$$dV = \frac{\partial V}{\partial t} dt + \frac{\partial V}{\partial S} dS + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} dt$$
 
 Now substitute into $d\Pi$:
 
-$$d\Pi = \frac{\partial V}{\partial t}\,dt + \frac{\partial V}{\partial S}\,dS + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2}\,dt - \Delta\,dS$$
+$$d\Pi = \frac{\partial V}{\partial t} dt + \frac{\partial V}{\partial S} dS + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} dt - \Delta dS$$
 
 $$d\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2}\right)dt + \left(\frac{\partial V}{\partial S} - \Delta\right)dS$$
 
@@ -112,11 +112,11 @@ $$d\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\pa
 
 The portfolio is now **risk-free** over $dt$. By the no-arbitrage condition, a risk-free portfolio must earn the risk-free rate:
 
-$$d\Pi = r\,\Pi\,dt = r\left(V - \frac{\partial V}{\partial S}\,S\right)dt$$
+$$d\Pi = r \Pi dt = r\left(V - \frac{\partial V}{\partial S} S\right)dt$$
 
 Equating the two expressions:
 
-$$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} = r\,V - r\,S\frac{\partial V}{\partial S}$$
+$$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} = r V - r S\frac{\partial V}{\partial S}$$
 
 Rearranging:
 
@@ -126,11 +126,11 @@ This is the **Black–Scholes PDE**. Note that $\mu$ does not appear — the dri
 
 ### Step 4 — Reduction to the heat equation
 
-The BS PDE has variable coefficients in $S$ because $S^2$ and $S$ multiply $\partial^2 V/\partial S^2$ and $\partial V/\partial S$. Substitution 1 ($\tau = T-t$, $x = \ln(S/K)$, $V = Kv$) yields a PDE for $v$ in which the leading term $\tfrac{1}{2}\sigma^2\,\partial^2 v/\partial x^2$ already has constant coefficients, but first-order ($\partial v/\partial x$) and zeroth-order ($-rv$) terms remain — so it is not yet the heat equation. Substitution 2 ($v = e^{\alpha x + \beta\tau}u$ with suitable $\alpha,\beta$) eliminates those lower-order terms and leaves the standard heat equation for $u$. That PDE admits the classical Gaussian fundamental solution; convolving with the transformed terminal payoff and reversing the substitutions gives the closed-form Black–Scholes formula.
+The BS PDE has variable coefficients in $S$ because $S^2$ and $S$ multiply $\partial^2 V/\partial S^2$ and $\partial V/\partial S$. Substitution 1 ($\tau = T-t$, $x = \ln(S/K)$, $V = Kv$) yields a PDE for $v$ in which the leading term $\tfrac{1}{2}\sigma^2 \partial^2 v/\partial x^2$ already has constant coefficients, but first-order ($\partial v/\partial x$) and zeroth-order ($-rv$) terms remain — so it is not yet the heat equation. Substitution 2 ($v = e^{\alpha x + \beta\tau}u$ with suitable $\alpha,\beta$) eliminates those lower-order terms and leaves the standard heat equation for $u$. That PDE admits the classical Gaussian fundamental solution; convolving with the transformed terminal payoff and reversing the substitutions gives the closed-form Black–Scholes formula.
 
 **Substitution 1:** Let $\tau = T - t$ (time to expiry, so $\tau = 0$ at expiry) and $x = \ln(S/K)$ (log-moneyness). Define:
 
-$$V(S,t) = K\,v(x,\tau)$$
+$$V(S,t) = K v(x,\tau)$$
 
 Compute the partial derivatives. Since $S = K e^x$:
 
@@ -156,7 +156,7 @@ $$\frac{\partial v}{\partial \tau} = \frac{1}{2}\sigma^2\frac{\partial^2 v}{\par
 
 **Substitution 2:** Remove the first-order and zeroth-order terms. Set:
 
-$$v(x,\tau) = e^{\alpha x + \beta \tau}\,u(x,\tau)$$
+$$v(x,\tau) = e^{\alpha x + \beta \tau} u(x,\tau)$$
 
 where $\alpha$ and $\beta$ are constants to be determined. Substituting and matching terms, we require:
 
@@ -176,7 +176,7 @@ $$\boxed{\frac{\partial u}{\partial \tau} = \frac{1}{2}\sigma^2 \frac{\partial^2
 
 With a further rescaling $\tau' = \frac{1}{2}\sigma^2 \tau$, this becomes $\partial u/\partial \tau' = \partial^2 u/\partial x^2$, the classical heat equation whose fundamental solution is the Gaussian kernel:
 
-$$u(x,\tau') = \frac{1}{\sqrt{4\pi\tau'}}\int_{-\infty}^{\infty} u_0(\xi)\,\exp\left(-\frac{(x-\xi)^2}{4\tau'}\right)d\xi$$
+$$u(x,\tau') = \frac{1}{\sqrt{4\pi\tau'}}\int_{-\infty}^{\infty} u_0(\xi) \exp\left(-\frac{(x-\xi)^2}{4\tau'}\right)d\xi$$
 
 Transforming back through all substitutions yields the closed-form Black–Scholes formula.
 
@@ -184,17 +184,17 @@ Transforming back through all substitutions yields the closed-form Black–Schol
 
 For a European call with payoff $\max(S_T - K, 0)$, the risk-neutral pricing formula gives:
 
-$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
+$$C = e^{-rT} \mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
 
-Under $\mathbb{Q}$, $\ln S_T \sim \mathcal{N}\left(\ln S + (r - \tfrac{1}{2}\sigma^2)T,\;\sigma^2 T\right)$. Let $Z \sim \mathcal{N}(0,1)$, so:
+Under $\mathbb{Q}$, $\ln S_T \sim \mathcal{N}\left(\ln S + (r - \tfrac{1}{2}\sigma^2)T, \sigma^2 T\right)$. Let $Z \sim \mathcal{N}(0,1)$, so:
 
-$$S_T = S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right]$$
+$$S_T = S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T} Z\right]$$
 
 The call is in the money when $S_T > K$, i.e., when:
 
-$$S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right] > K$$
+$$S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T} Z\right] > K$$
 
-$$(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z > \ln(K/S)$$
+$$(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T} Z > \ln(K/S)$$
 
 $$Z > \frac{\ln(K/S) - (r - \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}} = -d_2$$
 
@@ -204,25 +204,25 @@ $$d_2 = \frac{\ln(S/K) + (r - \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}$$
 
 Now evaluate the expectation by splitting it:
 
-$$C = e^{-rT}\int_{-d_2}^{\infty}\left(Se^{(r-\sigma^2/2)T + \sigma\sqrt{T}\,z} - K\right)\frac{1}{\sqrt{2\pi}}e^{-z^2/2}\,dz$$
+$$C = e^{-rT}\int_{-d_2}^{\infty}\left(Se^{(r-\sigma^2/2)T + \sigma\sqrt{T} z} - K\right)\frac{1}{\sqrt{2\pi}}e^{-z^2/2} dz$$
 
 **Second term:**
 
-$$e^{-rT}\int_{-d_2}^{\infty} K\,\frac{e^{-z^2/2}}{\sqrt{2\pi}}\,dz = Ke^{-rT}\,N(d_2)$$
+$$e^{-rT}\int_{-d_2}^{\infty} K \frac{e^{-z^2/2}}{\sqrt{2\pi}} dz = Ke^{-rT} N(d_2)$$
 
 **First term:** Factor out $S$:
 
-$$e^{-rT}\cdot S\int_{-d_2}^{\infty} e^{(r-\sigma^2/2)T + \sigma\sqrt{T}\,z}\,\frac{e^{-z^2/2}}{\sqrt{2\pi}}\,dz$$
+$$e^{-rT}\cdot S\int_{-d_2}^{\infty} e^{(r-\sigma^2/2)T + \sigma\sqrt{T} z} \frac{e^{-z^2/2}}{\sqrt{2\pi}} dz$$
 
-$$= S\int_{-d_2}^{\infty}\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{\sigma^2 T}{2} + \sigma\sqrt{T}\,z - \frac{z^2}{2}\right)dz$$
+$$= S\int_{-d_2}^{\infty}\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{\sigma^2 T}{2} + \sigma\sqrt{T} z - \frac{z^2}{2}\right)dz$$
 
 Complete the square in the exponent:
 
-$$-\frac{z^2}{2} + \sigma\sqrt{T}\,z - \frac{\sigma^2 T}{2} = -\frac{1}{2}(z - \sigma\sqrt{T})^2$$
+$$-\frac{z^2}{2} + \sigma\sqrt{T} z - \frac{\sigma^2 T}{2} = -\frac{1}{2}(z - \sigma\sqrt{T})^2$$
 
 Substitute $w = z - \sigma\sqrt{T}$, so $dw = dz$ and the lower limit becomes $-d_2 - \sigma\sqrt{T} = -d_1$:
 
-$$S\int_{-d_1}^{\infty}\frac{1}{\sqrt{2\pi}}e^{-w^2/2}\,dw = S\,N(d_1)$$
+$$S\int_{-d_1}^{\infty}\frac{1}{\sqrt{2\pi}}e^{-w^2/2} dw = S N(d_1)$$
 
 where:
 
@@ -230,7 +230,7 @@ $$d_1 = d_2 + \sigma\sqrt{T} = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\si
 
 **Combining both terms:**
 
-$$\boxed{C = S\,N(d_1) - Ke^{-rT}\,N(d_2)}$$
+$$\boxed{C = S N(d_1) - Ke^{-rT} N(d_2)}$$
 
 $$d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}$$
 
@@ -238,13 +238,13 @@ $$d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}, \qquad d_
 
 For a put with payoff $\max(K - S_T, 0)$:
 
-$$P = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(K - S_T, 0)\right]$$
+$$P = e^{-rT} \mathbb{E}^{\mathbb{Q}}\left[\max(K - S_T, 0)\right]$$
 
 The put is in the money when $S_T < K$, i.e., when $Z < -d_2$. Evaluating the analogous integral:
 
-$$P = Ke^{-rT}\int_{-\infty}^{-d_2}\frac{e^{-z^2/2}}{\sqrt{2\pi}}\,dz - S\int_{-\infty}^{-d_1}\frac{e^{-w^2/2}}{\sqrt{2\pi}}\,dw$$
+$$P = Ke^{-rT}\int_{-\infty}^{-d_2}\frac{e^{-z^2/2}}{\sqrt{2\pi}} dz - S\int_{-\infty}^{-d_1}\frac{e^{-w^2/2}}{\sqrt{2\pi}} dw$$
 
-$$\boxed{P = Ke^{-rT}\,N(-d_2) - S\,N(-d_1)}$$
+$$\boxed{P = Ke^{-rT} N(-d_2) - S N(-d_1)}$$
 
 ### Step 7 — Put-call parity
 
@@ -261,7 +261,7 @@ $$C - P = S - Ke^{-rT}$$
 
 **Verification from the formulas:** Using $N(d) + N(-d) = 1$:
 
-$$C - P = S\,N(d_1) - Ke^{-rT}N(d_2) - \left[Ke^{-rT}N(-d_2) - S\,N(-d_1)\right]$$
+$$C - P = S N(d_1) - Ke^{-rT}N(d_2) - \left[Ke^{-rT}N(-d_2) - S N(-d_1)\right]$$
 
 $$= S\left[N(d_1) + N(-d_1)\right] - Ke^{-rT}\left[N(d_2) + N(-d_2)\right]$$
 
@@ -334,7 +334,7 @@ print(f"Put-call parity check: C - P = {C - P:.3f}, S - Ke^(-rT) = {S - K*np.exp
 - [Greeks](greeks.md) — All Greek letters are partial derivatives of the BS formula; they quantify the sensitivity of $C$ and $P$ to each input.
 - [Implied volatility](implied_volatility.md) — The BS formula is inverted numerically to extract the market's implied $\sigma$ from observed option prices; the fact that implied vol varies with strike reveals the model's limitations.
 - [Jump diffusion](jump_diffusion.md) — Merton's model extends BS by adding Poisson jumps to GBM; the BS formula appears as a building block inside Merton's infinite-series pricing formula.
-- [Avellaneda–Stoikov market making](../03_market_making/avellaneda_stoikov.md) — The diffusion assumption ($dS = \sigma S\,dW$) in the AS model mirrors the BS setup; if you market-make options, you delta-hedge using BS Greeks.
+- [Avellaneda–Stoikov market making](../03_market_making/avellaneda_stoikov.md) — The diffusion assumption ($dS = \sigma S dW$) in the AS model mirrors the BS setup; if you market-make options, you delta-hedge using BS Greeks.
 
 ## Relevance for Prosperity 4
 
@@ -343,4 +343,4 @@ In Prosperity 4, several products are European-style options or option-like inst
 - **Quoting options:** Use BS to compute bid/ask around fair value, adjusting for inventory risk via the Avellaneda–Stoikov framework. Your edge comes from having a better volatility estimate than the other bots.
 - **Delta hedging:** When you accumulate option inventory, hedge by trading $\Delta = N(d_1)$ shares of the underlying per call (or $N(d_1)-1$ per put). This converts directional risk into pure gamma/theta exposure.
 - **Detecting mispricing:** If an option trades significantly above or below BS fair value (after calibrating $\sigma$), that's a potential arbitrage. Check put-call parity violations — if $C - P \neq S - Ke^{-rT}$, you can lock in risk-free profit by trading all three instruments.
-- **Short-horizon simplification:** With short round durations, $T$ is small, so deep OTM options have near-zero value and ATM option value is approximately $S\sigma\sqrt{T}/(2\sqrt{2\pi}) \approx 0.4\,S\sigma\sqrt{T}$. This quick approximation helps you quote instantly without computing the full formula.
+- **Short-horizon simplification:** With short round durations, $T$ is small, so deep OTM options have near-zero value and ATM option value is approximately $S\sigma\sqrt{T}/(2\sqrt{2\pi}) \approx 0.4 S\sigma\sqrt{T}$. This quick approximation helps you quote instantly without computing the full formula.

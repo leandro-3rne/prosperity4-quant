@@ -1,6 +1,6 @@
 # Auction Theory
 
-> **Core formula:** $$b^*(v_i) \;=\; v_i \cdot \frac{N-1}{N}$$ ← optimal bid in a first-price sealed-bid auction with $N$ symmetric bidders and values $v_i \sim U[0,1]$
+> **Core formula:** $$b^*(v_i)  =  v_i \cdot \frac{N-1}{N}$$ ← optimal bid in a first-price sealed-bid auction with $N$ symmetric bidders and values $v_i \sim U[0,1]$
 
 ## Intuition
 
@@ -52,7 +52,7 @@ Suppose all bidders use the same strictly increasing strategy $b(v)$. We seek to
 Since $b$ is strictly increasing, bidder $i$ wins if and only if their value exceeds all others' values (because higher values lead to higher bids):
 
 $$
-b(v_i) > b(v_j) \;\;\forall j \ne i \quad\Longleftrightarrow\quad v_i > v_j \;\;\forall j \ne i.
+b(v_i) > b(v_j)   \forall j \ne i \quad\Longleftrightarrow\quad v_i > v_j   \forall j \ne i.
 $$
 
 **Step 2 — Probability of winning.**
@@ -62,7 +62,7 @@ Suppose bidder $i$ has value $v_i$ and deviates by bidding as if their value wer
 Since each $v_j \sim U[0,1]$ independently:
 
 $$
-\Pr(\text{win}) = \Pr(v_j < z \;\;\forall j \ne i) = \prod_{j \ne i} \Pr(v_j < z) = z^{N-1}.
+\Pr(\text{win}) = \Pr(v_j < z   \forall j \ne i) = \prod_{j \ne i} \Pr(v_j < z) = z^{N-1}.
 $$
 
 **Step 3 — Expected payoff.**
@@ -70,7 +70,7 @@ $$
 Bidder $i$'s expected payoff from bidding $b(z)$ when their true value is $v_i$:
 
 $$
-\Pi(z;\, v_i) = \bigl(v_i - b(z)\bigr) \cdot z^{N-1}.
+\Pi(z;  v_i) = \bigl(v_i - b(z)\bigr) \cdot z^{N-1}.
 $$
 
 **Step 4 — Optimality condition.**
@@ -102,7 +102,7 @@ $$
 **Step 6 — Integrate.**
 
 $$
-b(v_i) \cdot v_i^{N-1} = \int_0^{v_i} (N-1) \cdot x^{N-1}\, dx = (N-1) \cdot \frac{v_i^N}{N} = \frac{N-1}{N} \cdot v_i^N
+b(v_i) \cdot v_i^{N-1} = \int_0^{v_i} (N-1) \cdot x^{N-1}  dx = (N-1) \cdot \frac{v_i^N}{N} = \frac{N-1}{N} \cdot v_i^N
 $$
 
 where the boundary condition $b(0) = 0$ (a bidder with zero value bids zero) determines the constant of integration.
@@ -110,11 +110,11 @@ where the boundary condition $b(0) = 0$ (a bidder with zero value bids zero) det
 **Step 7 — Solve for $b(v_i)$.**
 
 $$
-b(v_i) = \frac{(N-1)\, v_i^N / N}{v_i^{N-1}} = \frac{N-1}{N}\, v_i.
+b(v_i) = \frac{(N-1)  v_i^N / N}{v_i^{N-1}} = \frac{N-1}{N}  v_i.
 $$
 
 $$
-\boxed{b^*(v_i) = \frac{N-1}{N}\, v_i}
+\boxed{b^*(v_i) = \frac{N-1}{N}  v_i}
 $$
 
 **Interpretation:** Each bidder shades their bid by a fraction $1/N$ of their value. As $N \to \infty$, $b^*(v) \to v$: with many competitors, shading vanishes because the risk of losing dominates.
@@ -126,7 +126,7 @@ The seller's revenue equals the highest bid: $b^*(v_{(1)}) = \frac{N-1}{N} v_{(1
 The CDF of the maximum of $N$ i.i.d. $U[0,1]$ random variables is $F_{(1)}(v) = v^N$, so the PDF is $f_{(1)}(v) = N v^{N-1}$.
 
 $$
-\mathbb{E}[\text{Revenue}] = \frac{N-1}{N} \cdot \mathbb{E}[v_{(1)}] = \frac{N-1}{N} \cdot \int_0^1 v \cdot N v^{N-1}\, dv = \frac{N-1}{N} \cdot N \cdot \frac{1}{N+1}
+\mathbb{E}[\text{Revenue}] = \frac{N-1}{N} \cdot \mathbb{E}[v_{(1)}] = \frac{N-1}{N} \cdot \int_0^1 v \cdot N v^{N-1}  dv = \frac{N-1}{N} \cdot N \cdot \frac{1}{N+1}
 $$
 
 $$
@@ -199,7 +199,7 @@ $$
 The expected second-highest value:
 
 $$
-\mathbb{E}[v_{(2)}] = \int_0^1 v \cdot N(N-1) v^{N-2}(1-v)\, dv = N(N-1) \int_0^1 \bigl(v^{N-1} - v^N\bigr)\, dv
+\mathbb{E}[v_{(2)}] = \int_0^1 v \cdot N(N-1) v^{N-2}(1-v)  dv = N(N-1) \int_0^1 \bigl(v^{N-1} - v^N\bigr)  dv
 $$
 
 $$
@@ -245,13 +245,13 @@ To see why: the bidder with value $v$ chooses a bid to maximise surplus. By the 
 Integrating from $0$ to $v$:
 
 $$
-U(v) = U(0) + \int_0^v Q(x)\, dx.
+U(v) = U(0) + \int_0^v Q(x)  dx.
 $$
 
 By assumption (5), $U(0) = 0$ (a bidder with value zero has zero surplus). And by assumption (4), $Q(v)$ is the same across mechanisms: $Q(v) = F(v)^{N-1} = v^{N-1}$ (the probability that all $N-1$ other values are below $v$). Therefore:
 
 $$
-U(v) = \int_0^v x^{N-1}\, dx = \frac{v^N}{N}.
+U(v) = \int_0^v x^{N-1}  dx = \frac{v^N}{N}.
 $$
 
 Since $U(v) = v \cdot Q(v) - m(v) = v \cdot v^{N-1} - m(v) = v^N - m(v)$:
@@ -263,7 +263,7 @@ $$
 The **ex-ante expected revenue** (averaging over the seller's perspective) is $N$ times the ex-ante expected payment per bidder:
 
 $$
-\mathbb{E}[\text{Revenue}] = N \cdot \mathbb{E}[m(v)] = N \int_0^1 \frac{N-1}{N} v^N\, dv = (N-1) \cdot \frac{1}{N+1} = \frac{N-1}{N+1}.
+\mathbb{E}[\text{Revenue}] = N \cdot \mathbb{E}[m(v)] = N \int_0^1 \frac{N-1}{N} v^N  dv = (N-1) \cdot \frac{1}{N+1} = \frac{N-1}{N+1}.
 $$
 
 $$
@@ -311,7 +311,7 @@ Revenue equivalence relies on its assumptions. It fails when:
 **First-price optimal bid:**
 
 $$
-b^*(v_i) = \frac{4}{5}\, v_i = 0.8\, v_i.
+b^*(v_i) = \frac{4}{5}  v_i = 0.8  v_i.
 $$
 
 If your value is $v = 0.75$:
@@ -322,7 +322,7 @@ $$
 
 Expected surplus if you win: $0.75 - 0.60 = 0.15$.
 
-Probability of winning: $\Pr(v_j < 0.75 \;\;\forall j \ne i) = 0.75^4 = 0.3164$.
+Probability of winning: $\Pr(v_j < 0.75   \forall j \ne i) = 0.75^4 = 0.3164$.
 
 Expected payoff: $0.15 \times 0.3164 = 0.0475$.
 

@@ -1,6 +1,6 @@
 # Repeated Games
 
-> **Core formula:** $$U_i \;=\; \sum_{t=0}^{\infty} \delta^t \, u_i(a^t) \qquad \text{where } \delta \in (0,1) \text{ is the discount factor}$$
+> **Core formula:** $$U_i  =  \sum_{t=0}^{\infty} \delta^t   u_i(a^t) \qquad \text{where } \delta \in (0,1) \text{ is the discount factor}$$
 
 ## Intuition
 
@@ -35,7 +35,7 @@ The **folk theorem** formalises this intuition: in an infinitely repeated game w
 **Normalised payoffs.** To make payoffs comparable across different horizons, we sometimes use the **average discounted payoff**:
 
 $$
-\bar{U}_i = (1 - \delta) \sum_{t=0}^{\infty} \delta^t \, u_i(a^t).
+\bar{U}_i = (1 - \delta) \sum_{t=0}^{\infty} \delta^t   u_i(a^t).
 $$
 
 The factor $(1-\delta)$ normalises the geometric sum so that a constant stream of payoff $c$ yields $\bar{U}_i = c$.
@@ -59,7 +59,7 @@ $$
 For a stream that pays $c_1$ for one period then $c_2$ forever after:
 
 $$
-U_i = c_1 + \delta \cdot c_2 + \delta^2 \cdot c_2 + \cdots = c_1 + \delta \cdot \frac{c_2}{1 - \delta} = c_1 + \frac{\delta\, c_2}{1 - \delta}.
+U_i = c_1 + \delta \cdot c_2 + \delta^2 \cdot c_2 + \cdots = c_1 + \delta \cdot \frac{c_2}{1 - \delta} = c_1 + \frac{\delta  c_2}{1 - \delta}.
 $$
 
 ### 2. The Minimax Value
@@ -76,8 +76,8 @@ $$
 \begin{array}{c|cc}
  & C & D \\
 \hline
-C & (3,\;3) & (0,\;5) \\
-D & (5,\;0) & (1,\;1)
+C & (3, 3) & (0, 5) \\
+D & (5, 0) & (1, 1)
 \end{array}
 $$
 
@@ -95,7 +95,7 @@ The minimax payoff profile is $(1, 1)$ — the mutual defection outcome.
 **Theorem (Folk Theorem, Nash equilibrium version).** Let $G$ be a finite stage game and $G(\delta)$ the infinitely repeated game with discount factor $\delta$. Let $\mathcal{F}$ be the set of feasible payoff vectors (the convex hull of $\{u(a) : a \in A\}$). For any payoff vector $\mathbf{v} = (v_1, \ldots, v_n) \in \mathcal{F}$ satisfying
 
 $$
-v_i > \underline{v}_i \qquad \forall\, i \in N
+v_i > \underline{v}_i \qquad \forall  i \in N
 $$
 
 there exists a threshold $\bar{\delta} \in (0, 1)$ such that for all $\delta \in (\bar{\delta}, 1)$, the payoff vector $\mathbf{v}$ can be sustained as a Nash equilibrium average payoff of $G(\delta)$.
@@ -114,7 +114,7 @@ For the Prisoner's Dilemma, the feasible set is the convex hull of $\{(3,3), (0,
 Formally, for player $i$:
 
 $$
-\sigma_i^{\text{grim}}(h^t) = \begin{cases} C & \text{if } a^s = (C, C) \;\;\forall\, s < t \\ D & \text{otherwise} \end{cases}
+\sigma_i^{\text{grim}}(h^t) = \begin{cases} C & \text{if } a^s = (C, C)   \forall  s < t \\ D & \text{otherwise} \end{cases}
 $$
 
 **Claim.** If both players use grim trigger, the resulting outcome is $(C, C)$ in every period, provided $\delta \ge 1/2$.
@@ -140,29 +140,29 @@ $$
 **No-deviation condition:** Player 1 prefers cooperation if $V^{\text{coop}} \ge V^{\text{dev}}$:
 
 $$
-\frac{3}{1 - \delta} \;\ge\; 5 + \frac{\delta}{1 - \delta}
+\frac{3}{1 - \delta}  \ge  5 + \frac{\delta}{1 - \delta}
 $$
 
 Multiply both sides by $(1 - \delta)$ (positive since $\delta < 1$):
 
 $$
-3 \;\ge\; 5(1 - \delta) + \delta
+3  \ge  5(1 - \delta) + \delta
 $$
 
 $$
-3 \;\ge\; 5 - 5\delta + \delta
+3  \ge  5 - 5\delta + \delta
 $$
 
 $$
-3 \;\ge\; 5 - 4\delta
+3  \ge  5 - 4\delta
 $$
 
 $$
-4\delta \;\ge\; 2
+4\delta  \ge  2
 $$
 
 $$
-\delta \;\ge\; \frac{1}{2}
+\delta  \ge  \frac{1}{2}
 $$
 
 $$
@@ -179,8 +179,8 @@ $$
 \begin{array}{c|cc}
  & C & D \\
 \hline
-C & (R,\;R) & (S,\;T) \\
-D & (T,\;S) & (P,\;P)
+C & (R, R) & (S, T) \\
+D & (T, S) & (P, P)
 \end{array}
 $$
 
@@ -324,8 +324,8 @@ $$
 \begin{array}{c|cc}
  & \text{Wide} & \text{Tight} \\
 \hline
-\text{Wide} & (8,\;8) & (1,\;12) \\
-\text{Tight} & (12,\;1) & (3,\;3)
+\text{Wide} & (8, 8) & (1, 12) \\
+\text{Tight} & (12, 1) & (3, 3)
 \end{array}
 $$
 

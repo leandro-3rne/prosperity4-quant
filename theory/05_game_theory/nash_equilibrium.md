@@ -1,6 +1,6 @@
 # Nash Equilibrium
 
-> **Core formula:** $$s^{ * } = (s_1^{ * },\ldots,s_n^{ * }) \text{ is a Nash equilibrium if } \forall\, i,\; \forall\, s_i \in S_i:\quad u_i(s_i^{ * },\, s_{-i}^{ * }) \;\ge\; u_i(s_i,\, s_{-i}^{ * })$$
+> **Core formula:** $$s^{ * } = (s_1^{ * },\ldots,s_n^{ * }) \text{ is a Nash equilibrium if } \forall  i,  \forall  s_i \in S_i:\quad u_i(s_i^{ * },  s_{-i}^{ * })  \ge  u_i(s_i,  s_{-i}^{ * })$$
 
 ## Intuition
 
@@ -15,7 +15,7 @@ The concept is named after John Nash, who proved in 1950 that every finite game 
 A **normal-form game** is a triple
 
 $$
-G = \bigl(N,\; \{S_i\}_{i \in N},\; \{u_i\}_{i \in N}\bigr)
+G = \bigl(N,  \{S_i\}_{i \in N},  \{u_i\}_{i \in N}\bigr)
 $$
 
 where:
@@ -42,19 +42,19 @@ where:
 A strategy profile $s^{ * } = (s_1^{ * }, \ldots, s_n^{ * })$ is a **Nash equilibrium** (NE) if no player can strictly improve their payoff by a unilateral deviation:
 
 $$
-\forall\, i \in N, \quad \forall\, s_i \in S_i: \qquad u_i(s_i^{ * },\, s_{-i}^{ * }) \;\ge\; u_i(s_i,\, s_{-i}^{ * }).
+\forall  i \in N, \quad \forall  s_i \in S_i: \qquad u_i(s_i^{ * },  s_{-i}^{ * })  \ge  u_i(s_i,  s_{-i}^{ * }).
 $$
 
 Equivalently, each player's strategy is a best response to the others:
 
 $$
-s_i^{ * } \;\in\; \arg\max_{s_i \in S_i}\; u_i(s_i,\, s_{-i}^{ * }) \qquad \forall\, i \in N.
+s_i^{ * }  \in  \arg\max_{s_i \in S_i}  u_i(s_i,  s_{-i}^{ * }) \qquad \forall  i \in N.
 $$
 
 Define the **best-response correspondence** for player $i$:
 
 $$
-BR_i(s_{-i}) = \{ s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \quad \forall\, s_i' \in S_i \}.
+BR_i(s_{-i}) = \{ s_i \in S_i : u_i(s_i, s_{-i}) \ge u_i(s_i', s_{-i}) \quad \forall  s_i' \in S_i \}.
 $$
 
 Then $s^*$ is a NE if and only if $s_i^{ * } \in BR_i(s_{-i}^{ * })$ for every $i$.
@@ -64,7 +64,7 @@ Then $s^*$ is a NE if and only if $s_i^{ * } \in BR_i(s_{-i}^{ * })$ for every $
 **Strict dominance.** A strategy $s_i \in S_i$ is **strictly dominated** if there exists another strategy $s_i' \in S_i$ such that
 
 $$
-u_i(s_i',\, s_{-i}) \;>\; u_i(s_i,\, s_{-i}) \qquad \forall\, s_{-i} \in S_{-i}.
+u_i(s_i',  s_{-i})  >  u_i(s_i,  s_{-i}) \qquad \forall  s_{-i} \in S_{-i}.
 $$
 
 A rational player will never play a strictly dominated strategy. If $s_i$ is strictly dominated, we can remove it from $S_i$ without affecting any NE.
@@ -83,8 +83,8 @@ $$
 \begin{array}{c|cc}
  & C & D \\
 \hline
-C & (3,\;3) & (0,\;5) \\
-D & (5,\;0) & (1,\;1)
+C & (3, 3) & (0, 5) \\
+D & (5, 0) & (1, 1)
 \end{array}
 $$
 
@@ -129,13 +129,13 @@ Note the tragic structure: both players would prefer $(C, C)$ with payoff $(3, 3
 **Mixed strategies.** A mixed strategy for player $i$ is a probability distribution $\sigma_i \in \Delta(S_i)$ over their pure strategies. Player $i$'s expected payoff under mixed profile $\sigma = (\sigma_1, \ldots, \sigma_n)$ is
 
 $$
-U_i(\sigma) \;=\; \sum_{s \in S} \left(\prod_{j=1}^{n} \sigma_j(s_j)\right) u_i(s).
+U_i(\sigma)  =  \sum_{s \in S} \left(\prod_{j=1}^{n} \sigma_j(s_j)\right) u_i(s).
 $$
 
 A mixed strategy NE is a profile $\sigma^*$ satisfying
 
 $$
-U_i(\sigma_i^{ * },\, \sigma_{-i}^{ * }) \;\ge\; U_i(\sigma_i,\, \sigma_{-i}^{ * }) \qquad \forall\, i,\;\; \forall\, \sigma_i \in \Delta(S_i).
+U_i(\sigma_i^{ * },  \sigma_{-i}^{ * })  \ge  U_i(\sigma_i,  \sigma_{-i}^{ * }) \qquad \forall  i,   \forall  \sigma_i \in \Delta(S_i).
 $$
 
 **Proof sketch.** Define the combined mixed-strategy space $\Sigma = \Delta(S_1) \times \cdots \times \Delta(S_n)$. This is a non-empty, compact, convex subset of Euclidean space. Define the best-response correspondence $BR: \Sigma \rightrightarrows \Sigma$ by
@@ -154,8 +154,8 @@ $$
 \begin{array}{c|cc}
  & H & T \\
 \hline
-H & (+1,\;-1) & (-1,\;+1) \\
-T & (-1,\;+1) & (+1,\;-1)
+H & (+1, -1) & (-1, +1) \\
+T & (-1, +1) & (+1, -1)
 \end{array}
 $$
 
@@ -223,7 +223,7 @@ $$
 q = \frac{1}{2}
 $$
 
-**The unique Nash equilibrium** is the mixed profile $\sigma^* = \bigl((\tfrac{1}{2}, \tfrac{1}{2}),\; (\tfrac{1}{2}, \tfrac{1}{2})\bigr)$, where both players randomise uniformly. Each player's expected payoff is:
+**The unique Nash equilibrium** is the mixed profile $\sigma^* = \bigl((\tfrac{1}{2}, \tfrac{1}{2}),  (\tfrac{1}{2}, \tfrac{1}{2})\bigr)$, where both players randomise uniformly. Each player's expected payoff is:
 
 $$
 U_1(\sigma^*) = \frac{1}{2}\cdot\frac{1}{2}\cdot(+1) + \frac{1}{2}\cdot\frac{1}{2}\cdot(-1) + \frac{1}{2}\cdot\frac{1}{2}\cdot(-1) + \frac{1}{2}\cdot\frac{1}{2}\cdot(+1) = 0
@@ -295,8 +295,8 @@ $$
 \begin{array}{c|cc}
  & O & F \\
 \hline
-O & (3,\;2) & (0,\;0) \\
-F & (0,\;0) & (2,\;3)
+O & (3, 2) & (0, 0) \\
+F & (0, 0) & (2, 3)
 \end{array}
 $$
 

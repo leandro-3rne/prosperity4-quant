@@ -1,7 +1,7 @@
 # Jump-Diffusion: Merton (1976) Model
 
 > **Core formula:**
-> $$\frac{dS}{S} = (\mu - \lambda\bar{k})\,dt + \sigma\,dW_t + (J-1)\,dN_t$$
+> $$\frac{dS}{S} = (\mu - \lambda\bar{k}) dt + \sigma dW_t + (J-1) dN_t$$
 
 ## Intuition
 
@@ -55,7 +55,7 @@ $$X_t = \sum_{i=1}^{N_t} Y_i$$
 
 Its expectation (by the law of total expectation, conditioning on $N_t$):
 
-$$\mathbb{E}[X_t] = \mathbb{E}\left[\sum_{i=1}^{N_t}Y_i\right] = \mathbb{E}[N_t]\cdot\mathbb{E}[Y_1] = \lambda t\,\mathbb{E}[Y_1]$$
+$$\mathbb{E}[X_t] = \mathbb{E}\left[\sum_{i=1}^{N_t}Y_i\right] = \mathbb{E}[N_t]\cdot\mathbb{E}[Y_1] = \lambda t \mathbb{E}[Y_1]$$
 
 In Merton's model, the jump sizes are the multiplicative factors $J_i$, and the "size" attached to each jump in the return equation is $J_i - 1$. So the cumulative jump contribution to returns is:
 
@@ -63,25 +63,25 @@ $$\sum_{i=1}^{N_t}(J_i - 1)$$
 
 with expectation:
 
-$$\mathbb{E}\left[\sum_{i=1}^{N_t}(J_i - 1)\right] = \lambda t \cdot \mathbb{E}[J-1] = \lambda t\,\bar{k}$$
+$$\mathbb{E}\left[\sum_{i=1}^{N_t}(J_i - 1)\right] = \lambda t \cdot \mathbb{E}[J-1] = \lambda t \bar{k}$$
 
 ### Step 2 — The Merton SDE
 
 The stock price dynamics combine continuous diffusion with discrete jumps:
 
-$$\frac{dS}{S} = (\mu - \lambda\bar{k})\,dt + \sigma\,dW_t + (J-1)\,dN_t$$
+$$\frac{dS}{S} = (\mu - \lambda\bar{k}) dt + \sigma dW_t + (J-1) dN_t$$
 
 Breaking this down:
 
-- $(\mu - \lambda\bar{k})\,dt$: drift, adjusted downward by $\lambda\bar{k}$ to compensate for the expected upward contribution of jumps. This ensures $\mathbb{E}[dS/S] = \mu\,dt$.
-- $\sigma\,dW_t$: the usual diffusive (continuous) component.
-- $(J-1)\,dN_t$: at each Poisson event, the price jumps by a factor of $J$, so the return jumps by $J-1$.
+- $(\mu - \lambda\bar{k}) dt$: drift, adjusted downward by $\lambda\bar{k}$ to compensate for the expected upward contribution of jumps. This ensures $\mathbb{E}[dS/S] = \mu dt$.
+- $\sigma dW_t$: the usual diffusive (continuous) component.
+- $(J-1) dN_t$: at each Poisson event, the price jumps by a factor of $J$, so the return jumps by $J-1$.
 
 **Verification of drift compensation:** Over $[0,dt]$:
 
-$$\mathbb{E}\left[\frac{dS}{S}\right] = (\mu - \lambda\bar{k})\,dt + 0 + \mathbb{E}[(J-1)]\cdot\mathbb{E}[dN_t]$$
+$$\mathbb{E}\left[\frac{dS}{S}\right] = (\mu - \lambda\bar{k}) dt + 0 + \mathbb{E}[(J-1)]\cdot\mathbb{E}[dN_t]$$
 
-$$= (\mu - \lambda\bar{k})\,dt + \bar{k}\cdot\lambda\,dt = \mu\,dt \qquad \checkmark$$
+$$= (\mu - \lambda\bar{k}) dt + \bar{k}\cdot\lambda dt = \mu dt \qquad \checkmark$$
 
 ### Step 3 — Solution of the SDE
 
@@ -95,25 +95,25 @@ $$\ln\frac{S_T}{S_0} = \left(\mu - \lambda\bar{k} - \frac{\sigma^2}{2}\right)T +
 
 Since $\ln J_i \sim \mathcal{N}(\mu_J, \sigma_J^2)$ independently:
 
-$$\sum_{i=1}^{n}\ln J_i \sim \mathcal{N}(n\mu_J,\; n\sigma_J^2)$$
+$$\sum_{i=1}^{n}\ln J_i \sim \mathcal{N}(n\mu_J,  n\sigma_J^2)$$
 
 Conditional on $N_T = n$, the log-return is normal:
 
-$$\ln\frac{S_T}{S_0}\;\Big|\;N_T = n \;\;\sim\;\; \mathcal{N}\left(\left(\mu-\lambda\bar{k}-\frac{\sigma^2}{2}\right)T + n\mu_J,\;\; \sigma^2 T + n\sigma_J^2\right)$$
+$$\ln\frac{S_T}{S_0} \Big| N_T = n   \sim   \mathcal{N}\left(\left(\mu-\lambda\bar{k}-\frac{\sigma^2}{2}\right)T + n\mu_J,   \sigma^2 T + n\sigma_J^2\right)$$
 
 ### Step 4 — Risk-neutral pricing
 
 Under Merton's assumption that jump risk is diversifiable and earns no premium, the risk-neutral dynamics replace $\mu$ with $r$:
 
-$$\frac{dS}{S} = (r - \lambda\bar{k})\,dt + \sigma\,d\widetilde{W}_t + (J-1)\,dN_t$$
+$$\frac{dS}{S} = (r - \lambda\bar{k}) dt + \sigma d\widetilde{W}_t + (J-1) dN_t$$
 
 The option price is:
 
-$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
+$$C = e^{-rT} \mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
 
 Condition on the number of jumps $N_T = n$ (Poisson with parameter $\lambda T$):
 
-$$C = e^{-rT}\sum_{n=0}^{\infty}\mathbb{P}(N_T = n)\;\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K,0)\;\Big|\;N_T = n\right]$$
+$$C = e^{-rT}\sum_{n=0}^{\infty}\mathbb{P}(N_T = n) \mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K,0) \Big| N_T = n\right]$$
 
 Conditional on $n$ jumps, $S_T$ is lognormal (as shown in Step 3), so the inner expectation is a Black–Scholes formula with modified parameters.
 
@@ -141,9 +141,9 @@ This is the risk-neutral jump intensity, adjusted for the mean jump size.
 
 **The Merton formula:**
 
-$$\boxed{C_{\text{Merton}} = \sum_{n=0}^{\infty} \frac{e^{-\lambda' T}(\lambda' T)^n}{n!}\;C_{\text{BS}}(S, K, T, r_n, \sigma_n)}$$
+$$\boxed{C_{\text{Merton}} = \sum_{n=0}^{\infty} \frac{e^{-\lambda' T}(\lambda' T)^n}{n!} C_{\text{BS}}(S, K, T, r_n, \sigma_n)}$$
 
-where $C_{\text{BS}}(S,K,T,r,\sigma) = S\,N(d_1) - Ke^{-rT}N(d_2)$ is the standard Black–Scholes call price.
+where $C_{\text{BS}}(S,K,T,r,\sigma) = S N(d_1) - Ke^{-rT}N(d_2)$ is the standard Black–Scholes call price.
 
 The formula is an infinite series, but it converges rapidly because the Poisson weights $e^{-\lambda' T}(\lambda' T)^n/n!$ decay factorially. In practice, 10–20 terms suffice.
 
@@ -310,4 +310,4 @@ In Prosperity 4, price dynamics often exhibit jumps — sudden shifts when other
 - **Calibrating jump parameters:** From historical round data, estimate $\lambda$ (count the number of price moves exceeding $3\sigma$), $\mu_J$ and $\sigma_J$ (fit a normal distribution to the log-sizes of those jumps), and $\sigma$ (from the remaining continuous returns after removing jumps). Use a simple threshold rule: classify any return $|r_t| > 3\sigma_{\text{diffusive}}$ as a jump.
 - **Option pricing with jumps:** If the competition includes option-like instruments, the Merton model gives more accurate fair values than BS, especially for OTM puts. Quoting OTM puts at BS prices when jumps are present means you are systematically under-pricing crash risk.
 - **Risk management:** The expected loss from a jump event is $\lambda \cdot \mathbb{E}[|J-1|] \cdot |q| \cdot S$ per unit time, where $q$ is your inventory. If this exceeds your risk budget, reduce position size regardless of what the continuous-time model suggests.
-- **Spread widening:** When jump risk is high (e.g., volatile periods in the competition), widen your bid-ask spread to compensate for the possibility that the price jumps through your quote before you can cancel it. The extra spread should be approximately $\lambda\,\mathbb{E}[|J-1|]\,S\,\Delta t$, where $\Delta t$ is your cancel latency.
+- **Spread widening:** When jump risk is high (e.g., volatile periods in the competition), widen your bid-ask spread to compensate for the possibility that the price jumps through your quote before you can cancel it. The extra spread should be approximately $\lambda \mathbb{E}[|J-1|] S \Delta t$, where $\Delta t$ is your cancel latency.

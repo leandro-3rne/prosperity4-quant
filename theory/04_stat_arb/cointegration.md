@@ -1,6 +1,6 @@
 # Cointegration
 
-> **Core formula:** $$s_t = Y_t - \beta X_t \;\sim\; I(0) \quad\text{(stationary)}$$
+> **Core formula:** $$s_t = Y_t - \beta X_t  \sim  I(0) \quad\text{(stationary)}$$
 
 ## Intuition
 
@@ -19,7 +19,7 @@ In pairs trading, we seek cointegrated assets: individually, each price is a non
 **Cointegration definition.** Two $I(1)$ series $Y_t$ and $X_t$ are cointegrated if there exists a constant $\beta$ (the cointegrating vector / hedge ratio) such that:
 
 $$
-s_t = Y_t - \beta X_t \;\sim\; I(0)
+s_t = Y_t - \beta X_t  \sim  I(0)
 $$
 
 The spread $s_t$ is stationary even though $Y_t$ and $X_t$ individually are not.
@@ -42,7 +42,7 @@ The Engle-Granger method (1987) is the standard test for cointegration between t
 **Step 1a: Cointegrating regression.** Run an OLS regression of $Y_t$ on $X_t$:
 
 $$
-Y_t = \hat{\alpha} + \hat{\beta}\,X_t + \hat{\varepsilon}_t
+Y_t = \hat{\alpha} + \hat{\beta} X_t + \hat{\varepsilon}_t
 $$
 
 The OLS estimator for the hedge ratio is:
@@ -54,7 +54,7 @@ $$
 The intercept is:
 
 $$
-\hat{\alpha} = \bar{Y} - \hat{\beta}\,\bar{X}
+\hat{\alpha} = \bar{Y} - \hat{\beta} \bar{X}
 $$
 
 Under cointegration, the OLS estimator $\hat{\beta}$ is *super-consistent*: it converges to the true $\beta$ at rate $T$ (not $\sqrt{T}$), which means even a relatively short sample gives a precise hedge ratio.
@@ -62,7 +62,7 @@ Under cointegration, the OLS estimator $\hat{\beta}$ is *super-consistent*: it c
 **Step 1b: Extract the residuals (spread).**
 
 $$
-\hat{\varepsilon}_t = Y_t - \hat{\alpha} - \hat{\beta}\,X_t
+\hat{\varepsilon}_t = Y_t - \hat{\alpha} - \hat{\beta} X_t
 $$
 
 These residuals are the estimated spread. If $Y$ and $X$ are truly cointegrated, $\hat{\varepsilon}_t$ should be stationary.
@@ -76,7 +76,7 @@ The ADF test checks whether a time series has a unit root (is non-stationary).
 **Test equation.** Regress:
 
 $$
-\Delta\hat{\varepsilon}_t = \rho\,\hat{\varepsilon}_{t-1} + \sum_{j=1}^{p} c_j\,\Delta\hat{\varepsilon}_{t-j} + u_t
+\Delta\hat{\varepsilon}_t = \rho \hat{\varepsilon}_{t-1} + \sum_{j=1}^{p} c_j \Delta\hat{\varepsilon}_{t-j} + u_t
 $$
 
 where $\Delta\hat{\varepsilon}_t = \hat{\varepsilon}_t - \hat{\varepsilon}_{t-1}$, the lagged differences $\Delta\hat{\varepsilon}_{t-j}$ control for serial correlation, and $u_t$ is white noise.
@@ -116,7 +116,7 @@ This statistic does **not** follow a standard $t$-distribution. It follows the D
 The hedge ratio $\hat{\beta}$ from OLS has a clean interpretation: for every 1 unit of $X$ held short, hold $\hat{\beta}^{-1}$ units of $Y$ long (or equivalently, for each unit of $Y$ long, hold $\hat{\beta}$ units of $X$ short). The spread is:
 
 $$
-s_t = Y_t - \hat{\beta}\,X_t
+s_t = Y_t - \hat{\beta} X_t
 $$
 
 In practice, $\hat{\beta}$ should be re-estimated on a rolling window to adapt to slowly changing equilibrium relationships. A common window length is 60–120 observations.

@@ -1,6 +1,6 @@
 # Strategy Integration
 
-> **Core formula:** $$r_t^{\text{mod}} = S_t - q_t\,\gamma\,\sigma^2(T-t) + \alpha\,z_t\,\sigma$$
+> **Core formula:** $$r_t^{\text{mod}} = S_t - q_t \gamma \sigma^2(T-t) + \alpha z_t \sigma$$
 
 ## Intuition
 
@@ -16,16 +16,16 @@ We build on two foundations and fuse them into one decision framework.
 
 **From Avellaneda-Stoikov market making:**
 
-- Mid-price follows arithmetic Brownian motion: $dS_t = \sigma\,dW_t$
+- Mid-price follows arithmetic Brownian motion: $dS_t = \sigma dW_t$
 - Inventory: $q_t \in \mathbb{Z}$ (units held, target is zero in pure AS)
-- Fill intensity at distance $\delta$ from mid: $\lambda(\delta) = A\,e^{-\kappa\,\delta}$
-- Reservation price: $r_t = S_t - q_t\,\gamma\,\sigma^2(T - t)$
-- Optimal half-spread: $\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$
+- Fill intensity at distance $\delta$ from mid: $\lambda(\delta) = A e^{-\kappa \delta}$
+- Reservation price: $r_t = S_t - q_t \gamma \sigma^2(T - t)$
+- Optimal half-spread: $\delta^* = \gamma \sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$
 
 **From statistical arbitrage (z-score signals):**
 
-- Spread between two cointegrated assets: $s_t = Y_t - \beta\,X_t$
-- Spread follows an OU process: $ds_t = \theta(\mu_s - s_t)\,dt + \sigma_s\,dW_t^s$
+- Spread between two cointegrated assets: $s_t = Y_t - \beta X_t$
+- Spread follows an OU process: $ds_t = \theta(\mu_s - s_t) dt + \sigma_s dW_t^s$
 - Z-score: $z_t = \frac{s_t - \mu_s}{\sigma_s}$
 - Signal interpretation: $z_t < 0$ means asset is cheap (below equilibrium); $z_t > 0$ means expensive
 
@@ -33,7 +33,7 @@ We build on two foundations and fuse them into one decision framework.
 
 1. The mid-price $S_t$ has a predictable component captured by $z_t$ superimposed on random noise.
 2. The z-score is a sufficient statistic for short-term directional forecasts.
-3. The fill intensity model $\lambda(\delta) = A\,e^{-\kappa\,\delta}$ remains valid for the modified quotes.
+3. The fill intensity model $\lambda(\delta) = A e^{-\kappa \delta}$ remains valid for the modified quotes.
 4. All parameters ($\gamma$, $\sigma$, $\kappa$, $\alpha$, $\beta$) are re-estimated on a rolling window every $N$ ticks.
 
 ## Derivation
@@ -42,35 +42,35 @@ We build on two foundations and fuse them into one decision framework.
 
 The standard AS reservation price penalises inventory linearly:
 
-$$r_t = S_t - q_t\,\gamma\,\sigma^2(T - t)$$
+$$r_t = S_t - q_t \gamma \sigma^2(T - t)$$
 
 We introduce a directional signal by adding a term proportional to the z-score. The modified reservation price is:
 
-$$r_t^{\text{mod}} = S_t - q_t\,\gamma\,\sigma^2(T - t) + \alpha\,z_t\,\sigma$$
+$$r_t^{\text{mod}} = S_t - q_t \gamma \sigma^2(T - t) + \alpha z_t \sigma$$
 
-where $\alpha > 0$ is a dimensionless signal-strength parameter. The term $\alpha\,z_t\,\sigma$ has units of price (z-score is dimensionless, $\sigma$ has units of price per $\sqrt{\text{time}}$, and we absorb the time-scale into $\alpha$).
+where $\alpha > 0$ is a dimensionless signal-strength parameter. The term $\alpha z_t \sigma$ has units of price (z-score is dimensionless, $\sigma$ has units of price per $\sqrt{\text{time}}$, and we absorb the time-scale into $\alpha$).
 
 **Interpretation:**
 
-- When $z_t < 0$ (asset is cheap), the signal term $\alpha\,z_t\,\sigma < 0$... wait, we want $r$ to increase when the asset is cheap. Let's be precise. If $z_t < 0$ means the spread $s_t$ is below its mean, and we expect it to revert up, then we want to buy. To buy more aggressively, we raise our reservation price (we are willing to pay more). So the sign convention is:
+- When $z_t < 0$ (asset is cheap), the signal term $\alpha z_t \sigma < 0$... wait, we want $r$ to increase when the asset is cheap. Let's be precise. If $z_t < 0$ means the spread $s_t$ is below its mean, and we expect it to revert up, then we want to buy. To buy more aggressively, we raise our reservation price (we are willing to pay more). So the sign convention is:
 
-$$r_t^{\text{mod}} = S_t - q_t\,\gamma\,\sigma^2(T - t) + \alpha\,(-z_t)\,\sigma$$
+$$r_t^{\text{mod}} = S_t - q_t \gamma \sigma^2(T - t) + \alpha (-z_t) \sigma$$
 
 Equivalently, defining the signal as $\phi_t = -z_t$ (positive when we want to go long):
 
-$$r_t^{\text{mod}} = S_t - q_t\,\gamma\,\sigma^2(T - t) + \alpha\,\phi_t\,\sigma$$
+$$r_t^{\text{mod}} = S_t - q_t \gamma \sigma^2(T - t) + \alpha \phi_t \sigma$$
 
 For consistency with the convention that $z_t < 0 \Rightarrow$ go long, we write:
 
-$$\boxed{r_t^{\text{mod}} = S_t - q_t\,\gamma\,\sigma^2(T - t) - \alpha\,z_t\,\sigma}$$
+$$\boxed{r_t^{\text{mod}} = S_t - q_t \gamma \sigma^2(T - t) - \alpha z_t \sigma}$$
 
-When $z_t = -2.5$: the adjustment is $-\alpha \cdot (-2.5) \cdot \sigma = +2.5\,\alpha\,\sigma > 0$, so $r$ increases — we bid more aggressively. Correct.
+When $z_t = -2.5$: the adjustment is $-\alpha \cdot (-2.5) \cdot \sigma = +2.5 \alpha \sigma > 0$, so $r$ increases — we bid more aggressively. Correct.
 
 ### Step 2: Compute the Optimal Half-Spread
 
 The AS optimal half-spread does not depend on the reservation price — it depends only on the risk-aversion $\gamma$, volatility $\sigma$, time horizon $T - t$, and order-book depth $\kappa$:
 
-$$\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$\delta^* = \gamma \sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
 This formula remains unchanged in the integrated system. The signal affects *where* we centre our quotes (via $r^{\text{mod}}$), not how wide we quote.
 
@@ -86,7 +86,7 @@ $$p^{\text{ask}} = r_t^{\text{mod}} + \delta^*$$
 
 Beyond shifting the centre via $r^{\text{mod}}$, we can also *asymmetrically* adjust the offsets. Define a skew parameter:
 
-$$\text{skew}_t = \beta_{\text{skew}}\,z_t$$
+$$\text{skew}_t = \beta_{\text{skew}} z_t$$
 
 where $\beta_{\text{skew}} > 0$ controls sensitivity. The skewed quotes become:
 
@@ -121,7 +121,7 @@ $$\boxed{p^{\text{bid}} = r_t^{\text{mod}} - (\delta^* + \text{skew}_t)}$$
 
 $$\boxed{p^{\text{ask}} = r_t^{\text{mod}} + (\delta^* - \text{skew}_t)}$$
 
-where $\text{skew}_t = \beta_{\text{skew}}\,z_t$.
+where $\text{skew}_t = \beta_{\text{skew}} z_t$.
 
 ### Step 5: When to Widen the Spread
 
@@ -129,13 +129,13 @@ The base half-spread $\delta^*$ is the theoretical optimum. In practice, we appl
 
 **High inventory.** When $|q_t|$ exceeds a threshold $q_{\max}$, we widen to slow accumulation in the dangerous direction:
 
-$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_q \cdot \max\left(0,\;\frac{|q_t| - q_{\text{safe}}}{q_{\max} - q_{\text{safe}}}\right)\right)$$
+$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_q \cdot \max\left(0, \frac{|q_t| - q_{\text{safe}}}{q_{\max} - q_{\text{safe}}}\right)\right)$$
 
 where $\lambda_q \in [0.5, 2.0]$ controls how aggressively we widen, and $q_{\text{safe}}$ is the inventory level below which no widening is applied.
 
 **High volatility.** When estimated $\hat{\sigma}$ is elevated relative to its rolling average:
 
-$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_\sigma \cdot \max\left(0,\;\frac{\hat{\sigma} - \bar{\sigma}}{\bar{\sigma}}\right)\right)$$
+$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_\sigma \cdot \max\left(0, \frac{\hat{\sigma} - \bar{\sigma}}{\bar{\sigma}}\right)\right)$$
 
 **Low signal confidence.** When $|z_t|$ is small (near zero), there is no directional conviction. We widen to earn pure spread:
 
@@ -149,9 +149,9 @@ In Prosperity, you trade $n$ products simultaneously. Define the total risk budg
 
 $$\sum_{i=1}^{n} \gamma_i \cdot \text{Var}(q_i \cdot \Delta S_i) \leq R_{\text{total}}$$
 
-Since $\text{Var}(q_i \cdot \Delta S_i) = q_i^2\,\sigma_i^2\,\Delta t$:
+Since $\text{Var}(q_i \cdot \Delta S_i) = q_i^2 \sigma_i^2 \Delta t$:
 
-$$\sum_{i=1}^{n} \gamma_i\,q_i^2\,\sigma_i^2\,\Delta t \leq R_{\text{total}}$$
+$$\sum_{i=1}^{n} \gamma_i q_i^2 \sigma_i^2 \Delta t \leq R_{\text{total}}$$
 
 **Priority ranking for risk allocation.** Assign more risk budget (lower $\gamma_i$, meaning looser inventory control and larger positions) to instruments with:
 
@@ -161,7 +161,7 @@ $$\sum_{i=1}^{n} \gamma_i\,q_i^2\,\sigma_i^2\,\Delta t \leq R_{\text{total}}$$
 
 **Correlation handling:**
 
-- If instruments $i$ and $j$ are cointegrated, trade the spread $s_t = S_i - \beta_{ij}\,S_j$ as a single virtual instrument. The risk budget for the spread replaces the individual budgets.
+- If instruments $i$ and $j$ are cointegrated, trade the spread $s_t = S_i - \beta_{ij} S_j$ as a single virtual instrument. The risk budget for the spread replaces the individual budgets.
 - If uncorrelated, treat independently: $\gamma_i$ and $\gamma_j$ are set in isolation.
 - If positively correlated but not cointegrated, reduce total exposure: $q_i$ and $q_j$ should not both be large and same-signed.
 
@@ -178,10 +178,10 @@ $$\sum_{i=1}^{n} \gamma_i\,q_i^2\,\sigma_i^2\,\Delta t \leq R_{\text{total}}$$
 | Volatility | $\sigma$ | Mid-price volatility per $\sqrt{\text{tick}}$; estimated from recent returns | Asset-dependent |
 | Order-book depth | $\kappa$ | Decay rate of fill probability with distance from mid | $0.5$ – $5.0$ |
 | Signal strength | $\alpha$ | Weight of the z-score signal in the reservation price | $0.0$ – $1.0$ |
-| Skew sensitivity | $\beta_{\text{skew}}$ | How much to asymmetrically shift bid/ask offsets per unit z-score | $0.0$ – $0.5\,\sigma$ |
+| Skew sensitivity | $\beta_{\text{skew}}$ | How much to asymmetrically shift bid/ask offsets per unit z-score | $0.0$ – $0.5 \sigma$ |
 | Z-score threshold | $z_{\text{thresh}}$ | Below this $|z|$, no directional signal; widen spread and collect | $0.5$ – $1.0$ |
 | Inventory widening | $\lambda_q$ | Multiplier for spread widening at high inventory | $0.5$ – $2.0$ |
-| Safe inventory | $q_{\text{safe}}$ | Inventory level below which no widening is applied | $0$ – $0.5\,q_{\max}$ |
+| Safe inventory | $q_{\text{safe}}$ | Inventory level below which no widening is applied | $0$ – $0.5 q_{\max}$ |
 | Volatility widening | $\lambda_\sigma$ | Multiplier for spread widening when $\hat{\sigma} > \bar{\sigma}$ | $0.5$ – $2.0$ |
 | Total risk budget | $R_{\text{total}}$ | Maximum acceptable portfolio variance per tick | Strategy-dependent |
 
@@ -191,7 +191,7 @@ $$\sum_{i=1}^{n} \gamma_i\,q_i^2\,\sigma_i^2\,\Delta t \leq R_{\text{total}}$$
 
 **Step 1 — Reservation price:**
 
-$$r^{\text{mod}} = S - q\,\gamma\,\sigma^2(T-t) - \alpha\,z_t\,\sigma$$
+$$r^{\text{mod}} = S - q \gamma \sigma^2(T-t) - \alpha z_t \sigma$$
 
 $$r^{\text{mod}} = 100 - 2 \cdot 0.1 \cdot 0.25 \cdot 100 - 0.3 \cdot (-2.5) \cdot 0.5$$
 
@@ -201,7 +201,7 @@ The inventory penalty pulls $r$ down by $5.0$ (we are long 2 units and want to r
 
 **Step 2 — Optimal half-spread:**
 
-$$\delta^* = \gamma\,\sigma^2(T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$\delta^* = \gamma \sigma^2(T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
 $$\delta^* = 0.1 \cdot 0.25 \cdot 100 + \frac{2}{0.1}\ln\left(1 + \frac{0.1}{1.5}\right)$$
 
@@ -248,7 +248,7 @@ print(f"Total spread:                 {ask - bid:.3f}")
 ## Connections
 
 - [Avellaneda-Stoikov](../03_market_making/avellaneda_stoikov.md) — provides the base reservation price and optimal spread that this file modifies with directional signals.
-- [Inventory Risk](../03_market_making/inventory_risk.md) — the $q\,\gamma\,\sigma^2(T-t)$ penalty term and the spread-widening logic at high inventory both derive from inventory risk management.
+- [Inventory Risk](../03_market_making/inventory_risk.md) — the $q \gamma \sigma^2(T-t)$ penalty term and the spread-widening logic at high inventory both derive from inventory risk management.
 - [Bid-Ask Spread](../03_market_making/bid_ask_spread.md) — the mechanics of how spread width affects fill rates and adverse selection.
 - [Z-Score Signals](../04_stat_arb/zscore_signals.md) — the $z_t$ signal that drives the directional overlay comes from the z-score framework on cointegrated spreads.
 - [Ornstein-Uhlenbeck](../04_stat_arb/ornstein_uhlenbeck.md) — the mean-reversion dynamics that justify why $z_t \neq 0$ is a tradeable signal.
@@ -265,7 +265,7 @@ The key Prosperity-specific considerations are:
 - **Position limits** act as hard caps on $|q_i|$. When approaching the limit, override $\gamma_i$ upward to prevent breaching. Hitting a position limit means you cannot hedge or rebalance — a critical failure mode.
 - **Discrete tick sizes** mean you must round quotes to valid price levels. Always round bids down and asks up to avoid giving away edge.
 - **Multiple products** create both risk and opportunity. If two Prosperity products are cointegrated (common in baskets, ETF-like structures), trade the spread rather than each leg independently. The risk budget allocation framework above tells you how much capital to assign to each.
-- **Adversarial bots** mean your fill model $\lambda(\delta) = A\,e^{-\kappa\delta}$ is approximate. Monitor fill rates empirically and update $A$ and $\kappa$ online. If a competing bot consistently takes your resting orders at bad times, you are experiencing adverse selection — widen spreads.
+- **Adversarial bots** mean your fill model $\lambda(\delta) = A e^{-\kappa\delta}$ is approximate. Monitor fill rates empirically and update $A$ and $\kappa$ online. If a competing bot consistently takes your resting orders at bad times, you are experiencing adverse selection — widen spreads.
 - **Parameter sensitivity**: start with conservative parameters ($\gamma = 0.1$, $\alpha = 0.1$, $\beta_{\text{skew}} = 0.05$) and tune from there. In a competition, robustness beats optimality — a strategy that works in 90% of regimes beats one that is optimal in 60% and blows up in 40%.
 
 ## Python Snippet

@@ -1,6 +1,6 @@
 # Prosperity 3 Analysis
 
-> **Core formula:** $$\text{Total PnL} = \underbrace{\sum_k \tfrac{1}{2}(p_k^{\text{ask}} - p_k^{\text{bid}})}_{\text{Spread Revenue}} - \underbrace{\sum_t q_t\,\Delta S_t}_{\text{Inventory Cost}} - \underbrace{\sum_k c_k}_{\text{Transaction Costs}} + \underbrace{\sum_t \alpha_t\,\Delta S_t}_{\text{Alpha P\&L}}$$
+> **Core formula:** $$\text{Total PnL} = \underbrace{\sum_k \tfrac{1}{2}(p_k^{\text{ask}} - p_k^{\text{bid}})}_{\text{Spread Revenue}} - \underbrace{\sum_t q_t \Delta S_t}_{\text{Inventory Cost}} - \underbrace{\sum_k c_k}_{\text{Transaction Costs}} + \underbrace{\sum_t \alpha_t \Delta S_t}_{\text{Alpha P\&L}}$$
 
 ## Intuition
 
@@ -26,7 +26,7 @@ In practice this is the *realised spread*: the difference between the execution 
 
 **Inventory Cost.** Holding inventory $q_t$ while the mid-price moves by $\Delta S_t$ creates mark-to-market gains or losses:
 
-$$\Pi_{\text{inventory}} = -\sum_{t=1}^{T} q_{t-1}\,\Delta S_t$$
+$$\Pi_{\text{inventory}} = -\sum_{t=1}^{T} q_{t-1} \Delta S_t$$
 
 This is a cost when inventory moves against you (long and price drops), and a gain when it moves in your favour. On average, for a mean-zero price process, $E[\Pi_{\text{inventory}}] = 0$ but $\text{Var}[\Pi_{\text{inventory}}] = \sigma^2 \sum_t q_t^2$. Large inventory = large variance = large risk.
 
@@ -38,7 +38,7 @@ In Prosperity, explicit transaction fees may be zero, but there are implicit cos
 
 **Alpha P&L.** The directional component — PnL from correctly predicting price moves:
 
-$$\Pi_{\text{alpha}} = \sum_{t=1}^{T} \alpha_t\,\Delta S_t$$
+$$\Pi_{\text{alpha}} = \sum_{t=1}^{T} \alpha_t \Delta S_t$$
 
 where $\alpha_t$ is the intended directional position driven by signals (as opposed to $q_t$, which includes unintended inventory from market-making fills).
 
@@ -50,13 +50,13 @@ where $\alpha_t$ is the intended directional position driven by signals (as oppo
 
 Top teams ran tight bid-ask spreads calibrated to realised volatility. The spread formula most teams converged on was a variant of Avellaneda-Stoikov:
 
-$$\text{spread}_t = 2\,\delta^*_t = 2\left[\gamma\,\hat{\sigma}_t^2\,(T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)\right]$$
+$$\text{spread}_t = 2 \delta^*_t = 2\left[\gamma \hat{\sigma}_t^2 (T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)\right]$$
 
 The critical insight specific to Prosperity: **other bots frequently trade at suboptimal prices**, creating spread opportunities that would not exist on a real exchange. This is because many competing teams run simpler strategies — fixed spreads, pure trend-following, or naive mean-reversion — that leak value to sophisticated market makers.
 
 The consequence: teams that captured the most volume (highest $K$ in the spread revenue formula) while maintaining a positive per-trade edge (positive $\frac{1}{2}(p^{\text{ask}} - p^{\text{bid}}) - \text{adverse selection cost}$) accumulated the most PnL. The law of large numbers applies: with thousands of trades per session, even a small per-trade edge compounds reliably.
 
-Position limits in Prosperity forced inventory discipline. Teams that managed inventory well — using quick mean-reversion via the $q\,\gamma\,\sigma^2(T-t)$ penalty, hedging across correlated products, or hard-capping inventory at 80% of the limit — outperformed. Teams that hit position limits were effectively taken out of the game for that product until inventory naturally decayed.
+Position limits in Prosperity forced inventory discipline. Teams that managed inventory well — using quick mean-reversion via the $q \gamma \sigma^2(T-t)$ penalty, hedging across correlated products, or hard-capping inventory at 80% of the limit — outperformed. Teams that hit position limits were effectively taken out of the game for that product until inventory naturally decayed.
 
 #### 2. Volatility Estimation
 
@@ -70,13 +70,13 @@ with $n = 50$–$100$ ticks. Simple and robust, but slow to adapt.
 
 **Exponentially weighted moving variance (EWMA):**
 
-$$\hat{\sigma}_{\text{EW},t}^2 = \lambda\,\hat{\sigma}_{\text{EW},t-1}^2 + (1 - \lambda)\,(S_t - S_{t-1})^2$$
+$$\hat{\sigma}_{\text{EW},t}^2 = \lambda \hat{\sigma}_{\text{EW},t-1}^2 + (1 - \lambda) (S_t - S_{t-1})^2$$
 
 with $\lambda = 0.94$–$0.97$. Faster adaptation to regime changes, which is critical in Prosperity where volatility can shift abruptly between rounds.
 
 **Parkinson (high-low) estimator:**
 
-$$\hat{\sigma}_{\text{P}}^2 = \frac{1}{4\ln 2}\,\frac{1}{n}\sum_{i=1}^{n}(\ln H_i - \ln L_i)^2$$
+$$\hat{\sigma}_{\text{P}}^2 = \frac{1}{4\ln 2} \frac{1}{n}\sum_{i=1}^{n}(\ln H_i - \ln L_i)^2$$
 
 where $H_i$, $L_i$ are the high and low prices in window $i$. This estimator is approximately $5\times$ more efficient than close-to-close volatility for the same sample size.
 
@@ -88,11 +88,11 @@ The operational impact: teams that correctly estimated $\sigma$ could set tighte
 
 Several Prosperity 3 products were cointegrated — baskets, ETF-like structures, or products with a common underlying factor. Top teams exploited this in three steps:
 
-**Step 1 — Identify the relationship.** Run Engle-Granger on a rolling window: regress $Y_t$ on $X_t$, obtain $\hat{\beta}$, and test the residuals $\hat{s}_t = Y_t - \hat{\beta}\,X_t$ for stationarity via the ADF test.
+**Step 1 — Identify the relationship.** Run Engle-Granger on a rolling window: regress $Y_t$ on $X_t$, obtain $\hat{\beta}$, and test the residuals $\hat{s}_t = Y_t - \hat{\beta} X_t$ for stationarity via the ADF test.
 
 **Step 2 — Compute the spread and z-score.** If cointegration is confirmed:
 
-$$s_t = Y_t - \hat{\beta}\,X_t, \quad z_t = \frac{s_t - \hat{\mu}_s}{\hat{\sigma}_s}$$
+$$s_t = Y_t - \hat{\beta} X_t, \quad z_t = \frac{s_t - \hat{\mu}_s}{\hat{\sigma}_s}$$
 
 where $\hat{\mu}_s$ and $\hat{\sigma}_s$ are the rolling mean and standard deviation of the spread.
 
@@ -108,7 +108,7 @@ The two-part advantage: (1) **pricing** — knowing the fair value of the option
 
 The BS call price for reference:
 
-$$C = S\,N(d_1) - K\,e^{-rT}N(d_2)$$
+$$C = S N(d_1) - K e^{-rT}N(d_2)$$
 
 $$d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T}$$
 

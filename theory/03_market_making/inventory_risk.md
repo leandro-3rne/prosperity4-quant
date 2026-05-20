@@ -1,6 +1,6 @@
 # Inventory Risk
 
-> **Core formula:** $$\mathrm{Var}[q_t \, \Delta S_t] = q_t^2 \, \sigma^2 \, \Delta t$$
+> **Core formula:** $$\mathrm{Var}[q_t   \Delta S_t] = q_t^2   \sigma^2   \Delta t$$
 
 ## Intuition
 
@@ -25,7 +25,7 @@ Think of inventory risk like a warehouse owner storing a perishable commodity. T
 
 **Assumptions:**
 
-1. Mid-price follows arithmetic Brownian motion: $dS_t = \sigma \, dW_t$ (no drift).
+1. Mid-price follows arithmetic Brownian motion: $dS_t = \sigma   dW_t$ (no drift).
 2. Over short intervals, inventory $q_t$ is approximately constant (changes only at fill events).
 3. Fill events arrive as Poisson processes with intensity $\lambda(\delta) = A e^{-\kappa\delta}$.
 
@@ -49,11 +49,11 @@ This is always non-negative (assuming $\delta > 0$), and under a Poisson fill mo
 
 **Inventory PnL** is the mark-to-market gain or loss on the held position:
 
-$$\text{Inventory PnL} = \sum_{t} q_t \, \Delta S_t$$
+$$\text{Inventory PnL} = \sum_{t} q_t   \Delta S_t$$
 
 In continuous time:
 
-$$\text{Inventory PnL} = \int_0^T q_t \, dS_t = \int_0^T q_t \, \sigma \, dW_t$$
+$$\text{Inventory PnL} = \int_0^T q_t   dS_t = \int_0^T q_t   \sigma   dW_t$$
 
 This is a stochastic integral with zero expectation (since $dS_t$ has no drift) but potentially very large variance.
 
@@ -61,9 +61,9 @@ This is a stochastic integral with zero expectation (since $dS_t$ has no drift) 
 
 For a fixed inventory $q$ held over a short interval $\Delta t$:
 
-$$\mathbb{E}[q \, \Delta S] = q \, \mathbb{E}[\Delta S] = 0$$
+$$\mathbb{E}[q   \Delta S] = q   \mathbb{E}[\Delta S] = 0$$
 
-$$\mathrm{Var}[q \, \Delta S] = q^2 \, \mathrm{Var}[\Delta S] = q^2 \, \sigma^2 \, \Delta t$$
+$$\mathrm{Var}[q   \Delta S] = q^2   \mathrm{Var}[\Delta S] = q^2   \sigma^2   \Delta t$$
 
 The risk grows **quadratically** in inventory. Doubling your position quadruples the variance of your inventory P&L. This is the central reason why inventory management is critical:
 
@@ -76,7 +76,7 @@ The risk grows **quadratically** in inventory. Doubling your position quadruples
 
 Over a longer horizon where inventory evolves stochastically:
 
-$$\mathrm{Var}\left[\int_0^T q_t \, \sigma \, dW_t\right] = \sigma^2 \int_0^T \mathbb{E}[q_t^2] \, dt$$
+$$\mathrm{Var}\left[\int_0^T q_t   \sigma   dW_t\right] = \sigma^2 \int_0^T \mathbb{E}[q_t^2]   dt$$
 
 by the Itô isometry. This shows that the cumulative risk depends on the expected squared inventory integrated over time — reinforcing the importance of keeping $q_t$ small.
 

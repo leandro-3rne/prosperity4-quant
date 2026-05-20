@@ -33,33 +33,33 @@ practical application in algorithmic trading.
 
 ### 1. Stochastic Foundations
 
-The mathematical bedrock for everything that follows. Brownian motion defines the noise model for asset prices, Itô calculus provides the chain rule for stochastic processes, and SDEs give the language for writing down price dynamics. The key result is the Itô correction: for geometric Brownian motion $`dS = \mu S\,dt + \sigma S\,dW`$, the log-price drifts at $`\mu - \sigma^2/2`$ rather than $`\mu`$, because the exponential function's convexity interacts with the non-zero quadratic variation of Brownian motion.
+The mathematical bedrock for everything that follows. Brownian motion defines the noise model for asset prices, Itô calculus provides the chain rule for stochastic processes, and SDEs give the language for writing down price dynamics. The key result is the Itô correction: for geometric Brownian motion $`dS = \mu S dt + \sigma S dW`$, the log-price drifts at $`\mu - \sigma^2/2`$ rather than $`\mu`$, because the exponential function's convexity interacts with the non-zero quadratic variation of Brownian motion.
 
-$$S_t = S_0 \exp\bigl((\mu - \tfrac{1}{2}\sigma^2)\,t + \sigma W_t\bigr)$$
+$$S_t = S_0 \exp\bigl((\mu - \tfrac{1}{2}\sigma^2) t + \sigma W_t\bigr)$$
 
 ### 2. Options Pricing
 
 Derivatives (forwards, calls, puts), hedging, Black–Scholes pricing, the Greeks, jump-diffusion extensions, and implied volatility. The starting point is the replication principle: if a derivative's payoff can be synthesised by dynamically trading the underlying, its fair price is the cost of that hedge. Delta-hedging constructs a locally risk-free portfolio and invokes no-arbitrage to derive the BS PDE, whose solution is the closed-form pricing formula. The five Greeks (Delta, Gamma, Vega, Theta, Rho) quantify sensitivity to each input and are the primary risk-management toolkit. Jump-diffusion (Merton 1976) extends the model to capture fat tails and volatility skew.
 
-$$C = S\,N(d_1) - K e^{-rT} N(d_2), \quad d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)\,T}{\sigma\sqrt{T}}$$
+$$C = S N(d_1) - K e^{-rT} N(d_2), \quad d_1 = \frac{\ln(S/K) + (r + \sigma^2/2) T}{\sigma\sqrt{T}}$$
 
 ### 3. Market Making
 
 The Avellaneda-Stoikov (2008) framework for optimal market making under inventory risk. The market maker quotes a bid and ask around a reservation price that adjusts for current inventory exposure. The model balances two objectives: capturing spread revenue from the bid-ask spread and managing the risk of holding inventory that may lose value. This is the core strategy engine for Prosperity.
 
-$$r_t = S_t - q_t\,\gamma\,\sigma^2(T-t), \quad \delta^* = \frac{\gamma\sigma^2(T-t)}{2} + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$r_t = S_t - q_t \gamma \sigma^2(T-t), \quad \delta^* = \frac{\gamma\sigma^2(T-t)}{2} + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
 ### 4. Statistical Arbitrage
 
 Mean-reversion trading via the Ornstein-Uhlenbeck process, cointegration testing, and z-score signals. When two assets share a long-run equilibrium, their spread is stationary and mean-reverting. The spread's z-score provides entry and exit signals: go long when the spread is unusually low, short when unusually high, and exit when it reverts. The OU half-life $`t_{1/2} = \ln 2 / \theta`$ determines whether mean-reversion is fast enough to trade within a given horizon.
 
-$$u_i(s_i^{ * }, s_{-i}^{ * }) \ge u_i(s_i, s_{-i}^{ * }) \quad \forall\, s_i \in S_i$$
+$$u_i(s_i^{ * }, s_{-i}^{ * }) \ge u_i(s_i, s_{-i}^{ * }) \quad \forall  s_i \in S_i$$
 
 ### 5. Game Theory
 
 Nash equilibrium, auction theory, and repeated games applied to multi-agent trading. In Prosperity, multiple bots compete on the order book simultaneously. Nash equilibrium analysis predicts where competitors will quote. Auction theory (Vickrey's dominant-strategy truthful bidding, first-price bid shading) applies to pricing rounds. Repeated-game theory (folk theorem, tit-for-tat) explains how cooperation or competition can emerge across multiple rounds.
 
-$$u_i(s_i^{ * }, s_{-i}^{ * }) \ge u_i(s_i, s_{-i}^{ * }) \quad \forall\, s_i \in S_i$$
+$$u_i(s_i^{ * }, s_{-i}^{ * }) \ge u_i(s_i, s_{-i}^{ * }) \quad \forall  s_i \in S_i$$
 
 ### 6. Prosperity Strategy
 

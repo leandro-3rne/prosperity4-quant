@@ -1,7 +1,7 @@
 # Bid-Ask Spread
 
 > **Core formula — Roll (1984) effective spread estimator:**
-> $$c = \sqrt{-\mathrm{Cov}(\Delta p_t, \, \Delta p_{t-1})}, \qquad \text{Effective spread} = 2c$$
+> $$c = \sqrt{-\mathrm{Cov}(\Delta p_t,   \Delta p_{t-1})}, \qquad \text{Effective spread} = 2c$$
 
 ## Intuition
 
@@ -29,7 +29,7 @@ A useful analogy is a currency exchange booth at an airport. The booth quotes a 
 
 **Assumptions for the Roll model:**
 1. The efficient price $m_t$ follows a random walk: $m_t = m_{t-1} + u_t$, where $u_t \sim (0, \sigma_u^2)$ i.i.d.
-2. The transaction price bounces between bid and ask: $p_t = m_t + c \, d_t$, where $d_t \in \{-1, +1\}$ with equal probability and is i.i.d.
+2. The transaction price bounces between bid and ask: $p_t = m_t + c   d_t$, where $d_t \in \{-1, +1\}$ with equal probability and is i.i.d.
 3. The direction $d_t$ is independent of the efficient price innovation $u_t$.
 
 ## Derivation
@@ -60,31 +60,31 @@ Roll's model provides a way to estimate the effective spread purely from transac
 
 **Setup:** transaction prices are:
 
-$$p_t = m_t + c \, d_t$$
+$$p_t = m_t + c   d_t$$
 
 where $m_t = m_{t-1} + u_t$ is the efficient price and $d_t \in \{-1, +1\}$ is the trade direction indicator (equally likely).
 
 **Step 1:** compute the price change:
 
-$$\Delta p_t = p_t - p_{t-1} = (m_t + c \, d_t) - (m_{t-1} + c \, d_{t-1})$$
+$$\Delta p_t = p_t - p_{t-1} = (m_t + c   d_t) - (m_{t-1} + c   d_{t-1})$$
 
 $$= u_t + c(d_t - d_{t-1})$$
 
 **Step 2:** compute the autocovariance $\mathrm{Cov}(\Delta p_t, \Delta p_{t-1})$. First expand:
 
-$$\Delta p_t = u_t + c \, d_t - c \, d_{t-1}$$
+$$\Delta p_t = u_t + c   d_t - c   d_{t-1}$$
 
-$$\Delta p_{t-1} = u_{t-1} + c \, d_{t-1} - c \, d_{t-2}$$
+$$\Delta p_{t-1} = u_{t-1} + c   d_{t-1} - c   d_{t-2}$$
 
 Since $u_t$, $u_{t-1}$, $d_t$, $d_{t-1}$, $d_{t-2}$ are all mutually independent:
 
-$$\mathrm{Cov}(\Delta p_t, \Delta p_{t-1}) = \mathrm{Cov}(u_t + c\,d_t - c\,d_{t-1}, \; u_{t-1} + c\,d_{t-1} - c\,d_{t-2})$$
+$$\mathrm{Cov}(\Delta p_t, \Delta p_{t-1}) = \mathrm{Cov}(u_t + c d_t - c d_{t-1},   u_{t-1} + c d_{t-1} - c d_{t-2})$$
 
 The only term that produces a non-zero covariance is the cross-term involving $d_{t-1}$:
 
-$$= \mathrm{Cov}(-c\,d_{t-1}, \; c\,d_{t-1})$$
+$$= \mathrm{Cov}(-c d_{t-1},   c d_{t-1})$$
 
-$$= -c^2 \, \mathrm{Var}(d_{t-1})$$
+$$= -c^2   \mathrm{Var}(d_{t-1})$$
 
 Since $d_{t-1} \in \{-1, +1\}$ with equal probability, $\mathbb{E}[d_{t-1}] = 0$ and $\mathrm{Var}(d_{t-1}) = \mathbb{E}[d_{t-1}^2] = 1$. Therefore:
 
@@ -181,7 +181,7 @@ where $\mathbb{E}[|x|]$ is the expected absolute order size. This connects Kyle'
 
 **Empirical estimation:** regress price changes on signed order flow:
 
-$$\Delta S_t = \hat{\lambda} \, x_t + \varepsilon_t$$
+$$\Delta S_t = \hat{\lambda}   x_t + \varepsilon_t$$
 
 The slope coefficient $\hat{\lambda}$ estimates Kyle's lambda. Higher $\hat{\lambda}$ indicates a less liquid market with more informational content in order flow.
 

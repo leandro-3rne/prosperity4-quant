@@ -15,9 +15,9 @@ The most important tradeoff in options is between Gamma and Theta: buying option
 
 All formulas below are derived from the Black–Scholes call and put prices:
 
-$$C = S\,N(d_1) - Ke^{-rT}\,N(d_2)$$
+$$C = S N(d_1) - Ke^{-rT} N(d_2)$$
 
-$$P = Ke^{-rT}\,N(-d_2) - S\,N(-d_1)$$
+$$P = Ke^{-rT} N(-d_2) - S N(-d_1)$$
 
 where:
 
@@ -29,7 +29,7 @@ and $N(\cdot)$ is the standard normal CDF and $n(\cdot) = N'(\cdot) = \frac{1}{\
 
 $$\frac{\partial d_1}{\partial S} = \frac{\partial d_2}{\partial S} = \frac{1}{S\sigma\sqrt{T}}$$
 
-$$S\,n(d_1) = Ke^{-rT}\,n(d_2)$$
+$$S n(d_1) = Ke^{-rT} n(d_2)$$
 
 The second identity follows from:
 
@@ -45,7 +45,7 @@ Therefore:
 
 $$\frac{n(d_1)}{n(d_2)} = e^{-\ln(S/K) - rT} = \frac{Ke^{-rT}}{S}$$
 
-which gives $S\,n(d_1) = Ke^{-rT}\,n(d_2)$. $\square$
+which gives $S n(d_1) = Ke^{-rT} n(d_2)$. $\square$
 
 ## Derivation
 
@@ -53,9 +53,9 @@ which gives $S\,n(d_1) = Ke^{-rT}\,n(d_2)$. $\square$
 
 **Call Delta:**
 
-$$\Delta_{\text{call}} = \frac{\partial C}{\partial S} = N(d_1) + S\,n(d_1)\frac{\partial d_1}{\partial S} - Ke^{-rT}\,n(d_2)\frac{\partial d_2}{\partial S}$$
+$$\Delta_{\text{call}} = \frac{\partial C}{\partial S} = N(d_1) + S n(d_1)\frac{\partial d_1}{\partial S} - Ke^{-rT} n(d_2)\frac{\partial d_2}{\partial S}$$
 
-Since $\partial d_1/\partial S = \partial d_2/\partial S = \frac{1}{S\sigma\sqrt{T}}$ and $S\,n(d_1) = Ke^{-rT}\,n(d_2)$, the last two terms cancel:
+Since $\partial d_1/\partial S = \partial d_2/\partial S = \frac{1}{S\sigma\sqrt{T}}$ and $S n(d_1) = Ke^{-rT} n(d_2)$, the last two terms cancel:
 
 $$\boxed{\Delta_{\text{call}} = N(d_1)}$$
 
@@ -71,7 +71,7 @@ $$\boxed{\Delta_{\text{put}} = -N(-d_1)}$$
 
 Since $0 < N(-d_1) < 1$, put Delta is always between $-1$ and $0$.
 
-**Interpretation — hedge ratio.** Delta is the **first-order sensitivity** to the spot: for a small move $dS$, the option value changes by about $\Delta\,dS$. Equivalently, it is the **number of shares of the underlying** to hold **per one option** (on one share of stock) so that the **combined** option-plus-stock position is insensitive to infinitesimal moves in $S$. That is the sense in which Delta is the **equivalent stock exposure**.
+**Interpretation — hedge ratio.** Delta is the **first-order sensitivity** to the spot: for a small move $dS$, the option value changes by about $\Delta dS$. Equivalently, it is the **number of shares of the underlying** to hold **per one option** (on one share of stock) so that the **combined** option-plus-stock position is insensitive to infinitesimal moves in $S$. That is the sense in which Delta is the **equivalent stock exposure**.
 
 **Delta hedging** is a concrete rule for how many shares to hold against an option for a riskless portfolio (See in **[Delta hedging](#delta-hedging)** below).
 
@@ -87,7 +87,7 @@ For **puts**, $\Delta_{\text{put}} = N(d_1) - 1$: deep ITM puts ($S \ll K$) have
 
 **Probability vs. $\Delta$.** The risk-neutral probability that a European **call** expires in the money is
 $$\mathbb{Q}(S_T > K) = N(d_2)$$
-not $N(d_1)$. Since $d_1 = d_2 + \sigma\sqrt{T}$, we have $N(d_1) > N(d_2)$: $\Delta_{\text{call}} = N(d_1)$ is **not** the ITM probability, though it is often confused with it in conversation. Intuitively, $d_1$ encodes the drift adjustment tied to using the **stock** as numeraire in the $S\,N(d_1)$ term of the BS formula. For **deep OTM** or **deep ITM** options, $d_1$ and $d_2$ lie in the same tail of the normal, so $N(d_1)$ and $N(d_2)$ are numerically **close**; **near ATM** the gap is most noticeable. The statement “Delta equals ITM probability under $\mathbb{Q}$” is **exact** for a **digital / cash-or-nothing** call under the same model assumptions, not for a vanilla call.
+not $N(d_1)$. Since $d_1 = d_2 + \sigma\sqrt{T}$, we have $N(d_1) > N(d_2)$: $\Delta_{\text{call}} = N(d_1)$ is **not** the ITM probability, though it is often confused with it in conversation. Intuitively, $d_1$ encodes the drift adjustment tied to using the **stock** as numeraire in the $S N(d_1)$ term of the BS formula. For **deep OTM** or **deep ITM** options, $d_1$ and $d_2$ lie in the same tail of the normal, so $N(d_1)$ and $N(d_2)$ are numerically **close**; **near ATM** the gap is most noticeable. The statement “Delta equals ITM probability under $\mathbb{Q}$” is **exact** for a **digital / cash-or-nothing** call under the same model assumptions, not for a vanilla call.
 
 ### Gamma — $\Gamma = \partial^2 V/\partial S^2 = \partial\Delta/\partial S$
 
@@ -115,11 +115,11 @@ Result: By "selling high and buying low" through continuous re-balancing, you ca
 
 **Call Vega:**
 
-$$\mathcal{V}_{\text{call}} = S\,n(d_1)\frac{\partial d_1}{\partial\sigma} + \left[-Ke^{-rT}\,n(d_2)\frac{\partial d_2}{\partial\sigma}\right] + \text{direct terms from } N$$
+$$\mathcal{V}_{\text{call}} = S n(d_1)\frac{\partial d_1}{\partial\sigma} + \left[-Ke^{-rT} n(d_2)\frac{\partial d_2}{\partial\sigma}\right] + \text{direct terms from } N$$
 
-A cleaner approach: differentiate $C = S\,N(d_1) - Ke^{-rT}N(d_2)$ with respect to $\sigma$:
+A cleaner approach: differentiate $C = S N(d_1) - Ke^{-rT}N(d_2)$ with respect to $\sigma$:
 
-$$\mathcal{V}_{\text{call}} = S\,n(d_1)\frac{\partial d_1}{\partial\sigma} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial\sigma}$$
+$$\mathcal{V}_{\text{call}} = S n(d_1)\frac{\partial d_1}{\partial\sigma} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial\sigma}$$
 
 Compute:
 
@@ -129,17 +129,17 @@ Wait — let us compute carefully. We have $d_1 = \frac{\ln(S/K) + (r+\sigma^2/2
 
 $$\frac{\partial d_1}{\partial\sigma} = -\frac{A}{\sigma^2\sqrt{T}} + \frac{\sqrt{T}}{2} = -\frac{d_1}{\sigma} + \frac{\sigma\sqrt{T}}{\sigma} + \frac{\sqrt{T}}{2}$$
 
-This gets messy. The standard shortcut uses the identity $S\,n(d_1) = Ke^{-rT}n(d_2)$ and the fact that $d_1 - d_2 = \sigma\sqrt{T}$:
+This gets messy. The standard shortcut uses the identity $S n(d_1) = Ke^{-rT}n(d_2)$ and the fact that $d_1 - d_2 = \sigma\sqrt{T}$:
 
-$$\mathcal{V} = S\,n(d_1)\frac{\partial d_1}{\partial\sigma} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial\sigma}$$
+$$\mathcal{V} = S n(d_1)\frac{\partial d_1}{\partial\sigma} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial\sigma}$$
 
-$$= S\,n(d_1)\left(\frac{\partial d_1}{\partial\sigma} - \frac{\partial d_2}{\partial\sigma}\right)$$
+$$= S n(d_1)\left(\frac{\partial d_1}{\partial\sigma} - \frac{\partial d_2}{\partial\sigma}\right)$$
 
-$$= S\,n(d_1)\frac{\partial}{\partial\sigma}(d_1 - d_2) = S\,n(d_1)\frac{\partial}{\partial\sigma}(\sigma\sqrt{T})$$
+$$= S n(d_1)\frac{\partial}{\partial\sigma}(d_1 - d_2) = S n(d_1)\frac{\partial}{\partial\sigma}(\sigma\sqrt{T})$$
 
-$$= S\,n(d_1)\sqrt{T}$$
+$$= S n(d_1)\sqrt{T}$$
 
-$$\boxed{\mathcal{V} = S\,n(d_1)\sqrt{T} \quad \text{(same for calls and puts)}}$$
+$$\boxed{\mathcal{V} = S n(d_1)\sqrt{T} \quad \text{(same for calls and puts)}}$$
 
 Vega is always positive for long options. This makes sense: more uncertainty (higher $\sigma$) always increases the value of optionality.
 
@@ -151,13 +151,13 @@ Vega is always positive for long options. This makes sense: more uncertainty (hi
 
 Note: $\Theta$ is the derivative with respect to calendar time $t$, not time to expiry $\tau = T - t$. Since option value generally decreases as time passes, $\Theta$ is usually negative for long options.
 
-**Call Theta:** Differentiate $C = S\,N(d_1) - Ke^{-rT}N(d_2)$ with respect to $t$ (holding $S$ fixed). We need $\partial d_1/\partial t$ and $\partial d_2/\partial t$. Using $\tau = T-t$ (so $\partial\tau/\partial t = -1$):
+**Call Theta:** Differentiate $C = S N(d_1) - Ke^{-rT}N(d_2)$ with respect to $t$ (holding $S$ fixed). We need $\partial d_1/\partial t$ and $\partial d_2/\partial t$. Using $\tau = T-t$ (so $\partial\tau/\partial t = -1$):
 
 $$\frac{\partial d_1}{\partial t} = \frac{-(r+\sigma^2/2)\sigma\sqrt{\tau} - \left[\ln(S/K)+(r+\sigma^2/2)\tau\right]\cdot(-\sigma/(2\sqrt{\tau}))}{\sigma^2\tau}$$
 
-After careful algebra (and using the cancellation identity $S\,n(d_1) = Ke^{-rT}n(d_2)$), the result is:
+After careful algebra (and using the cancellation identity $S n(d_1) = Ke^{-rT}n(d_2)$), the result is:
 
-$$\boxed{\Theta_{\text{call}} = -\frac{S\,n(d_1)\,\sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2)}$$
+$$\boxed{\Theta_{\text{call}} = -\frac{S n(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2)}$$
 
 The first term is always negative (time decay from shrinking optionality). The second term is also negative for calls (you lose the interest on the deferred strike payment as time passes).
 
@@ -165,9 +165,9 @@ The first term is always negative (time decay from shrinking optionality). The s
 
 $$\Theta_{\text{put}} = \Theta_{\text{call}} + rKe^{-rT}$$
 
-$$= -\frac{S\,n(d_1)\,\sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2) + rKe^{-rT}$$
+$$= -\frac{S n(d_1) \sigma}{2\sqrt{T}} - rKe^{-rT}N(d_2) + rKe^{-rT}$$
 
-$$\boxed{\Theta_{\text{put}} = -\frac{S\,n(d_1)\,\sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2)}$$
+$$\boxed{\Theta_{\text{put}} = -\frac{S n(d_1) \sigma}{2\sqrt{T}} + rKe^{-rT}N(-d_2)}$$
 
 For puts, the second term is positive because you earn interest on the strike you will receive. Deep in-the-money puts can have positive total Theta.
 
@@ -179,9 +179,9 @@ For puts, the second term is positive because you earn interest on the strike yo
 
 **Call Rho:** Differentiate $C$ with respect to $r$. The dominant term comes from the discount factor $e^{-rT}$:
 
-$$\rho_{\text{call}} = S\,n(d_1)\frac{\partial d_1}{\partial r} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial r} + KTe^{-rT}N(d_2)$$
+$$\rho_{\text{call}} = S n(d_1)\frac{\partial d_1}{\partial r} - Ke^{-rT}n(d_2)\frac{\partial d_2}{\partial r} + KTe^{-rT}N(d_2)$$
 
-The first two terms cancel by the same identity ($S\,n(d_1) = Ke^{-rT}n(d_2)$ and $\partial d_1/\partial r = \partial d_2/\partial r$):
+The first two terms cancel by the same identity ($S n(d_1) = Ke^{-rT}n(d_2)$ and $\partial d_1/\partial r = \partial d_2/\partial r$):
 
 $$\boxed{\rho_{\text{call}} = KTe^{-rT}N(d_2)}$$
 
@@ -241,9 +241,9 @@ In the BS world with continuous trading and no costs, continuous rebalancing is 
 
 **Discrete hedging P&L.** Over one rebalancing interval, the P&L of a delta-hedged short call position is approximately:
 
-$$\text{P\&L} \approx -\frac{1}{2}\Gamma(\delta S)^2 + \Theta\,\delta t$$
+$$\text{P\&L} \approx -\frac{1}{2}\Gamma(\delta S)^2 + \Theta \delta t$$
 
-$$= \frac{1}{2}\Gamma\left[\sigma^2 S^2\,\delta t - (\delta S)^2\right]$$
+$$= \frac{1}{2}\Gamma\left[\sigma^2 S^2 \delta t - (\delta S)^2\right]$$
 
 This is the **Gamma-Theta P&L**: you earn Theta but pay whenever realised moves $|\delta S|$ exceed what the implied volatility predicted ($\sigma S\sqrt{\delta t}$).
 
@@ -280,7 +280,7 @@ If the stock moves more than this, long Gamma wins. If it moves less, short Gamm
 | Volatility | $\sigma$ | Annualised implied volatility | 0.10–0.80 |
 | Risk-free rate | $r$ | Continuous compounding rate | 0.00–0.06 |
 | Normal PDF | $n(x)$ | $\frac{1}{\sqrt{2\pi}}e^{-x^2/2}$ | Peaks at 0.3989 |
-| Normal CDF | $N(x)$ | $\int_{-\infty}^x n(z)\,dz$ | 0 to 1 |
+| Normal CDF | $N(x)$ | $\int_{-\infty}^x n(z) dz$ | 0 to 1 |
 
 ## Numerical Example
 
@@ -304,7 +304,7 @@ $$n(0.175) = \frac{1}{\sqrt{2\pi}}e^{-0.175^2/2} = 0.3932$$
 |-------|---------|-------|
 | $\Delta_{\text{call}}$ | $N(d_1)$ | $0.5694$ |
 | $\Gamma$ | $\frac{n(d_1)}{S\sigma\sqrt{T}} = \frac{0.3932}{100\times 0.20\times 0.50}$ | $0.03932$ |
-| $\mathcal{V}$ | $S\,n(d_1)\sqrt{T} = 100\times 0.3932\times 0.50$ | $19.66$ |
+| $\mathcal{V}$ | $S n(d_1)\sqrt{T} = 100\times 0.3932\times 0.50$ | $19.66$ |
 | $\Theta_{\text{call}}$ | $-\frac{100\times 0.3932\times 0.20}{2\times 0.50} - 0.05\times 100\times e^{-0.0125}\times 0.5299$ | $-7.864 - 2.616 = -10.48$ per year $= -0.0287$ per day |
 | $\rho_{\text{call}}$ | $100\times 0.25\times e^{-0.0125}\times 0.5299$ | $13.09$ |
 
