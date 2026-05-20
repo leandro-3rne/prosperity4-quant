@@ -241,7 +241,7 @@ In the BS world with continuous trading and no costs, continuous rebalancing is 
 
 **Discrete hedging P&L.** Over one rebalancing interval, the P&L of a delta-hedged short call position is approximately:
 
-$$\text{P\&L} \approx -\frac{1}{2}\Gamma(\delta S)^2 + \Theta \delta t$$
+$$\text{PnL} \approx -\frac{1}{2}\Gamma(\delta S)^2 + \Theta \delta t$$
 
 $$= \frac{1}{2}\Gamma\left[\sigma^2 S^2 \delta t - (\delta S)^2\right]$$
 
