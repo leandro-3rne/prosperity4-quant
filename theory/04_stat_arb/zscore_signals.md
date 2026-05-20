@@ -148,7 +148,7 @@ $$
 **Graduated entry (optional).** Instead of all-or-nothing at $z_{\text{entry}}$, scale position size proportionally to the excess deviation:
 
 $$
-q_{\text{scale}} = \min\!\left(\frac{|z_t| - z_{\text{entry}}}{z_{\text{max}} - z_{\text{entry}}},\; 1\right)
+q_{\text{scale}} = \min\left(\frac{|z_t| - z_{\text{entry}}}{z_{\text{max}} - z_{\text{entry}}},\; 1\right)
 $$
 
 where $z_{\text{max}}$ is the z-score at which we reach full position size. This avoids committing full capital at the first threshold breach and allows averaging into the position if the spread continues to diverge.

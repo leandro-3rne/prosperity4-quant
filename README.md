@@ -35,7 +35,7 @@ practical application in algorithmic trading.
 
 The mathematical bedrock for everything that follows. Brownian motion defines the noise model for asset prices, Itô calculus provides the chain rule for stochastic processes, and SDEs give the language for writing down price dynamics. The key result is the Itô correction: for geometric Brownian motion $`dS = \mu S\,dt + \sigma S\,dW`$, the log-price drifts at $`\mu - \sigma^2/2`$ rather than $`\mu`$, because the exponential function's convexity interacts with the non-zero quadratic variation of Brownian motion.
 
-$$S_t = S_0 \exp\!\bigl((\mu - \tfrac{1}{2}\sigma^2)\,t + \sigma W_t\bigr)$$
+$$S_t = S_0 \exp\bigl((\mu - \tfrac{1}{2}\sigma^2)\,t + \sigma W_t\bigr)$$
 
 ### 2. Options Pricing
 
@@ -47,7 +47,7 @@ $$C = S\,N(d_1) - K e^{-rT} N(d_2), \quad d_1 = \frac{\ln(S/K) + (r + \sigma^2/2
 
 The Avellaneda-Stoikov (2008) framework for optimal market making under inventory risk. The market maker quotes a bid and ask around a reservation price that adjusts for current inventory exposure. The model balances two objectives: capturing spread revenue from the bid-ask spread and managing the risk of holding inventory that may lose value. This is the core strategy engine for Prosperity.
 
-$$r_t = S_t - q_t\,\gamma\,\sigma^2(T-t), \quad \delta^* = \frac{\gamma\sigma^2(T-t)}{2} + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$r_t = S_t - q_t\,\gamma\,\sigma^2(T-t), \quad \delta^* = \frac{\gamma\sigma^2(T-t)}{2} + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
 ### 4. Statistical Arbitrage
 

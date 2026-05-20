@@ -95,7 +95,7 @@ The minimax payoff profile is $(1, 1)$ — the mutual defection outcome.
 **Theorem (Folk Theorem, Nash equilibrium version).** Let $G$ be a finite stage game and $G(\delta)$ the infinitely repeated game with discount factor $\delta$. Let $\mathcal{F}$ be the set of feasible payoff vectors (the convex hull of $\{u(a) : a \in A\}$). For any payoff vector $\mathbf{v} = (v_1, \ldots, v_n) \in \mathcal{F}$ satisfying
 
 $$
-v_i > \underline{v}_i \qquad \forall\, i \in N,
+v_i > \underline{v}_i \qquad \forall\, i \in N
 $$
 
 there exists a threshold $\bar{\delta} \in (0, 1)$ such that for all $\delta \in (\bar{\delta}, 1)$, the payoff vector $\mathbf{v}$ can be sustained as a Nash equilibrium average payoff of $G(\delta)$.

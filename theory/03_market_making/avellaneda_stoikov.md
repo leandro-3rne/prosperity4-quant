@@ -54,7 +54,7 @@ $$q_{t+dt} = q_t - 1 \quad (\text{ask fill}), \qquad q_{t+dt} = q_t + 1 \quad (\
 
 5. **Objective** — maximise expected terminal utility with CARA (constant absolute risk aversion) preferences:
 
-$$\max_{\delta^a, \delta^b} \; \mathbb{E}\!\left[-\exp\!\left(-\gamma \left(X_T + q_T S_T\right)\right)\right]$$
+$$\max_{\delta^a, \delta^b} \; \mathbb{E}\left[-\exp\left(-\gamma \left(X_T + q_T S_T\right)\right)\right]$$
 
 The argument of the exponential is $-($ risk aversion $) \times ($ terminal wealth $)$. Terminal wealth is cash $X_T$ plus the mark-to-market value $q_T S_T$ of remaining inventory, liquidated at the mid-price. The CARA utility $u(w) = -e^{-\gamma w}$ implies constant absolute risk aversion: the market maker treats a \$1 gain and a \$1 loss symmetrically regardless of wealth level.
 
@@ -64,17 +64,17 @@ The argument of the exponential is $-($ risk aversion $) \times ($ terminal weal
 
 Define the value function:
 
-$$u(t, x, S, q) = \sup_{\delta^a, \delta^b} \; \mathbb{E}\!\left[-\exp\!\left(-\gamma(X_T + q_T S_T)\right) \;\Big|\; X_t = x, \, S_t = S, \, q_t = q\right]$$
+$$u(t, x, S, q) = \sup_{\delta^a, \delta^b} \; \mathbb{E}\left[-\exp\left(-\gamma(X_T + q_T S_T)\right) \;\Big|\; X_t = x, \, S_t = S, \, q_t = q\right]$$
 
 Between order arrivals, the mid-price diffuses and no trades occur. Over an infinitesimal interval $dt$, three things can happen: (i) no fills — the mid-price evolves via $dS = \sigma \, dW$, (ii) the ask fills with probability $\lambda(\delta^a) \, dt$, or (iii) the bid fills with probability $\lambda(\delta^b) \, dt$.
 
 Applying dynamic programming (the Hamilton-Jacobi-Bellman equation), we require $u$ to satisfy:
 
-$$\frac{\partial u}{\partial t} + \frac{1}{2}\sigma^2 \frac{\partial^2 u}{\partial S^2} + \sup_{\delta^a}\!\Big[\lambda(\delta^a)\Big(u(t,\, x + S + \delta^a,\, S,\, q-1) - u(t,x,S,q)\Big)\Big] + \sup_{\delta^b}\!\Big[\lambda(\delta^b)\Big(u(t,\, x - S + \delta^b,\, S,\, q+1) - u(t,x,S,q)\Big)\Big] = 0$$
+$$\frac{\partial u}{\partial t} + \frac{1}{2}\sigma^2 \frac{\partial^2 u}{\partial S^2} + \sup_{\delta^a}\Big[\lambda(\delta^a)\Big(u(t,\, x + S + \delta^a,\, S,\, q-1) - u(t,x,S,q)\Big)\Big] + \sup_{\delta^b}\Big[\lambda(\delta^b)\Big(u(t,\, x - S + \delta^b,\, S,\, q+1) - u(t,x,S,q)\Big)\Big] = 0$$
 
 with terminal condition:
 
-$$u(T, x, S, q) = -\exp\!\left(-\gamma(x + q S)\right)$$
+$$u(T, x, S, q) = -\exp\left(-\gamma(x + q S)\right)$$
 
 The first two terms come from the diffusion of $S_t$ (no drift, variance $\sigma^2$). The last two terms come from the jump contributions of Poisson order fills on the ask and bid sides, weighted by their arrival intensities.
 
@@ -82,7 +82,7 @@ The first two terms come from the diffusion of $S_t$ (no drift, variance $\sigma
 
 The CARA structure suggests an exponential separation. We guess:
 
-$$u(t, x, S, q) = -\exp\!\left(-\gamma(x + q S)\right) \cdot w(t, q)$$
+$$u(t, x, S, q) = -\exp\left(-\gamma(x + q S)\right) \cdot w(t, q)$$
 
 where $w(t,q)$ is a function to be determined, with terminal condition $w(T,q) = 1$ for all $q$.
 
@@ -134,7 +134,7 @@ $$e^{-\gamma\phi}\,\lambda(\delta^b)\Big(w(t,q) - e^{-\gamma\delta^b} w(t,q+1)\B
 
 Dividing the full HJB by $-e^{-\gamma\phi}$ (which is always negative, so we flip the optimisation signs back), we obtain:
 
-$$\frac{\partial w}{\partial t} + \frac{1}{2}\gamma^2 q^2 \sigma^2 w - \sup_{\delta^a}\!\Big[\lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a}w(t,q-1)\Big)\Big] - \sup_{\delta^b}\!\Big[\lambda(\delta^b)\Big(w(t,q) - e^{-\gamma\delta^b}w(t,q+1)\Big)\Big] = 0$$
+$$\frac{\partial w}{\partial t} + \frac{1}{2}\gamma^2 q^2 \sigma^2 w - \sup_{\delta^a}\Big[\lambda(\delta^a)\Big(w(t,q) - e^{-\gamma\delta^a}w(t,q-1)\Big)\Big] - \sup_{\delta^b}\Big[\lambda(\delta^b)\Big(w(t,q) - e^{-\gamma\delta^b}w(t,q+1)\Big)\Big] = 0$$
 
 Note: when we divide through by $-e^{-\gamma\phi}$, the $\sup$ operators remain $\sup$ because we factor out a negative sign twice (once from $u$ and once from the jump difference), leaving the net sign unchanged.
 
@@ -164,31 +164,31 @@ $$e^{-\gamma\delta^a} = \frac{\kappa}{\gamma + \kappa} \cdot \frac{w(t,q)}{w(t,q
 
 Taking logarithms:
 
-$$\delta^{a*} = \frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{\gamma}\ln\!\frac{w(t,q)}{w(t,q-1)}$$
+$$\delta^{a*} = \frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{\gamma}\ln\frac{w(t,q)}{w(t,q-1)}$$
 
 By symmetry, the optimal bid distance is:
 
-$$\delta^{b*} = \frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{\gamma}\ln\!\frac{w(t,q)}{w(t,q+1)}$$
+$$\delta^{b*} = \frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{\gamma}\ln\frac{w(t,q)}{w(t,q+1)}$$
 
 ### Step 7: Approximation for the Ratio $w(t,q)/w(t,q\mp1)$
 
-To obtain closed-form expressions, Avellaneda and Stoikov approximate the solution to the reduced HJB. Under the approximation that $w(t,q) \approx \exp\!\left(-\frac{1}{2}\gamma^2\sigma^2 q^2(T-t)\right)$ (motivated by the quadratic inventory penalty in the exponent), we compute:
+To obtain closed-form expressions, Avellaneda and Stoikov approximate the solution to the reduced HJB. Under the approximation that $w(t,q) \approx \exp\left(-\frac{1}{2}\gamma^2\sigma^2 q^2(T-t)\right)$ (motivated by the quadratic inventory penalty in the exponent), we compute:
 
-$$\frac{w(t,q)}{w(t,q-1)} = \frac{\exp\!\left(-\tfrac{1}{2}\gamma^2\sigma^2 q^2(T-t)\right)}{\exp\!\left(-\tfrac{1}{2}\gamma^2\sigma^2(q-1)^2(T-t)\right)}$$
+$$\frac{w(t,q)}{w(t,q-1)} = \frac{\exp\left(-\tfrac{1}{2}\gamma^2\sigma^2 q^2(T-t)\right)}{\exp\left(-\tfrac{1}{2}\gamma^2\sigma^2(q-1)^2(T-t)\right)}$$
 
-$$= \exp\!\left(-\frac{1}{2}\gamma^2\sigma^2\big[q^2 - (q-1)^2\big](T-t)\right)$$
+$$= \exp\left(-\frac{1}{2}\gamma^2\sigma^2\big[q^2 - (q-1)^2\big](T-t)\right)$$
 
-$$= \exp\!\left(-\frac{1}{2}\gamma^2\sigma^2(2q - 1)(T-t)\right)$$
+$$= \exp\left(-\frac{1}{2}\gamma^2\sigma^2(2q - 1)(T-t)\right)$$
 
 Similarly:
 
-$$\frac{w(t,q)}{w(t,q+1)} = \exp\!\left(-\frac{1}{2}\gamma^2\sigma^2\big[q^2 - (q+1)^2\big](T-t)\right) = \exp\!\left(\frac{1}{2}\gamma^2\sigma^2(2q+1)(T-t)\right)$$
+$$\frac{w(t,q)}{w(t,q+1)} = \exp\left(-\frac{1}{2}\gamma^2\sigma^2\big[q^2 - (q+1)^2\big](T-t)\right) = \exp\left(\frac{1}{2}\gamma^2\sigma^2(2q+1)(T-t)\right)$$
 
 Substituting into the optimal distances:
 
-$$\delta^{a*} = \frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) - \frac{1}{2}\gamma\sigma^2(2q-1)(T-t)$$
+$$\delta^{a*} = \frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) - \frac{1}{2}\gamma\sigma^2(2q-1)(T-t)$$
 
-$$\delta^{b*} = \frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{2}\gamma\sigma^2(2q+1)(T-t)$$
+$$\delta^{b*} = \frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{2}\gamma\sigma^2(2q+1)(T-t)$$
 
 ### Step 8: Reservation Price
 
@@ -223,21 +223,21 @@ $$\boxed{r_t = S_t - q_t \, \gamma \, \sigma^2 (T - t)}$$
 
 The optimal total spread is $\delta^{a*} + \delta^{b*}$:
 
-$$\delta^{a*} + \delta^{b*} = \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) - \frac{1}{2}\gamma\sigma^2(2q-1)(T-t) + \frac{1}{2}\gamma\sigma^2(2q+1)(T-t)$$
+$$\delta^{a*} + \delta^{b*} = \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) - \frac{1}{2}\gamma\sigma^2(2q-1)(T-t) + \frac{1}{2}\gamma\sigma^2(2q+1)(T-t)$$
 
-$$= \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{2}\gamma\sigma^2(T-t)\big[(2q+1) - (2q-1)\big]$$
+$$= \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) + \frac{1}{2}\gamma\sigma^2(T-t)\big[(2q+1) - (2q-1)\big]$$
 
-$$= \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) + \gamma\sigma^2(T-t)$$
+$$= \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right) + \gamma\sigma^2(T-t)$$
 
 The optimal **half-spread** $\delta^*$ (symmetric component, independent of $q$) is:
 
-$$\boxed{\delta^* = \frac{\gamma \sigma^2 (T-t)}{2} + \frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)}$$
+$$\boxed{\delta^* = \frac{\gamma \sigma^2 (T-t)}{2} + \frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)}$$
 
 **Interpretation of the two terms:**
 
 1. **Inventory-risk compensation** $\frac{\gamma\sigma^2(T-t)}{2}$: the market maker demands a wider spread when volatility is high and time remaining is large, because holding inventory is riskier under those conditions. This term grows linearly in $\sigma^2$ and $(T-t)$.
 
-2. **Adverse-selection / order-arrival compensation** $\frac{1}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)$: this term accounts for the uncertainty in order arrivals and the depth of the order book. When $\kappa$ is large (thin book, fills drop off quickly), $\gamma/\kappa$ is small, and this term shrinks — but the market maker is also filling fewer orders. When $\kappa$ is small (deep book), fills are less sensitive to quote distance and the market maker widens the spread to compensate for increased adverse selection.
+2. **Adverse-selection / order-arrival compensation** $\frac{1}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$: this term accounts for the uncertainty in order arrivals and the depth of the order book. When $\kappa$ is large (thin book, fills drop off quickly), $\gamma/\kappa$ is small, and this term shrinks — but the market maker is also filling fewer orders. When $\kappa$ is small (deep book), fills are less sensitive to quote distance and the market maker widens the spread to compensate for increased adverse selection.
 
 ### Inventory Risk vs Spread Revenue Tradeoff
 
@@ -280,7 +280,7 @@ The market maker's reservation price is 0.6 below mid — reflecting the desire 
 
 **Optimal half-spread:**
 
-$$\delta^* = \frac{0.1 \times 4 \times 0.5}{2} + \frac{1}{0.1}\ln\!\left(1 + \frac{0.1}{1.5}\right) = 0.1 + 10 \times \ln(1.0\overline{6})$$
+$$\delta^* = \frac{0.1 \times 4 \times 0.5}{2} + \frac{1}{0.1}\ln\left(1 + \frac{0.1}{1.5}\right) = 0.1 + 10 \times \ln(1.0\overline{6})$$
 
 $$= 0.1 + 10 \times 0.0645 = 0.1 + 0.645 = 0.745$$
 

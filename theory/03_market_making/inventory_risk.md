@@ -76,7 +76,7 @@ The risk grows **quadratically** in inventory. Doubling your position quadruples
 
 Over a longer horizon where inventory evolves stochastically:
 
-$$\mathrm{Var}\!\left[\int_0^T q_t \, \sigma \, dW_t\right] = \sigma^2 \int_0^T \mathbb{E}[q_t^2] \, dt$$
+$$\mathrm{Var}\left[\int_0^T q_t \, \sigma \, dW_t\right] = \sigma^2 \int_0^T \mathbb{E}[q_t^2] \, dt$$
 
 by the Itô isometry. This shows that the cumulative risk depends on the expected squared inventory integrated over time — reinforcing the importance of keeping $q_t$ small.
 
@@ -127,7 +127,7 @@ The parameter $\gamma$ governs the speed at which the market maker's quotes resp
 
 The expected utility under CARA preferences $u(w) = -e^{-\gamma w}$ penalises variance proportionally to $\gamma$:
 
-$$\mathbb{E}[u(w)] \approx -\exp\!\left(-\gamma\left(\mathbb{E}[w] - \frac{\gamma}{2}\mathrm{Var}[w]\right)\right)$$
+$$\mathbb{E}[u(w)] \approx -\exp\left(-\gamma\left(\mathbb{E}[w] - \frac{\gamma}{2}\mathrm{Var}[w]\right)\right)$$
 
 so the certainty equivalent of wealth $w$ is approximately:
 

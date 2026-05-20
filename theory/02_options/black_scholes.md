@@ -63,7 +63,7 @@ Integrating from $0$ to $T$:
 
 $$\ln S_T = \ln S_0 + \left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T$$
 
-$$S_T = S_0 \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T\right]$$
+$$S_T = S_0 \exp\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T\right]$$
 
 ### Step 2 — Risk-neutral measure (Girsanov)
 
@@ -79,7 +79,7 @@ The drift is now $r$, not $\mu$. This is why the expected return drops out of th
 
 Under $\mathbb{Q}$, the terminal stock price is:
 
-$$S_T = S_0 \exp\!\left[\left(r - \tfrac{1}{2}\sigma^2\right)T + \sigma \widetilde{W}_T\right]$$
+$$S_T = S_0 \exp\left[\left(r - \tfrac{1}{2}\sigma^2\right)T + \sigma \widetilde{W}_T\right]$$
 
 
 ### Step 3 — Delta-hedging and the Black–Scholes PDE
@@ -176,7 +176,7 @@ $$\boxed{\frac{\partial u}{\partial \tau} = \frac{1}{2}\sigma^2 \frac{\partial^2
 
 With a further rescaling $\tau' = \frac{1}{2}\sigma^2 \tau$, this becomes $\partial u/\partial \tau' = \partial^2 u/\partial x^2$, the classical heat equation whose fundamental solution is the Gaussian kernel:
 
-$$u(x,\tau') = \frac{1}{\sqrt{4\pi\tau'}}\int_{-\infty}^{\infty} u_0(\xi)\,\exp\!\left(-\frac{(x-\xi)^2}{4\tau'}\right)d\xi$$
+$$u(x,\tau') = \frac{1}{\sqrt{4\pi\tau'}}\int_{-\infty}^{\infty} u_0(\xi)\,\exp\left(-\frac{(x-\xi)^2}{4\tau'}\right)d\xi$$
 
 Transforming back through all substitutions yields the closed-form Black–Scholes formula.
 
@@ -184,15 +184,15 @@ Transforming back through all substitutions yields the closed-form Black–Schol
 
 For a European call with payoff $\max(S_T - K, 0)$, the risk-neutral pricing formula gives:
 
-$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\!\left[\max(S_T - K, 0)\right]$$
+$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
 
-Under $\mathbb{Q}$, $\ln S_T \sim \mathcal{N}\!\left(\ln S + (r - \tfrac{1}{2}\sigma^2)T,\;\sigma^2 T\right)$. Let $Z \sim \mathcal{N}(0,1)$, so:
+Under $\mathbb{Q}$, $\ln S_T \sim \mathcal{N}\left(\ln S + (r - \tfrac{1}{2}\sigma^2)T,\;\sigma^2 T\right)$. Let $Z \sim \mathcal{N}(0,1)$, so:
 
-$$S_T = S\exp\!\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right]$$
+$$S_T = S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right]$$
 
 The call is in the money when $S_T > K$, i.e., when:
 
-$$S\exp\!\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right] > K$$
+$$S\exp\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z\right] > K$$
 
 $$(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z > \ln(K/S)$$
 
@@ -214,7 +214,7 @@ $$e^{-rT}\int_{-d_2}^{\infty} K\,\frac{e^{-z^2/2}}{\sqrt{2\pi}}\,dz = Ke^{-rT}\,
 
 $$e^{-rT}\cdot S\int_{-d_2}^{\infty} e^{(r-\sigma^2/2)T + \sigma\sqrt{T}\,z}\,\frac{e^{-z^2/2}}{\sqrt{2\pi}}\,dz$$
 
-$$= S\int_{-d_2}^{\infty}\frac{1}{\sqrt{2\pi}}\exp\!\left(-\frac{\sigma^2 T}{2} + \sigma\sqrt{T}\,z - \frac{z^2}{2}\right)dz$$
+$$= S\int_{-d_2}^{\infty}\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{\sigma^2 T}{2} + \sigma\sqrt{T}\,z - \frac{z^2}{2}\right)dz$$
 
 Complete the square in the exponent:
 
@@ -238,7 +238,7 @@ $$d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}, \qquad d_
 
 For a put with payoff $\max(K - S_T, 0)$:
 
-$$P = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\!\left[\max(K - S_T, 0)\right]$$
+$$P = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(K - S_T, 0)\right]$$
 
 The put is in the money when $S_T < K$, i.e., when $Z < -d_2$. Evaluating the analogous integral:
 

@@ -73,7 +73,7 @@ For a classical function $f$, the increment $\Delta f_k = f'(\xi_k)\Delta t$ is 
 By **(A3)**, the increments are independent, so variances add:
 
 $$
-\operatorname{Var}(W_t) = \operatorname{Var}\!\left(\sum_{k=0}^{n-1} \Delta W_k\right) = \sum_{k=0}^{n-1} \operatorname{Var}(\Delta W_k) = \sum_{k=0}^{n-1} \Delta t = n \cdot \frac{t}{n} = t.
+\operatorname{Var}(W_t) = \operatorname{Var}\left(\sum_{k=0}^{n-1} \Delta W_k\right) = \sum_{k=0}^{n-1} \operatorname{Var}(\Delta W_k) = \sum_{k=0}^{n-1} \Delta t = n \cdot \frac{t}{n} = t.
 $$
 
 Since $W_t$ is the sum of $n$ independent Gaussians, it is itself Gaussian with mean zero:
@@ -195,7 +195,7 @@ This is immediate: each $|\Delta W_i| \sim \sqrt{\Delta t} \cdot |Z|$ and the su
 A natural first attempt at modelling a stock price $S_t$ is to apply the Wiener process directly to the **level**:
 
 $$
-S_t = S_0 + \mu\,t + \sigma\,W_t,
+S_t = S_0 + \mu\,t + \sigma\,W_t
 $$
 
 or in differential form
@@ -215,7 +215,7 @@ Here $dS_t$ is the **nominal (absolute) price change**: if $S_t = 100$ and $dS_t
 **Moments.** Because $W_t \sim \mathcal{N}(0, t)$, the price at time $t$ is Gaussian:
 
 $$
-S_t \sim \mathcal{N}\!\bigl(S_0 + \mu t,\;\sigma^2 t\bigr).
+S_t \sim \mathcal{N}\bigl(S_0 + \mu t,\;\sigma^2 t\bigr).
 $$
 
 The $\pm 2\sigma$ confidence band is symmetric around the drift:
@@ -259,13 +259,13 @@ In GBM, $\mu = 0.10$ means the stock drifts at 10 % per year regardless of its d
 **Closed form via $\ln S_t$ (short version).** Because $dS_t = \mu S_t\,dt + \sigma S_t\,dW_t$ is multiplicative in $S_t$, we use $f(S)=\ln S$ so that $f'(S)=1/S$ divides out the right-hand-side $S_t$ factor. Applying Itô's lemma gives
 
 $$
-d(\ln S_t)=\left(\mu-\tfrac{1}{2}\sigma^2\right)dt+\sigma\,dW_t,
+d(\ln S_t)=\left(\mu-\tfrac{1}{2}\sigma^2\right)dt+\sigma\,dW_t
 $$
 
 which integrates to
 
 $$
-S_t = S_0 \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right].
+S_t = S_0 \exp\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right].
 $$
 
 The full step-by-step derivation (including where the Itô correction $-\sigma^2/2$ comes from) is in [ito_calculus.md](ito_calculus.md), §4.
@@ -310,7 +310,7 @@ $$r_t = \ln\frac{S_{t+\Delta t}}{S_t} = \ln S_{t+\Delta t} - \ln S_t.$$
 
 Under GBM, each log-return is exactly Gaussian:
 
-$$r_t = \left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t + \sigma\,\Delta W_t \;\sim\; \mathcal{N}\!\left(\left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t,\;\sigma^2\Delta t\right).$$
+$$r_t = \left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t + \sigma\,\Delta W_t \;\sim\; \mathcal{N}\left(\left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t,\;\sigma^2\Delta t\right).$$
 
 Summing $n$ non-overlapping log-returns over $[0, T]$ gives $\ln(S_T/S_0)$, consistent with the closed-form GBM solution from §6.
 
@@ -395,23 +395,23 @@ $$\hat{I}_M = \frac{1}{M}\sum_{m=1}^{M} f(W^{(m)}) \;\xrightarrow{M\to\infty}\; 
 
 By the **law of large numbers**, $\hat{I}_M \to \mathbb{E}[f(W)]$ almost surely as $M \to \infty$. By the **central limit theorem**, the error is
 
-$$\hat{I}_M - \mathbb{E}[f(W)] \;\approx\; \mathcal{N}\!\left(0,\;\frac{\operatorname{Var}(f(W))}{M}\right),$$
+$$\hat{I}_M - \mathbb{E}[f(W)] \;\approx\; \mathcal{N}\left(0,\;\frac{\operatorname{Var}(f(W))}{M}\right)$$
 
 so the **standard error** decays as $\sigma_f / \sqrt{M}$. Doubling accuracy requires **quadrupling** the number of paths — the famous $\sqrt{M}$ convergence rate, independent of dimension. This dimension-independence makes MC uniquely powerful for high-dimensional problems (many assets, many time steps) where grid-based methods are infeasible.
 
 **Confidence interval.** A 95% MC confidence interval for $\mathbb{E}[f(W)]$ is
 
-$$\hat{I}_M \;\pm\; 1.96\,\frac{\hat{\sigma}_f}{\sqrt{M}},$$
+$$\hat{I}_M \;\pm\; 1.96\,\frac{\hat{\sigma}_f}{\sqrt{M}}$$
 
 where $\hat{\sigma}_f = \text{std}(f(W^{(1)}),\ldots,f(W^{(M)}))$ is the sample standard deviation of the payoffs.
 
 **Applying MC to GBM paths.** To simulate $M$ GBM paths of $S_t$ at times $0 = t_0 < t_1 < \cdots < t_n = T$:
 
-$$S_{t_{k+1}}^{(m)} = S_{t_k}^{(m)} \exp\!\left[\left(\mu - \tfrac{\sigma^2}{2}\right)\Delta t + \sigma\sqrt{\Delta t}\;Z_{k}^{(m)}\right], \qquad Z_k^{(m)} \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).$$
+$$S_{t_{k+1}}^{(m)} = S_{t_k}^{(m)} \exp\left[\left(\mu - \tfrac{\sigma^2}{2}\right)\Delta t + \sigma\sqrt{\Delta t}\;Z_{k}^{(m)}\right], \qquad Z_k^{(m)} \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1).$$
 
 For **European option pricing**, set $\mu = r$ (risk-neutral measure), evaluate payoffs $\max(S_T^{(m)} - K, 0)$, discount and average:
 
-$$\hat{C} = e^{-rT}\,\frac{1}{M}\sum_{m=1}^{M}\max\!\left(S_T^{(m)} - K,\;0\right).$$
+$$\hat{C} = e^{-rT}\,\frac{1}{M}\sum_{m=1}^{M}\max\left(S_T^{(m)} - K,\;0\right).$$
 
 For large $M$ this recovers the Black–Scholes formula numerically (it provides an independent cross-check).
 

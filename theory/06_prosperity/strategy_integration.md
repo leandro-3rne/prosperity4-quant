@@ -20,7 +20,7 @@ We build on two foundations and fuse them into one decision framework.
 - Inventory: $q_t \in \mathbb{Z}$ (units held, target is zero in pure AS)
 - Fill intensity at distance $\delta$ from mid: $\lambda(\delta) = A\,e^{-\kappa\,\delta}$
 - Reservation price: $r_t = S_t - q_t\,\gamma\,\sigma^2(T - t)$
-- Optimal half-spread: $\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)$
+- Optimal half-spread: $\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$
 
 **From statistical arbitrage (z-score signals):**
 
@@ -70,7 +70,7 @@ When $z_t = -2.5$: the adjustment is $-\alpha \cdot (-2.5) \cdot \sigma = +2.5\,
 
 The AS optimal half-spread does not depend on the reservation price — it depends only on the risk-aversion $\gamma$, volatility $\sigma$, time horizon $T - t$, and order-book depth $\kappa$:
 
-$$\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$\delta^* = \gamma\,\sigma^2(T - t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
 This formula remains unchanged in the integrated system. The signal affects *where* we centre our quotes (via $r^{\text{mod}}$), not how wide we quote.
 
@@ -129,13 +129,13 @@ The base half-spread $\delta^*$ is the theoretical optimum. In practice, we appl
 
 **High inventory.** When $|q_t|$ exceeds a threshold $q_{\max}$, we widen to slow accumulation in the dangerous direction:
 
-$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_q \cdot \max\!\left(0,\;\frac{|q_t| - q_{\text{safe}}}{q_{\max} - q_{\text{safe}}}\right)\right)$$
+$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_q \cdot \max\left(0,\;\frac{|q_t| - q_{\text{safe}}}{q_{\max} - q_{\text{safe}}}\right)\right)$$
 
 where $\lambda_q \in [0.5, 2.0]$ controls how aggressively we widen, and $q_{\text{safe}}$ is the inventory level below which no widening is applied.
 
 **High volatility.** When estimated $\hat{\sigma}$ is elevated relative to its rolling average:
 
-$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_\sigma \cdot \max\!\left(0,\;\frac{\hat{\sigma} - \bar{\sigma}}{\bar{\sigma}}\right)\right)$$
+$$\delta^*_{\text{adj}} = \delta^* \cdot \left(1 + \lambda_\sigma \cdot \max\left(0,\;\frac{\hat{\sigma} - \bar{\sigma}}{\bar{\sigma}}\right)\right)$$
 
 **Low signal confidence.** When $|z_t|$ is small (near zero), there is no directional conviction. We widen to earn pure spread:
 
@@ -201,9 +201,9 @@ The inventory penalty pulls $r$ down by $5.0$ (we are long 2 units and want to r
 
 **Step 2 — Optimal half-spread:**
 
-$$\delta^* = \gamma\,\sigma^2(T-t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)$$
+$$\delta^* = \gamma\,\sigma^2(T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)$$
 
-$$\delta^* = 0.1 \cdot 0.25 \cdot 100 + \frac{2}{0.1}\ln\!\left(1 + \frac{0.1}{1.5}\right)$$
+$$\delta^* = 0.1 \cdot 0.25 \cdot 100 + \frac{2}{0.1}\ln\left(1 + \frac{0.1}{1.5}\right)$$
 
 $$\delta^* = 2.5 + 20 \cdot \ln(1.0\overline{6})$$
 

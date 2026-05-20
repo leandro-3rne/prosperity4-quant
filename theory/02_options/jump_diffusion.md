@@ -55,7 +55,7 @@ $$X_t = \sum_{i=1}^{N_t} Y_i$$
 
 Its expectation (by the law of total expectation, conditioning on $N_t$):
 
-$$\mathbb{E}[X_t] = \mathbb{E}\!\left[\sum_{i=1}^{N_t}Y_i\right] = \mathbb{E}[N_t]\cdot\mathbb{E}[Y_1] = \lambda t\,\mathbb{E}[Y_1]$$
+$$\mathbb{E}[X_t] = \mathbb{E}\left[\sum_{i=1}^{N_t}Y_i\right] = \mathbb{E}[N_t]\cdot\mathbb{E}[Y_1] = \lambda t\,\mathbb{E}[Y_1]$$
 
 In Merton's model, the jump sizes are the multiplicative factors $J_i$, and the "size" attached to each jump in the return equation is $J_i - 1$. So the cumulative jump contribution to returns is:
 
@@ -63,7 +63,7 @@ $$\sum_{i=1}^{N_t}(J_i - 1)$$
 
 with expectation:
 
-$$\mathbb{E}\!\left[\sum_{i=1}^{N_t}(J_i - 1)\right] = \lambda t \cdot \mathbb{E}[J-1] = \lambda t\,\bar{k}$$
+$$\mathbb{E}\left[\sum_{i=1}^{N_t}(J_i - 1)\right] = \lambda t \cdot \mathbb{E}[J-1] = \lambda t\,\bar{k}$$
 
 ### Step 2 — The Merton SDE
 
@@ -79,7 +79,7 @@ Breaking this down:
 
 **Verification of drift compensation:** Over $[0,dt]$:
 
-$$\mathbb{E}\!\left[\frac{dS}{S}\right] = (\mu - \lambda\bar{k})\,dt + 0 + \mathbb{E}[(J-1)]\cdot\mathbb{E}[dN_t]$$
+$$\mathbb{E}\left[\frac{dS}{S}\right] = (\mu - \lambda\bar{k})\,dt + 0 + \mathbb{E}[(J-1)]\cdot\mathbb{E}[dN_t]$$
 
 $$= (\mu - \lambda\bar{k})\,dt + \bar{k}\cdot\lambda\,dt = \mu\,dt \qquad \checkmark$$
 
@@ -87,7 +87,7 @@ $$= (\mu - \lambda\bar{k})\,dt + \bar{k}\cdot\lambda\,dt = \mu\,dt \qquad \check
 
 Over $[0,T]$, suppose $N_T = n$ jumps occur at times $t_1, \ldots, t_n$ with sizes $J_1, \ldots, J_n$. Between jumps, the stock follows GBM with drift $\mu - \lambda\bar{k}$ and vol $\sigma$. At each jump, $S$ multiplies by $J_i$. Therefore:
 
-$$S_T = S_0 \exp\!\left[(\mu - \lambda\bar{k} - \tfrac{1}{2}\sigma^2)T + \sigma W_T\right]\prod_{i=1}^{n}J_i$$
+$$S_T = S_0 \exp\left[(\mu - \lambda\bar{k} - \tfrac{1}{2}\sigma^2)T + \sigma W_T\right]\prod_{i=1}^{n}J_i$$
 
 Taking logs:
 
@@ -99,7 +99,7 @@ $$\sum_{i=1}^{n}\ln J_i \sim \mathcal{N}(n\mu_J,\; n\sigma_J^2)$$
 
 Conditional on $N_T = n$, the log-return is normal:
 
-$$\ln\frac{S_T}{S_0}\;\Big|\;N_T = n \;\;\sim\;\; \mathcal{N}\!\left(\left(\mu-\lambda\bar{k}-\frac{\sigma^2}{2}\right)T + n\mu_J,\;\; \sigma^2 T + n\sigma_J^2\right)$$
+$$\ln\frac{S_T}{S_0}\;\Big|\;N_T = n \;\;\sim\;\; \mathcal{N}\left(\left(\mu-\lambda\bar{k}-\frac{\sigma^2}{2}\right)T + n\mu_J,\;\; \sigma^2 T + n\sigma_J^2\right)$$
 
 ### Step 4 — Risk-neutral pricing
 
@@ -109,11 +109,11 @@ $$\frac{dS}{S} = (r - \lambda\bar{k})\,dt + \sigma\,d\widetilde{W}_t + (J-1)\,dN
 
 The option price is:
 
-$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\!\left[\max(S_T - K, 0)\right]$$
+$$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]$$
 
 Condition on the number of jumps $N_T = n$ (Poisson with parameter $\lambda T$):
 
-$$C = e^{-rT}\sum_{n=0}^{\infty}\mathbb{P}(N_T = n)\;\mathbb{E}^{\mathbb{Q}}\!\left[\max(S_T - K,0)\;\Big|\;N_T = n\right]$$
+$$C = e^{-rT}\sum_{n=0}^{\infty}\mathbb{P}(N_T = n)\;\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K,0)\;\Big|\;N_T = n\right]$$
 
 Conditional on $n$ jumps, $S_T$ is lognormal (as shown in Step 3), so the inner expectation is a Black–Scholes formula with modified parameters.
 

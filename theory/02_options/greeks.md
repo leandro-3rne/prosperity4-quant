@@ -33,7 +33,7 @@ $$S\,n(d_1) = Ke^{-rT}\,n(d_2)$$
 
 The second identity follows from:
 
-$$\frac{n(d_1)}{n(d_2)} = \exp\!\left(-\frac{d_1^2 - d_2^2}{2}\right) = \exp\!\left(-\frac{(d_1-d_2)(d_1+d_2)}{2}\right)$$
+$$\frac{n(d_1)}{n(d_2)} = \exp\left(-\frac{d_1^2 - d_2^2}{2}\right) = \exp\left(-\frac{(d_1-d_2)(d_1+d_2)}{2}\right)$$
 
 Since $d_1 - d_2 = \sigma\sqrt{T}$ and $d_1 + d_2 = \frac{2\ln(S/K) + 2rT}{\sigma\sqrt{T}} - \sigma\sqrt{T} + \sigma\sqrt{T}$... more directly:
 
@@ -86,7 +86,7 @@ Since $0 < N(-d_1) < 1$, put Delta is always between $-1$ and $0$.
 For **puts**, $\Delta_{\text{put}} = N(d_1) - 1$: deep ITM puts ($S \ll K$) have $\Delta \to -1$, ATM puts lie in $(-1, 0)$, deep OTM puts have $\Delta \to 0^-$.
 
 **Probability vs. $\Delta$.** The risk-neutral probability that a European **call** expires in the money is
-$$\mathbb{Q}(S_T > K) = N(d_2),$$
+$$\mathbb{Q}(S_T > K) = N(d_2)$$
 not $N(d_1)$. Since $d_1 = d_2 + \sigma\sqrt{T}$, we have $N(d_1) > N(d_2)$: $\Delta_{\text{call}} = N(d_1)$ is **not** the ITM probability, though it is often confused with it in conversation. Intuitively, $d_1$ encodes the drift adjustment tied to using the **stock** as numeraire in the $S\,N(d_1)$ term of the BS formula. For **deep OTM** or **deep ITM** options, $d_1$ and $d_2$ lie in the same tail of the normal, so $N(d_1)$ and $N(d_2)$ are numerically **close**; **near ATM** the gap is most noticeable. The statement “Delta equals ITM probability under $\mathbb{Q}$” is **exact** for a **digital / cash-or-nothing** call under the same model assumptions, not for a vanilla call.
 
 ### Gamma — $\Gamma = \partial^2 V/\partial S^2 = \partial\Delta/\partial S$

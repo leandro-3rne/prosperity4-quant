@@ -50,7 +50,7 @@ where $\alpha_t$ is the intended directional position driven by signals (as oppo
 
 Top teams ran tight bid-ask spreads calibrated to realised volatility. The spread formula most teams converged on was a variant of Avellaneda-Stoikov:
 
-$$\text{spread}_t = 2\,\delta^*_t = 2\left[\gamma\,\hat{\sigma}_t^2\,(T-t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right)\right]$$
+$$\text{spread}_t = 2\,\delta^*_t = 2\left[\gamma\,\hat{\sigma}_t^2\,(T-t) + \frac{2}{\gamma}\ln\left(1 + \frac{\gamma}{\kappa}\right)\right]$$
 
 The critical insight specific to Prosperity: **other bots frequently trade at suboptimal prices**, creating spread opportunities that would not exist on a real exchange. This is because many competing teams run simpler strategies — fixed spreads, pure trend-following, or naive mean-reversion — that leak value to sophisticated market makers.
 
@@ -180,7 +180,7 @@ $$\Pi_{\text{spread}} = 200 \times 2 \times 0.15 = 60.0$$
 
 **Inventory Cost (expected variance, not realised):**
 
-$$E\!\left[\Pi_{\text{inventory}}^2\right] = \sigma^2 \sum_{t} q_t^2 \approx \sigma^2 \cdot T \cdot \bar{q}^2 = 0.16 \cdot 1000 \cdot 10.24 = 1638.4$$
+$$E\left[\Pi_{\text{inventory}}^2\right] = \sigma^2 \sum_{t} q_t^2 \approx \sigma^2 \cdot T \cdot \bar{q}^2 = 0.16 \cdot 1000 \cdot 10.24 = 1638.4$$
 
 $$\text{Std dev of inventory cost} = \sqrt{1638.4} \approx 40.5$$
 

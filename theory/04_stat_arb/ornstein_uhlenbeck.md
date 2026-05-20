@@ -50,13 +50,13 @@ $$
 Recognize that the left-hand side is the differential of the product $e^{\theta t} X_t$. By the product rule for Itô processes (note that $e^{\theta t}$ is a deterministic, smooth function, so no second-order Itô correction arises):
 
 $$
-d\!\left(e^{\theta t} X_t\right) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt
+d\left(e^{\theta t} X_t\right) = e^{\theta t}\,dX_t + \theta e^{\theta t} X_t\,dt
 $$
 
 Therefore:
 
 $$
-d\!\left(e^{\theta t} X_t\right) = \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t
+d\left(e^{\theta t} X_t\right) = \theta\mu\,e^{\theta t}\,dt + \sigma\,e^{\theta t}\,dW_t
 $$
 
 ### Step 2: Integrate Both Sides from $0$ to $t$
@@ -68,13 +68,13 @@ $$
 Evaluate the deterministic integral:
 
 $$
-\int_0^t \theta\mu\,e^{\theta s}\,ds = \theta\mu \cdot \frac{e^{\theta s}}{\theta}\Bigg|_{s=0}^{s=t} = \mu\!\left(e^{\theta t} - 1\right)
+\int_0^t \theta\mu\,e^{\theta s}\,ds = \theta\mu \cdot \frac{e^{\theta s}}{\theta}\Bigg|_{s=0}^{s=t} = \mu\left(e^{\theta t} - 1\right)
 $$
 
 Substituting:
 
 $$
-e^{\theta t} X_t = X_0 + \mu\!\left(e^{\theta t} - 1\right) + \sigma\int_0^t e^{\theta s}\,dW_s
+e^{\theta t} X_t = X_0 + \mu\left(e^{\theta t} - 1\right) + \sigma\int_0^t e^{\theta s}\,dW_s
 $$
 
 ### Step 3: Solve for $X_t$
@@ -82,7 +82,7 @@ $$
 Divide both sides by $e^{\theta t}$:
 
 $$
-X_t = X_0\,e^{-\theta t} + \mu\!\left(1 - e^{-\theta t}\right) + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s
+X_t = X_0\,e^{-\theta t} + \mu\left(1 - e^{-\theta t}\right) + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s
 $$
 
 Rearranging:
@@ -95,7 +95,7 @@ The three terms are: (1) the long-run mean, (2) a deterministic decay of the ini
 
 ### Step 4: Expectation
 
-Since the Itô integral has zero expectation ($\mathbb{E}\!\left[\int_0^t f(s)\,dW_s\right] = 0$ for any adapted $f$ with $\mathbb{E}\!\left[\int_0^t f(s)^2\,ds\right] < \infty$):
+Since the Itô integral has zero expectation ($\mathbb{E}\left[\int_0^t f(s)\,dW_s\right] = 0$ for any adapted $f$ with $\mathbb{E}\left[\int_0^t f(s)^2\,ds\right] < \infty$):
 
 $$
 \mathbb{E}[X_t] = \mu + (X_0 - \mu)\,e^{-\theta t}
@@ -112,7 +112,7 @@ $$
 The Itô isometry states that for a deterministic integrand $g(s)$:
 
 $$
-\text{Var}\!\left(\int_0^t g(s)\,dW_s\right) = \mathbb{E}\!\left[\left(\int_0^t g(s)\,dW_s\right)^2\right] = \int_0^t g(s)^2\,ds
+\text{Var}\left(\int_0^t g(s)\,dW_s\right) = \mathbb{E}\left[\left(\int_0^t g(s)\,dW_s\right)^2\right] = \int_0^t g(s)^2\,ds
 $$
 
 Apply this with $g(s) = \sigma\,e^{-\theta(t-s)}$:
@@ -134,7 +134,7 @@ $$
 $$
 
 $$
-\boxed{\text{Var}(X_t) = \frac{\sigma^2}{2\theta}\!\left(1 - e^{-2\theta t}\right)}
+\boxed{\text{Var}(X_t) = \frac{\sigma^2}{2\theta}\left(1 - e^{-2\theta t}\right)}
 $$
 
 As $t \to \infty$:
@@ -148,7 +148,7 @@ $$
 Since $X_t$ is a Gaussian process (as a linear functional of Gaussian noise), its distribution is fully characterized by its mean and variance. In the long run:
 
 $$
-\boxed{X_\infty \sim \mathcal{N}\!\left(\mu,\;\frac{\sigma^2}{2\theta}\right)}
+\boxed{X_\infty \sim \mathcal{N}\left(\mu,\;\frac{\sigma^2}{2\theta}\right)}
 $$
 
 The stationary standard deviation is $\sigma_\infty = \sigma / \sqrt{2\theta}$.
@@ -176,7 +176,7 @@ $$
 Take the natural logarithm:
 
 $$
--\theta\,t_{1/2} = \ln\!\left(\frac{1}{2}\right) = -\ln 2
+-\theta\,t_{1/2} = \ln\left(\frac{1}{2}\right) = -\ln 2
 $$
 
 $$
@@ -190,7 +190,7 @@ Suppose we observe $X_0, X_1, \ldots, X_n$ at equally spaced times $0, \Delta t,
 **Conditional distribution.** From the exact solution, conditional on $X_i$:
 
 $$
-X_{i+1} \mid X_i \;\sim\; \mathcal{N}\!\left(\mu + (X_i - \mu)\,e^{-\theta\Delta t},\;\frac{\sigma^2(1 - e^{-2\theta\Delta t})}{2\theta}\right)
+X_{i+1} \mid X_i \;\sim\; \mathcal{N}\left(\mu + (X_i - \mu)\,e^{-\theta\Delta t},\;\frac{\sigma^2(1 - e^{-2\theta\Delta t})}{2\theta}\right)
 $$
 
 **AR(1) representation.** Define $a = \mu(1 - e^{-\theta\Delta t})$, $b = e^{-\theta\Delta t}$, and $\sigma_\varepsilon^2 = \sigma^2(1 - e^{-2\theta\Delta t})/(2\theta)$. Then:

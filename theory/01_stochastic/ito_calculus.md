@@ -47,13 +47,13 @@ $$
 **Why this breaks for Brownian motion.** Now replace $x(t)$ with $W_t$. Over an interval of length $\Delta t$:
 
 $$
-\Delta W = W_{t+\Delta t} - W_t \sim \mathcal{N}(0, \Delta t),
+\Delta W = W_{t+\Delta t} - W_t \sim \mathcal{N}(0, \Delta t)
 $$
 
 so $\Delta W = O(\sqrt{\Delta t})$. The second-order Taylor term is:
 
 $$
-\frac{1}{2}f''(W_t)(\Delta W)^2 = O(\Delta t),
+\frac{1}{2}f''(W_t)(\Delta W)^2 = O(\Delta t)
 $$
 
 which is the **same order** as the first-order term $f'(W_t)\Delta W = O(\sqrt{\Delta t})$. In fact, $(\Delta W)^2 \to \Delta t$ deterministically (quadratic variation), so this term contributes a non-random drift of $\frac{1}{2}f''(W_t)\,dt$ that cannot be discarded.
@@ -135,7 +135,7 @@ $$
 **Theorem.** Let $X_t$ be an Itô process satisfying
 
 $$
-dX_t = \mu(t, X_t)\,dt + \sigma(t, X_t)\,dW_t,
+dX_t = \mu(t, X_t)\,dt + \sigma(t, X_t)\,dW_t
 $$
 
 and let $f(t, x)$ be $C^1$ in $t$ and $C^2$ in $x$. Then $Y_t = f(t, X_t)$ satisfies:
@@ -185,7 +185,7 @@ $$
 This is the single most important application of Itô's Lemma in quantitative finance. Starting from:
 
 $$
-dS_t = \mu S_t\,dt + \sigma S_t\,dW_t,
+dS_t = \mu S_t\,dt + \sigma S_t\,dW_t
 $$
 
 we want the dynamics of $Y_t = \ln S_t$.
@@ -259,7 +259,7 @@ $$
 $$
 
 $$
-\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}
+\boxed{S_t = S_0 \exp\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}
 $$
 
 **Where does the $-\sigma^2/2$ come from?** It is entirely due to the second-derivative (Itô correction) term $\frac{1}{2}f''(S)(dS)^2 = -\frac{1}{2}\sigma^2\,dt$. Because $f(S) = \ln S$ is concave ($f'' < 0$), the stochastic fluctuations systematically reduce the growth rate of the logarithm relative to the arithmetic growth rate $\mu$. In financial terms, the *median* path of GBM grows at rate $\mu - \sigma^2/2$ (the geometric mean return) while the *expected* path grows at rate $\mu$ (the arithmetic mean return). This wedge is the "volatility drag" that erodes compounded returns, also known as Jensen's Inequality.
@@ -273,7 +273,7 @@ The Itô integral $\int_0^T f(t)\,dW_t$ is defined as the $L^2$ (mean-square) li
 **Step 1 — Simple processes.** A simple (step) process on $[0, T]$ is a function of the form
 
 $$
-f_n(t) = \sum_{i=0}^{n-1} \phi_i \,\mathbf{1}_{[t_i, t_{i+1})}(t),
+f_n(t) = \sum_{i=0}^{n-1} \phi_i \,\mathbf{1}_{[t_i, t_{i+1})}(t)
 $$
 
 where $\Pi_n = \{0 = t_0 < t_1 < \cdots < t_n = T\}$ is a partition and each $\phi_i$ is $\mathcal{F}_{t_i}$-measurable (adapted — it uses only information available at the *left* endpoint $t_i$, not at $t_{i+1}$; this is the crucial non-anticipating property).
@@ -286,10 +286,10 @@ $$
 
 This is a finite sum of random variables and is well-defined.
 
-**Step 3 — Extension to general integrands.** For a general adapted process $f(t)$ with $\mathbb{E}\!\left[\int_0^T f(t)^2\,dt\right] < \infty$, there exists a sequence of simple processes $f_n$ such that
+**Step 3 — Extension to general integrands.** For a general adapted process $f(t)$ with $\mathbb{E}\left[\int_0^T f(t)^2\,dt\right] < \infty$, there exists a sequence of simple processes $f_n$ such that
 
 $$
-\mathbb{E}\!\left[\int_0^T |f(t) - f_n(t)|^2\,dt\right] \;\xrightarrow{n \to \infty}\; 0.
+\mathbb{E}\left[\int_0^T |f(t) - f_n(t)|^2\,dt\right] \;\xrightarrow{n \to \infty}\; 0.
 $$
 
 **Step 4 — Define the integral as the $L^2$ limit.**
@@ -303,15 +303,15 @@ The key fact that makes this limit exist and be unique is the **Itô isometry** 
 **Important properties of the Itô integral:**
 
 - **Martingale property:** $M_t = \int_0^t f(s)\,dW_s$ is a martingale: $\mathbb{E}[M_t \mid \mathcal{F}_s] = M_s$ for $s \le t$.
-- **Zero expectation:** $\mathbb{E}\!\left[\int_0^T f(t)\,dW_t\right] = 0$.
+- **Zero expectation:** $\mathbb{E}\left[\int_0^T f(t)\,dW_t\right] = 0$.
 - **Non-anticipating:** The integrand $f(t)$ is evaluated at the left endpoint of each subinterval, which ensures causality (no peeking into the future).
 
 ### 6. The Itô Isometry
 
-**Theorem.** For any adapted process $f$ with $\mathbb{E}\!\left[\int_0^T f(t)^2\,dt\right] < \infty$:
+**Theorem.** For any adapted process $f$ with $\mathbb{E}\left[\int_0^T f(t)^2\,dt\right] < \infty$:
 
 $$
-\boxed{\mathbb{E}\!\left[\left(\int_0^T f(t)\,dW_t\right)^{\!2}\right] = \mathbb{E}\!\left[\int_0^T f(t)^2\,dt\right].}
+\boxed{\mathbb{E}\left[\left(\int_0^T f(t)\,dW_t\right)^{2}\right] = \mathbb{E}\left[\int_0^T f(t)^2\,dt\right].}
 $$
 
 **Proof for simple processes.** Let $f_n(t) = \sum_i \phi_i \mathbf{1}_{[t_i, t_{i+1})}(t)$. Then
@@ -335,7 +335,7 @@ $$
 Only diagonal terms survive:
 
 $$
-\mathbb{E}[I_n^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2 \,(\Delta W_i)^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2]\,\Delta t_i = \mathbb{E}\!\left[\int_0^T f_n(t)^2\,dt\right].
+\mathbb{E}[I_n^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2 \,(\Delta W_i)^2] = \sum_{i=0}^{n-1} \mathbb{E}[\phi_i^2]\,\Delta t_i = \mathbb{E}\left[\int_0^T f_n(t)^2\,dt\right].
 $$
 
 The extension to general $f$ follows by taking $L^2$ limits. $\blacksquare$

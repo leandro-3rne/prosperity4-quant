@@ -37,7 +37,7 @@ Here $a(t,X_t)\,dt$ is the **deterministic increment** (drift part, predictable 
 The rigorous meaning of this notation is the integral equation:
 
 $$
-X_t = x_0 + \int_0^t a(s, X_s)\,ds + \int_0^t b(s, X_s)\,dW_s,
+X_t = x_0 + \int_0^t a(s, X_s)\,ds + \int_0^t b(s, X_s)\,dW_s
 $$
 
 where the first integral is a pathwise Lebesgue (Riemann) integral and the second is an Itô integral (see [ito_calculus.md](ito_calculus.md)).
@@ -87,7 +87,7 @@ $$
 Then for any initial condition $X_0 = x_0$ with $\mathbb{E}[x_0^2] < \infty$, there exists a unique strong solution $\{X_t\}_{0 \le t \le T}$ satisfying:
 
 $$
-\mathbb{E}\!\left[\sup_{0 \le t \le T} |X_t|^2\right] < \infty.
+\mathbb{E}\left[\sup_{0 \le t \le T} |X_t|^2\right] < \infty.
 $$
 
 **Intuition for the conditions:**
@@ -202,7 +202,7 @@ The Milstein method improves strong convergence to order 1.0 by including the ne
 **Algorithm.** Same setup as EM, but with an additional correction:
 
 $$
-\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n + \frac{1}{2}\,b(t_n, \hat{X}_n)\,b'(t_n, \hat{X}_n)\bigl((\Delta W_n)^2 - \Delta t\bigr),
+\hat{X}_{n+1} = \hat{X}_n + a(t_n, \hat{X}_n)\,\Delta t + b(t_n, \hat{X}_n)\,\sqrt{\Delta t}\;Z_n + \frac{1}{2}\,b(t_n, \hat{X}_n)\,b'(t_n, \hat{X}_n)\bigl((\Delta W_n)^2 - \Delta t\bigr)
 $$
 
 where $b' = \partial b / \partial x$ and $\Delta W_n = \sqrt{\Delta t}\;Z_n$.
@@ -216,7 +216,7 @@ $$
 Substituting back into the integral $\int_{t_n}^{t_{n+1}} b(s, X_s)\,dW_s$ and using the Itô integral of $W$ against itself:
 
 $$
-\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s = \frac{1}{2}\bigl[(\Delta W_n)^2 - \Delta t\bigr],
+\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s = \frac{1}{2}\bigl[(\Delta W_n)^2 - \Delta t\bigr]
 $$
 
 produces the correction term $\frac{1}{2}b\,b'\bigl[(\Delta W)^2 - \Delta t\bigr]$.
@@ -258,7 +258,7 @@ $$\boxed{X_t = \mu + (x_0 - \mu)e^{-\theta t} + \sigma \int_0^t e^{-\theta(t-s)}
 
 - $(x_0 - \mu)e^{-\theta t}$: deterministic decay of the initial deviation from $\mu$, with half-life $\ln(2)/\theta$.
 - The stochastic integral is Gaussian with mean zero and variance $\frac{\sigma^2}{2\theta}(1 - e^{-2\theta t})$.
-- As $t \to \infty$: $X_t \to \mathcal{N}\!\left(\mu,\;\frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
+- As $t \to \infty$: $X_t \to \mathcal{N}\left(\mu,\;\frac{\sigma^2}{2\theta}\right)$ (stationary distribution).
 
 **Lipschitz check.** $a(x) = \theta(\mu - x)$ satisfies $|a(x) - a(y)| = \theta|x-y|$; $b(x) = \sigma$ is constant. Both conditions hold — unique strong solution by Itô's theorem.
 
@@ -279,7 +279,7 @@ $$d(\ln S_t) = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t.$$
 
 Integrating and exponentiating:
 
-$$\boxed{S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}$$
+$$\boxed{S_t = S_0 \exp\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right].}$$
 
 For the full step-by-step Itô derivation (and why the $\ln$ ansatz removes the multiplicative $S_t$ on the right-hand side), see [ito_calculus.md](ito_calculus.md), §4. For the modeling intuition (nominal vs relative changes), see [brownian_motion.md](brownian_motion.md), §5–§6.
 
@@ -306,7 +306,7 @@ $$dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t, \qquad X_0 = x_0 \ge
 
 **Exact solution.** No closed-form path expression exists. The transition distribution is known analytically: $X_t \mid X_s$ follows a scaled non-central chi-squared distribution, which can be used for exact simulation. The stationary distribution is:
 
-$$X_\infty \sim \operatorname{Gamma}\!\left(\frac{2\kappa\theta}{\sigma^2},\;\frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
+$$X_\infty \sim \operatorname{Gamma}\left(\frac{2\kappa\theta}{\sigma^2},\;\frac{\sigma^2}{2\kappa}\right), \quad \text{mean } \theta, \quad \text{variance } \frac{\theta\sigma^2}{2\kappa}.$$
 
 **Interpretation.**
 
